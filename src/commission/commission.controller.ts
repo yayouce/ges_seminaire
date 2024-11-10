@@ -7,28 +7,9 @@ import { UpdateCommissionDto } from './dto/update-commission.dto';
 export class CommissionController {
   constructor(private readonly commissionService: CommissionService) {}
 
-  @Post()
+  @Post("add")
   create(@Body() createCommissionDto: CreateCommissionDto) {
-    return this.commissionService.create(createCommissionDto);
+    return this.commissionService.createCommision(createCommissionDto);
   }
 
-  @Get()
-  findAll() {
-    return this.commissionService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.commissionService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCommissionDto: UpdateCommissionDto) {
-    return this.commissionService.update(+id, updateCommissionDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.commissionService.remove(+id);
-  }
 }

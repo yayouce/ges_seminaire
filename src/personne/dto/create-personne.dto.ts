@@ -1,10 +1,12 @@
-import { IsString } from "class-validator"
+import { IsString } from "class-validator";
 
-export class CreateMembreCoDto {
+export class CreatePersonneDto {
+
+
+
+
 @IsString()
-commission
-@IsString()
-motPass:string
+motPass:string;
 @IsString()
 nomPers: string;
 @IsString()
@@ -18,5 +20,6 @@ situation:boolean
 @IsString()
 rolePers:string
 @IsString()
-sousComité:string 
+sousComité:string
+
 }

@@ -1,26 +1,44 @@
 import { Injectable } from '@nestjs/common';
 import { CreateMembreCoDto } from './dto/create-membre_co.dto';
 import { UpdateMembreCoDto } from './dto/update-membre_co.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { MembreCoEntity } from './entities/membre_co.entity';
+import { Repository } from 'typeorm';
+import { CommissionEntity } from 'src/commission/entities/commission.entity';
+import { CommissionService } from 'src/commission/commission.service';
+import * as bcrypt from "bcrypt"
 
+const saltOrRounds = 10
 @Injectable()
 export class MembreCoService {
-  create(createMembreCoDto: CreateMembreCoDto) {
-    return 'This action adds a new membreCo';
+  constructor(
+    @InjectRepository(MembreCoEntity)
+    private membreRepository : Repository<MembreCoEntity>,
+    private commissionService:CommissionService
+ 
+)
+{}
+
+
+
+async createMembreCo(createmembreco:CreateMembreCoDto){
+
+  const commission = await this.commissionService.findOne(createmembreco.commission);
+
+  if(!commission){
+    throw new Error("commission non trouvé")
   }
 
-  findAll() {
-    return `This action returns all membreCo`;
-  }
+  const hashedpassword =await  bcrypt.hash(createmembreco.motPass,saltOrRounds)
 
-  findOne(id: number) {
-    return `This action returns a #${id} membreCo`;
-  }
+  const membreCo=this.membreRepository.create({
+    ...createmembreco,
+    motPass:hashedpassword,
+    commission
+  })
 
-  update(id: number, updateMembreCoDto: UpdateMembreCoDto) {
-    return `This action updates a #${id} membreCo`;
-  }
+return this.membreRepository.save(membreCo)
+}
 
-  remove(id: number) {
-    return `This action removes a #${id} membreCo`;
-  }
+  
 }

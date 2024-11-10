@@ -7,28 +7,14 @@ import { UpdateMembreCoDto } from './dto/update-membre_co.dto';
 export class MembreCoController {
   constructor(private readonly membreCoService: MembreCoService) {}
 
-  @Post()
-  create(@Body() createMembreCoDto: CreateMembreCoDto) {
-    return this.membreCoService.create(createMembreCoDto);
+
+
+
+  
+
+  @Post("add")
+  create(@Body() createmembreCo: CreateMembreCoDto) {
+    return this.membreCoService.createMembreCo(createmembreCo);
   }
 
-  @Get()
-  findAll() {
-    return this.membreCoService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.membreCoService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMembreCoDto: UpdateMembreCoDto) {
-    return this.membreCoService.update(+id, updateMembreCoDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.membreCoService.remove(+id);
-  }
 }
