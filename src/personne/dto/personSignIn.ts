@@ -4,7 +4,7 @@ export class personSigninDto {
 
 
 @IsString()
-loginPers:string;
+phonePers:string;
 @IsString()
 motPass:string; 
 }

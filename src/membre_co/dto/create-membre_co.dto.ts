@@ -1,4 +1,4 @@
-import { IsString } from "class-validator"
+import { IsNotEmpty, IsString } from "class-validator"
 
 export class CreateMembreCoDto {
 @IsString()
@@ -18,5 +18,9 @@ situation:boolean
 @IsString()
 rolePers:string
 @IsString()
-sousComité:string 
+sousComite:string 
+
+@IsNotEmpty()
+@IsString()
+roleMembre:string
 }

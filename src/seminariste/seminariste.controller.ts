@@ -1,7 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { SeminaristeService } from './seminariste.service';
 import { CreateSeminaristeDto } from './dto/create-seminariste.dto';
 import { UpdateSeminaristeDto } from './dto/update-seminariste.dto';
+import { JwtAuthGuard } from 'src/Auth/jwt-auth.guard';
+import { RolesGuard } from 'src/Auth/Guard&decorators/roleGuard';
 
 @Controller('seminariste')
 export class SeminaristeController {

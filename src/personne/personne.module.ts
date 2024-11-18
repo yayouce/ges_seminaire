@@ -6,20 +6,22 @@ import { personne } from './entities/personne.entity';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from 'src/Auth/jwt.strategy';
+import { MembreCoEntity } from 'src/membre_co/entities/membre_co.entity';
+import { MembreCoService } from 'src/membre_co/membre_co.service';
+import { MembreCoModule } from 'src/membre_co/membre_co.module';
+import { JwtCustomModule } from 'src/Auth/jwt.module';
 
 @Module({
 
 
   imports:[
-
-    TypeOrmModule.forFeature([ personne  ]),
+MembreCoModule,
+JwtCustomModule,
+    TypeOrmModule.forFeature([ personne,MembreCoEntity  ]),
     PassportModule.register({
       defaultStrategy: 'jwt'
     }),
-    JwtModule.register({
-      secret:process.env.JWTSECRET,
-      signOptions:{expiresIn:"1h"}
-    })
+   
   ],
   controllers: [PersonneController],
   providers: [PersonneService,JwtStrategy],

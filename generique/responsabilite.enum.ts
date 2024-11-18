@@ -1,0 +1,30 @@
+export enum responsabilite{
+    PCO="pco",
+    RESP_ADMIN="responsable_admininistrion",
+    RESP_COMM="responsable_Communication",
+    RESP_FORMATION = "responsable_Formation",
+    RESP_RESTAURATION = "responsable_Restauration",
+    RESP_SECURITE="responsable_Securité",
+    RESP_FINANCE="responsable_Finance",
+    RESP_PROTOCOLE="responsable_Protocole",
+    RESP_HYGIENE="responsable_Hygiène",
+    RESP_ACCUEIL="responsable_Accueil",
+    RESP_LOGISTIQUE="responsable_Logistique",
+    RESP_PEPINIERE="responsable_Pépinière",
+    RESP_SANTE="responsable_santé",
+
+    RESPA_ADMIN="responsable_adjoint_admininistrion",
+    RESPA_COMM="responsable_adjoint_Communication",
+    RESPA_FORMATION = "responsable_adjoint_Formation",
+    RESPA_RESTAURATION = "responsable_adjoint_Restauration",
+    RESPA_SECURITE="responsable_adjoint_Securité",
+    RESPA_FINANCE="responsable_adjoint_Finance",
+    RESPA_PROTOCOLE="responsable_adjoint_Protocole",
+    RESPA_HYGIENE="responsable_adjoint_Hygiène",
+    RESPA_ACCUEIL="responsable_adjoint_Accueil",
+    RESPA_LOGISTIQUE="responsable_adjoint_Logistique",
+    RESPA_PEPINIERE="responsable_adjoint_Pépinière",
+    RESPA_SANTE="responsable_adjoint_santé",
+    
+    SIMPLE="simple"
+}

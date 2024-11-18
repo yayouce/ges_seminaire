@@ -20,6 +20,6 @@ situation:boolean
 @IsString()
 rolePers:string
 @IsString()
-sousComité:string
+sousComite:string
 
 }

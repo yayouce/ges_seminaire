@@ -14,7 +14,7 @@ nomPers: string;
 pernomPers:string;
 @Column()
 genrePers:string
-@Column()
+@Column({unique:true})
 phonePers:string;
 @Column()
 situation:boolean
@@ -24,5 +24,5 @@ situation:boolean
 })
 rolePers:string
 @Column()
-sousComité:string
+sousComite:string
 }

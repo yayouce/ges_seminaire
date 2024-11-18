@@ -4,6 +4,7 @@ import { UpdatePersonneDto } from './dto/update-personne.dto';
 import { Repository } from 'typeorm';
 import { personne } from './entities/personne.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { MembreCoService } from 'src/membre_co/membre_co.service';
 
 @Injectable()
 export class PersonneService {
@@ -11,6 +12,8 @@ export class PersonneService {
   constructor(
     @InjectRepository(personne)
     private personneRepository: Repository<personne>,
+
+    private membreCoService : MembreCoService
   ){}
 
 
@@ -36,9 +39,9 @@ export class PersonneService {
     if(!user){
       throw new NotFoundException('utilisateur n`\'existe pas!')
     }
-  
-  
-    return user
+
+    return this.membreCoService.findOne(phonePers);
+
     
   }
 

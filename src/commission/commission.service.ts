@@ -30,5 +30,10 @@ async findOne(membrecomi){
 
   }
 
+
+  async findByLibelle(libell){
+return await this.commissionRepository.findOneBy(libell)
+  }
+
   
 }
