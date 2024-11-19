@@ -1,26 +1,36 @@
 import { Injectable } from '@nestjs/common';
 import { CreateSuperadminDto } from './dto/create-superadmin.dto';
 import { UpdateSuperadminDto } from './dto/update-superadmin.dto';
+import { Repository } from 'typeorm';
+import { Superadmin } from './entities/superadmin.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import * as bcrypt from "bcrypt"
 
+const saltOrRounds=10
 @Injectable()
 export class SuperadminService {
-  create(createSuperadminDto: CreateSuperadminDto) {
-    return 'This action adds a new superadmin';
+
+constructor(
+  @InjectRepository(Superadmin)
+  private superAdminRepo  : Repository<Superadmin>){
+  
+}
+
+  async create(superadminDto: CreateSuperadminDto) {
+    const hashedpassword =await  bcrypt.hash(superadminDto.motPassSupAdmin,saltOrRounds)
+  
+    const superadmin=this.superAdminRepo.create({
+      ...superadminDto,
+      motPassSupAdmin:hashedpassword,
+    })
+  
+  
+  return this.superAdminRepo.save(superadmin) 
+
   }
 
-  findAll() {
-    return `This action returns all superadmin`;
-  }
 
-  findOne(id: number) {
-    return `This action returns a #${id} superadmin`;
-  }
+  
 
-  update(id: number, updateSuperadminDto: UpdateSuperadminDto) {
-    return `This action updates a #${id} superadmin`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} superadmin`;
-  }
+  
 }

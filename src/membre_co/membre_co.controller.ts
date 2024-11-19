@@ -23,7 +23,7 @@ export class MembreCoController {
   
 
   
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Post("add")
   create(
     

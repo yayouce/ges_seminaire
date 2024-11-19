@@ -1,21 +1,35 @@
 
 import { dortoirEntity } from "src/dortoirs/entities/dortoir.entity";
+import { MembreCoEntity } from "src/membre_co/entities/membre_co.entity";
 import { personne } from "src/personne/entities/personne.entity";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity("seminariste")
-export class SeminaristeEntity extends personne {
+export class SeminaristeEntity  {
     @PrimaryGeneratedColumn('uuid')
-    idDortoir:string
+    idSemi:string
     @Column()
-    numUrgence:string;
-    
+    nomSemi:string;
     @Column()
-    categorie:string
-    
-    
-    
-    @ManyToOne(()=>dortoirEntity,(dortoir)=>dortoir.seminaristes)
-    dortoir: string;
+    categorie:string;
+    @Column()
+    prenomSemi:string;
+    @Column()
+    genreSemi:string;
+    @Column() //un seminariste peut avoir 
+    phoneSemi:string
+    @Column({
+        default:true //sur le camps
+    })
+    situation:boolean
+    @Column()
+    sousComite:string
+    @Column()
+    numUrgence:string
+    @Column()
+    dortoir:string
+    // @ManyToOne(()=>dortoirEntity,(dortoir)=>dortoir.seminaristes)
+    // dortoir: dortoirEntity;
    
+    // @ManyToOne(()=>MembreCoEntity,(membreco)=>membreco.seminariste)
 }

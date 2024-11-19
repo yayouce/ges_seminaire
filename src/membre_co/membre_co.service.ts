@@ -48,18 +48,28 @@ async createMembreCo(createmembreco:CreateMembreCoDto,user){
   if(user.rolePers!==createmembreco.rolePers){
     throw new NotFoundException("N'\est pas de votre commission!")
   }
-
   
-
+  
+  
+  
+  
   const hashedpassword =await  bcrypt.hash(createmembreco.motPass,saltOrRounds)
-
+  
   const membreCo=this.membreRepository.create({
     ...createmembreco,
     motPass:hashedpassword,
     commission
   })
+  
+  
+console.log(commission.membres
+)
 
-return this.membreRepository.save(membreCo)
+
+
+  
+
+return this.membreRepository.save(membreCo) 
 }
 
   

@@ -12,23 +12,5 @@ export class SuperadminController {
     return this.superadminService.create(createSuperadminDto);
   }
 
-  @Get()
-  findAll() {
-    return this.superadminService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.superadminService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSuperadminDto: UpdateSuperadminDto) {
-    return this.superadminService.update(+id, updateSuperadminDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.superadminService.remove(+id);
-  }
+  
 }

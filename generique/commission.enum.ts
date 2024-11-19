@@ -9,7 +9,7 @@ export enum CommissionEnum{
     PROTOCOLE="Protocole",
     HYGIENE="Hygiène",
     ADMINISTRATION="Administration",
-    ACCUEIL="Accueil",
+    ACCUEIL="Accueil_Hébegement",
     LOGISTIQUE="Logistique",
     PEPINIERE="Pépinière",
     SANTE="Santé"

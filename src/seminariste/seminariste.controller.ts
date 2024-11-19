@@ -4,14 +4,19 @@ import { CreateSeminaristeDto } from './dto/create-seminariste.dto';
 import { UpdateSeminaristeDto } from './dto/update-seminariste.dto';
 import { JwtAuthGuard } from 'src/Auth/jwt-auth.guard';
 import { RolesGuard } from 'src/Auth/Guard&decorators/roleGuard';
+import { User } from 'src/decorator/user.decorator';
 
 @Controller('seminariste')
 export class SeminaristeController {
   constructor(private readonly seminaristeService: SeminaristeService) {}
 
-  @Post()
-  create(@Body() createSeminaristeDto: CreateSeminaristeDto) {
-    return this.seminaristeService.create(createSeminaristeDto);
+  @Post('add')
+ 
+  @UseGuards(JwtAuthGuard)
+  create(
+    @User() user,
+    @Body() createSeminaristeDto: CreateSeminaristeDto) {
+    return this.seminaristeService.createNewSemi(createSeminaristeDto,user);
   }
 
   @Get()
@@ -19,18 +24,4 @@ export class SeminaristeController {
     return this.seminaristeService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.seminaristeService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSeminaristeDto: UpdateSeminaristeDto) {
-    return this.seminaristeService.update(+id, updateSeminaristeDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.seminaristeService.remove(+id);
-  }
 }

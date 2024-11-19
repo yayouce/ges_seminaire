@@ -6,8 +6,9 @@ import { personne } from "src/personne/entities/personne.entity";
 import { Column, Entity, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity("membreco")
-export class MembreCoEntity extends personne {
-   
+export class 
+
+MembreCoEntity extends personne {
 
 
 @ManyToOne(()=>CommissionEntity,(commission)=>commission.membres)
