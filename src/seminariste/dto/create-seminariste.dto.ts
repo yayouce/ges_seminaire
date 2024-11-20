@@ -1,17 +1,18 @@
-import { IsString } from "class-validator";
+import { IsDate, IsNumber, IsString } from "class-validator";
 
 export class CreateSeminaristeDto {
  
     @IsString()
-    nomSemi:string;
+    nomSemi_prenom:string;
     @IsString()
     categorie:string;  //pepinière,enfant, jeune, adulte ...
-    @IsString()
-    prenomSemi:string;
     @IsString()
     genreSemi:string;
     @IsString()
     phoneSemi:string
+
+    @IsNumber()
+    age:number
     
     @IsString()
     sousComite:string
@@ -19,4 +20,7 @@ export class CreateSeminaristeDto {
     numUrgence:string
     @IsString()
     dortoir:string
+    @IsString()
+    membreCo:string
+    
 }

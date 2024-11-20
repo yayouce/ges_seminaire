@@ -1,16 +1,32 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { DortoirsService } from './dortoirs.service';
 import { CreateDortoirDto } from './dto/create-dortoir.dto';
 import { UpdateDortoirDto } from './dto/update-dortoir.dto';
+import { User } from 'src/decorator/user.decorator';
+import { JwtAuthGuard } from 'src/Auth/jwt-auth.guard';
 
 @Controller('dortoirs')
 export class DortoirsController {
-  constructor(private readonly dortoirsService: DortoirsService) {}
 
-  @Post()
-  create(@Body() createDortoirDto: CreateDortoirDto) {
-    return this.dortoirsService.create(createDortoirDto);
+  
+  constructor(
+    
+    private readonly dortoirsService: DortoirsService)
+
+    
+    {}
+
+  @UseGuards(JwtAuthGuard)
+  @Post('add')
+  create(
+    @Body() createDortoirDto: CreateDortoirDto,
+    @User() user
+  ) {
+    return this.dortoirsService.createDortoir(createDortoirDto,user);
   }
+
+
+ 
 
   @Get()
   findAll() {

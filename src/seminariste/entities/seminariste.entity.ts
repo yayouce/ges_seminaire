@@ -9,14 +9,15 @@ export class SeminaristeEntity  {
     @PrimaryGeneratedColumn('uuid')
     idSemi:string
     @Column()
-    nomSemi:string;
+    nomSemi_prenom:string;
+    @Column()
+    age:number;
+
     @Column()
     categorie:string;
     @Column()
-    prenomSemi:string;
-    @Column()
     genreSemi:string;
-    @Column() //un seminariste peut avoir 
+    @Column() //un seminariste peut avoir plusieurs aiutres seminariste sous sa charge
     phoneSemi:string
     @Column({
         default:true //sur le camps
@@ -26,10 +27,9 @@ export class SeminaristeEntity  {
     sousComite:string
     @Column()
     numUrgence:string
-    @Column()
-    dortoir:string
-    // @ManyToOne(()=>dortoirEntity,(dortoir)=>dortoir.seminaristes)
-    // dortoir: dortoirEntity;
-   
-    // @ManyToOne(()=>MembreCoEntity,(membreco)=>membreco.seminariste)
+  
+    @ManyToOne(()=>dortoirEntity,(dortoir)=>dortoir.seminaristes,{eager:true})
+    dortoir:dortoirEntity
+    @ManyToOne(()=>MembreCoEntity,(membreco)=>membreco.seminariste,{eager:true})
+    membreCo:MembreCoEntity
 }

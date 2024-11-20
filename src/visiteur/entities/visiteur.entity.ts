@@ -10,3 +10,4 @@ export class Visiteur extends personne {
     @Column()
     dateSorti:Date;
 }
+

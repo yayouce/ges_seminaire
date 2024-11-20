@@ -61,9 +61,7 @@ async createMembreCo(createmembreco:CreateMembreCoDto,user){
     commission
   })
   
-  
-console.log(commission.membres
-)
+
 
 
 

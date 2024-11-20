@@ -8,7 +8,8 @@ export class CommissionEntity {
     @PrimaryGeneratedColumn("uuid")
     idComi :string;
     
-    @OneToMany(()=>MembreCoEntity,(membre)=>membre.commission)
+  
+    @OneToMany(()=>MembreCoEntity,(membre)=>membre.commission,{eager:true})
     membres:MembreCoEntity[]
     @Column({})
     libelleComi : string;
