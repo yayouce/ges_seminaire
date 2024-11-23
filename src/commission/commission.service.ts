@@ -27,7 +27,10 @@ async findOne(membrecomi){
   async createCommision(createCommission: CreateCommissionDto) {
 
 
-   try{ return await this.commissionRepository.save(createCommission)}
+   try{
+     return await this.commissionRepository.save(createCommission)
+    
+    }
    catch(err){
     throw new ConflictException("la commission existe dejà!")
    }
@@ -35,22 +38,26 @@ async findOne(membrecomi){
   }
 
   //ajout de membre co dans la commission
-  async AjoutMembreCo(membrecomi){
-    const {motPass,...object}=membrecomi
+  // async AjoutMembreCo(membrecomi){
+  //   const {motPass,...object}=membrecomi
 
 
-    const commission = await this.commissionRepository.findOne({
-      where:{libelleComi: object},
-    });
+  //   const commission = await this.commissionRepository.findOne({
+  //     where:{libelleComi: object},
+  //   });
 
-    await commission.membres.push(membrecomi)
+  //   await commission.membres.push(membrecomi)
   
-    return commission
-  }
+  //   return commission
+  // }
 
 
   async findByLibelle(libell){
 return await this.commissionRepository.findOneBy(libell)
+  }
+
+  async findAllComi(){
+    return await this.commissionRepository.find()
   }
 
   

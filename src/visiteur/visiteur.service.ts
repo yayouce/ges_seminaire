@@ -1,26 +1,105 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateVisiteurDto } from './dto/create-visiteur.dto';
 import { UpdateVisiteurDto } from './dto/update-visiteur.dto';
+import { Repository } from 'typeorm';
+import { Visiteur } from './entities/visiteur.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { CommissionEnum } from 'generique/commission.enum';
 
 @Injectable()
 export class VisiteurService {
-  create(createVisiteurDto: CreateVisiteurDto) {
-    return 'This action adds a new visiteur';
+
+  @InjectRepository(Visiteur)
+  private visiteurRepository:Repository <Visiteur>
+
+  async createNewVisiteur(createVisiteurDto: CreateVisiteurDto,user) {
+    const {membreCo,...visiteurdata}=createVisiteurDto
+    try{
+      if(user?.rolePers!==CommissionEnum.ACCUEIL){
+        throw new UnauthorizedException()
+      }
+      
+      const newvisiteur = await this.visiteurRepository.create({
+        ...visiteurdata,
+        membreCo:user,
+      })
+    
+      await  this.visiteurRepository.save(newvisiteur)
+
+    }
+    catch(err){
+      throw new UnauthorizedException(err)
+    }
   }
 
-  findAll() {
-    return `This action returns all visiteur`;
+  async findAll() { //visite en cours
+    return await this.visiteurRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} visiteur`;
+
+
+ // Méthode pour trouver les visiteurs soft supprimés
+ async findSoftDeletedVisiteurs(): Promise<Visiteur[]> {
+
+  const softDeletedVisiteurs = await this.visiteurRepository
+    .createQueryBuilder('visiteur')
+    .where('visiteur.deletedAt IS NOT NULL') 
+    .withDeleted() 
+    .getMany();
+
+  return softDeletedVisiteurs;
+}
+
+
+
+////////////////////////Statistique///////////////////////////////////
+//NombreTotal de visite par jour : 
+async VisiteTotalParJour(): Promise<
+    { date: string; totalVisites: number; softDeletedVisites: number }[]
+  > {
+    const result = await this.visiteurRepository
+      .createQueryBuilder('visiteur')
+      .select('DATE(visiteur.createdAt)', 'date') // Extract only the date part of createdAt
+      .addSelect('COUNT(*)', 'totalVisites') // Count all visits (active + deleted)
+      .addSelect(
+        'SUM(CASE WHEN visiteur.deletedAt IS NOT NULL THEN 1 ELSE 0 END)',
+        'softDeletedVisites',
+      )
+      .withDeleted() 
+      .groupBy('DATE(visiteur.createdAt)') 
+      .orderBy('date', 'DESC') 
+      .getRawMany(); 
+
+    
+    return result.map(row => ({
+      date: row.date,
+      totalVisites: Number(row.totalVisites),
+      softDeletedVisites: Number(row.softDeletedVisites),
+    }));
   }
 
-  update(id: number, updateVisiteurDto: UpdateVisiteurDto) {
-    return `This action updates a #${id} visiteur`;
-  }
 
-  remove(id: number) {
-    return `This action removes a #${id} visiteur`;
-  }
+
+
+
+
+
+
+
+
+
+  //suppression d'un visiteur : il n'est plus présent
+  async deleteVisiteur(idVisiteur:string,user){
+    const visiteurtodelete = await this.visiteurRepository.findOneBy({idVisiteur})
+    if(user?.rolePers!==CommissionEnum.ACCUEIL){
+      throw new UnauthorizedException()
+    }
+        return await this.visiteurRepository.softDelete(idVisiteur)
+
+    }
+
+    
+
+
+  
 }

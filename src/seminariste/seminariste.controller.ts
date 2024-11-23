@@ -5,6 +5,7 @@ import { UpdateSeminaristeDto } from './dto/update-seminariste.dto';
 import { JwtAuthGuard } from 'src/Auth/jwt-auth.guard';
 import { RolesGuard } from 'src/Auth/Guard&decorators/roleGuard';
 import { User } from 'src/decorator/user.decorator';
+import { UpdateCommissionDto } from 'src/commission/dto/update-commission.dto';
 
 @Controller('seminariste')
 export class SeminaristeController {
@@ -22,6 +23,28 @@ export class SeminaristeController {
   @Get()
   findAll() {
     return this.seminaristeService.findAll();
+  }
+
+
+
+
+//stat
+
+
+
+
+
+
+
+  @Patch("update/:id")
+  @UseGuards(JwtAuthGuard)
+  async updateSemi(
+    @User() user,
+    @Param("id") id:string,
+    @Body() updateSemi :UpdateSeminaristeDto
+  ){
+
+    return await this.seminaristeService.updatesemi(id,updateSemi,user)
   }
 
 }

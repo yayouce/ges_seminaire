@@ -1,11 +1,12 @@
 
+import { TimestampEntites } from "generique/timestamp";
 import { dortoirEntity } from "src/dortoirs/entities/dortoir.entity";
 import { MembreCoEntity } from "src/membre_co/entities/membre_co.entity";
 import { personne } from "src/personne/entities/personne.entity";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity("seminariste")
-export class SeminaristeEntity  {
+export class SeminaristeEntity extends TimestampEntites{
     @PrimaryGeneratedColumn('uuid')
     idSemi:string
     @Column()
@@ -32,4 +33,7 @@ export class SeminaristeEntity  {
     dortoir:dortoirEntity
     @ManyToOne(()=>MembreCoEntity,(membreco)=>membreco.seminariste,{eager:true})
     membreCo:MembreCoEntity
+
+    @Column()
+    niveau:string
 }

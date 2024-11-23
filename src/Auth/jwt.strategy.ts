@@ -28,6 +28,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
    if(user){
     const {motPass,...result}=user
+    delete user.motPass
 
     return result
    }

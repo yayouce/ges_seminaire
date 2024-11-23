@@ -1,8 +1,9 @@
 import { CommissionEnum } from "generique/commission.enum";
+import { TimestampEntites } from "generique/timestamp";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('personne')
-export class personne{
+export class personne extends TimestampEntites{
 @PrimaryGeneratedColumn("uuid")
 idpers:string;
 @Column()

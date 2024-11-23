@@ -1,4 +1,4 @@
-import { IsDate, IsNumber, IsString } from "class-validator";
+import { IsDate, IsNumber, IsOptional, IsString } from "class-validator";
 
 export class CreateSeminaristeDto {
  
@@ -22,5 +22,9 @@ export class CreateSeminaristeDto {
     dortoir:string
     @IsString()
     membreCo:string
+
+    @IsOptional()
+    @IsString()
+    niveau:string
     
 }

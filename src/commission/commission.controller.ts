@@ -18,4 +18,9 @@ export class CommissionController {
     return this.commissionService.createCommision(createCommissionDto);
   }
 
+@Get()
+async findAllComi(){
+
+  return this.commissionService.findAllComi()
+}
 }
