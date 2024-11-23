@@ -9,6 +9,12 @@ async function bootstrap() {
   const configService = app.get(ConfigService)
   // app.useGlobalFilters(new AllExceptionsFilter());
   
+
+  // CORS : j'accepte toutes les origines
+  app.enableCors({
+    // true for all origins
+    origin: '*',
+  });
   
   
   
