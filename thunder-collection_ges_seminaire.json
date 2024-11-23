@@ -1,0 +1,123 @@
+{
+    "clientName": "Thunder Client",
+    "collectionName": "ges_seminaire",
+    "collectionId": "ca7b49c6-1cec-4008-84b9-cd1636dd7666",
+    "dateExported": "2024-11-23T11:11:47.533Z",
+    "version": "1.2",
+    "folders": [
+        {
+            "_id": "19a2fef7-79b0-4f7a-8733-27f8a4a7e5fa",
+            "name": "auth",
+            "containerId": "",
+            "created": "2024-11-20T15:18:37.834Z",
+            "sortNum": 10000
+        },
+        {
+            "_id": "744948cb-715f-4760-97cc-7d37ebbf5c1d",
+            "name": "seminariste",
+            "containerId": "",
+            "created": "2024-11-20T15:18:49.721Z",
+            "sortNum": 20000
+        },
+        {
+            "_id": "67938624-166b-4331-8490-72df28b06240",
+            "name": "dortoir",
+            "containerId": "",
+            "created": "2024-11-20T15:18:56.842Z",
+            "sortNum": 30000
+        },
+        {
+            "_id": "7e974cb9-f70e-4939-96cf-0144337a2310",
+            "name": "membreCo",
+            "containerId": "",
+            "created": "2024-11-20T15:19:20.533Z",
+            "sortNum": 40000
+        }
+    ],
+    "requests": [
+        {
+            "_id": "0fc89881-2a62-4cd8-98d3-0e28c853b21a",
+            "colId": "ca7b49c6-1cec-4008-84b9-cd1636dd7666",
+            "containerId": "19a2fef7-79b0-4f7a-8733-27f8a4a7e5fa",
+            "name": "login",
+            "url": "http://localhost:3005/auth/signIn",
+            "method": "POST",
+            "sortNum": 20000,
+            "created": "2024-11-20T15:19:29.139Z",
+            "modified": "2024-11-20T16:14:28.827Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n\"phonePers\":\"0586655085\",\n\"motPass\":\"test01\" \n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "b1213e70-97d4-4396-ab86-1e2ca86139cc",
+            "colId": "ca7b49c6-1cec-4008-84b9-cd1636dd7666",
+            "containerId": "67938624-166b-4331-8490-72df28b06240",
+            "name": "creationDortoir",
+            "url": "http://localhost:3005/dortoirs/add",
+            "method": "POST",
+            "sortNum": 30000,
+            "created": "2024-11-20T15:22:55.337Z",
+            "modified": "2024-11-20T16:20:18.919Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n   \"nomDortoir\":\"Ali\",\n    \"nbPlace\" :50,\n    \"genre\":\"M\" \n}",
+                "form": []
+            },
+            "auth": {
+                "type": "bearer",
+                "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZVBlcnMiOiIwNTg2NjU1MDg1Iiwicm9sZVBlcnMiOiJBY2N1ZWlsX0jDqWJlZ2VtZW50Iiwicm9sZU1lbWJyZSI6InJlc3BvbnNhYmxlIiwiaWF0IjoxNzMyMTE5MjY4LCJleHAiOjE3MzIyMDU2Njh9.trZ_W7RJlNI13JfkojudZ9ZuyzY8fhviko-w3k8nTjQ"
+            }
+        },
+        {
+            "_id": "9dc6b806-0fba-45f7-a413-4b4d8cdeef54",
+            "colId": "ca7b49c6-1cec-4008-84b9-cd1636dd7666",
+            "containerId": "67938624-166b-4331-8490-72df28b06240",
+            "name": "GetAllDortoir",
+            "url": "http://localhost:3005/dortoirs",
+            "method": "GET",
+            "sortNum": 40000,
+            "created": "2024-11-20T16:20:37.207Z",
+            "modified": "2024-11-20T16:20:45.007Z",
+            "headers": []
+        },
+        {
+            "_id": "d4541a6f-fdf4-4819-b932-842d1efd7281",
+            "colId": "ca7b49c6-1cec-4008-84b9-cd1636dd7666",
+            "containerId": "744948cb-715f-4760-97cc-7d37ebbf5c1d",
+            "name": "addSeminariste",
+            "url": "http://localhost:3005/seminariste/add",
+            "method": "POST",
+            "sortNum": 50000,
+            "created": "2024-11-20T16:54:58.870Z",
+            "modified": "2024-11-20T17:30:14.242Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n    \"nomSemi_prenom\":\"diarra yaya\",\n    \"age\":15,\n    \"categorie\":\"jeune\",  //pepinière,enfant, jeune, adulte ...\n    \"genreSemi\":\"M\",\n    \"phoneSemi\":\"09876545678\",\n    \"sousComite\":\"yop2\",\n    \"numUrgence\":\"09876567890\",\n    \"dortoir\":\"Ali\"\n}",
+                "form": []
+            },
+            "auth": {
+                "type": "bearer",
+                "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZVBlcnMiOiIwNTg2NjU1MDg1Iiwicm9sZVBlcnMiOiJBY2N1ZWlsX0jDqWJlZ2VtZW50Iiwicm9sZU1lbWJyZSI6InJlc3BvbnNhYmxlIiwiaWF0IjoxNzMyMTIyMDYwLCJleHAiOjE3MzIyMDg0NjB9.TbCvb266FmkqV_ZttPAvRJzS6V49T4KzGfa3rtseGe0"
+            }
+        },
+        {
+            "_id": "614cbc61-973d-4aa7-aa3f-97c6a3f489f4",
+            "colId": "ca7b49c6-1cec-4008-84b9-cd1636dd7666",
+            "containerId": "744948cb-715f-4760-97cc-7d37ebbf5c1d",
+            "name": "findAllSemi",
+            "url": "http://localhost:3005/seminariste",
+            "method": "GET",
+            "sortNum": 60000,
+            "created": "2024-11-20T17:31:45.842Z",
+            "modified": "2024-11-20T17:31:56.954Z",
+            "headers": []
+        }
+    ],
+    "ref": "6DRlRwRzH2YCCAIM9M5Ara2T8-DPzhV0AAZtHw-ft73Ad75gsiXzB2b4A2GWAQ2dIpVxOJcBpteVSqajj1conA"
+}

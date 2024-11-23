@@ -11,7 +11,7 @@ export class CommissionEntity {
   
     @OneToMany(()=>MembreCoEntity,(membre)=>membre.commission,{eager:true})
     membres:MembreCoEntity[]
-    @Column({})
+    @Column({unique:true})
     libelleComi : string;
    
 }
