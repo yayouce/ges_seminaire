@@ -15,10 +15,10 @@ export class dortoirEntity {
     genre:string;
 
  
-    @OneToMany(()=>SeminaristeEntity, (seminariste)=>seminariste.dortoir)
+    @OneToMany(()=>SeminaristeEntity, (seminariste)=>seminariste.dortoir,{eager:true})
     seminaristes:SeminaristeEntity[]
     
    
-    @ManyToOne(()=>MembreCoEntity, (membreco)=>membreco.dortoir,{eager:true})
+    @ManyToOne(()=>MembreCoEntity, (membreco)=>membreco.dortoir)
     membreCo:MembreCoEntity
 }

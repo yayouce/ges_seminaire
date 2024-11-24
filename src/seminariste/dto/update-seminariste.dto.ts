@@ -7,7 +7,9 @@ export class UpdateSeminaristeDto extends PartialType(CreateSeminaristeDto) {
 
         @IsOptional()
         @IsString()
-        nomSemi_prenom:string;
+        nomSemi:string;
+        @IsString()
+        prenomSemi:string;
         @IsOptional()
         @IsString()
         categorie:string;  //pepinière,enfant, jeune, adulte ...

@@ -25,10 +25,23 @@ export class SeminaristeController {
     return this.seminaristeService.findAll();
   }
 
+//--------------------------------stat
+
+@Get("totalByGender")
+async SeminaristeByGender(){
+  return this.seminaristeService.SeminaristeByGender()
+}
+
+@Get("totalByCateg")
+async SeminaristeBycateg(){
+  return this.seminaristeService.SeminaristeBycateg()
+}
 
 
-
-//stat
+@Get("totalByniveau")
+async SeminaristesByNiveau(){
+  return this.seminaristeService.SeminaristesByNiveau()
+}
 
 
 

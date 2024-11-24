@@ -10,7 +10,9 @@ export class SeminaristeEntity extends TimestampEntites{
     @PrimaryGeneratedColumn('uuid')
     idSemi:string
     @Column()
-    nomSemi_prenom:string;
+    nomSemi:string;
+    @Column()
+    prenomSemi:string;
     @Column()
     age:number;
 
@@ -29,8 +31,10 @@ export class SeminaristeEntity extends TimestampEntites{
     @Column()
     numUrgence:string
   
-    @ManyToOne(()=>dortoirEntity,(dortoir)=>dortoir.seminaristes,{eager:true})
+    @ManyToOne(()=>dortoirEntity,(dortoir)=>dortoir.seminaristes)
     dortoir:dortoirEntity
+    @Column()
+    nomdortoir:string
     @ManyToOne(()=>MembreCoEntity,(membreco)=>membreco.seminariste,{eager:true})
     membreCo:MembreCoEntity
 

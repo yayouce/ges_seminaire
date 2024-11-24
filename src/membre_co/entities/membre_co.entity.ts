@@ -4,6 +4,7 @@ import { roleMembre } from "generique/rolemembre.enum";
 import { CommissionEntity } from "src/commission/entities/commission.entity";
 import { dortoirEntity } from "src/dortoirs/entities/dortoir.entity";
 import { personne } from "src/personne/entities/personne.entity";
+import { Rapport } from "src/rapport/entities/rapport.entity";
 import { SeminaristeEntity } from "src/seminariste/entities/seminariste.entity";
 import { Visiteur } from "src/visiteur/entities/visiteur.entity";
 import { Column, Entity, ManyToOne, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
@@ -31,6 +32,10 @@ dortoir:dortoirEntity[]
 
 @OneToMany(()=>Visiteur,(visiteur)=>visiteur.membreCo)
 visiteur:Visiteur[]
+
+
+@OneToMany(()=>Rapport,(rapport)=>rapport.membreCo)
+rapport:Rapport[]
 
 
 }

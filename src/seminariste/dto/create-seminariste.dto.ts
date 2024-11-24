@@ -3,7 +3,9 @@ import { IsDate, IsNumber, IsOptional, IsString } from "class-validator";
 export class CreateSeminaristeDto {
  
     @IsString()
-    nomSemi_prenom:string;
+    nomSemi:string;
+    @IsString()
+    prenomSemi:string;
     @IsString()
     categorie:string;  //pepinière,enfant, jeune, adulte ...
     @IsString()
@@ -22,6 +24,7 @@ export class CreateSeminaristeDto {
     dortoir:string
     @IsString()
     membreCo:string
+
 
     @IsOptional()
     @IsString()

@@ -32,11 +32,6 @@ async findOne(phone){
 
 async createMembreCo(createmembreco:CreateMembreCoDto,user){
 
-
-
-
-
-
   if(user?.roleMembre!==roleMembre.RESP){
   throw new UnauthorizedException()
 }
@@ -49,10 +44,6 @@ async createMembreCo(createmembreco:CreateMembreCoDto,user){
     throw new NotFoundException("N'\est pas de votre commission!")
   }
   
-  
-  
-  
-  
   const hashedpassword =await  bcrypt.hash(createmembreco.motPass,saltOrRounds)
   
   const membreCo=this.membreRepository.create({
@@ -60,14 +51,13 @@ async createMembreCo(createmembreco:CreateMembreCoDto,user){
     motPass:hashedpassword,
     commission
   })
-  
-
-
-
-
-  
-
 return this.membreRepository.save(membreCo) 
+}
+
+
+async ajouterRapport(){
+
+  
 }
 
   

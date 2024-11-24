@@ -19,7 +19,7 @@ constructor(
 ){}
 
   async createNewSemi(createSeminaristeDto: CreateSeminaristeDto,user) {
-    const {dortoir,membreCo,...seminaristedata}=createSeminaristeDto
+    const {dortoir,genreSemi,membreCo,...seminaristedata}=createSeminaristeDto
     try{
       if(user?.rolePers!==CommissionEnum.ACCUEIL){
         throw new UnauthorizedException()
@@ -30,9 +30,13 @@ constructor(
       if(!founddortoir){
         throw new NotFoundException('dortoir non trouvé!!!')
       }
+      if(genreSemi!==founddortoir.genre){
+        throw new NotFoundException("le genre du seminariste n\'est pas fait pour ce dortoir")
+      }
 
       const newSeminariste = await this.seminaristeRepository.create({
         ...seminaristedata,
+        nomdortoir:founddortoir.nomDortoir,
         membreCo:user,
         dortoir:founddortoir
       })
@@ -57,6 +61,7 @@ constructor(
       {
           idSemi,
           dortoir:founddortoir,
+          nomdortoir:founddortoir.nomDortoir,
           membreCo:user,
           ...semi
       }
@@ -72,20 +77,73 @@ console.log(updateSemi)
 await  this.seminaristeRepository.save(updateSemi)
 
   }
+
+  /////////////////////////STAT////////////////////////////////
   
   findAll() {
     return this.seminaristeRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} seminariste`;
+
+  //--------------------Total seminariste par genre-------------------------------//
+
+  async SeminaristeByGender(): Promise<{ genre: string; total: number }[]> {
+    const result = await this.seminaristeRepository
+      .createQueryBuilder('seminariste')
+      .select('seminariste.genreSemi', 'genre')
+      .addSelect('COUNT(*)', 'total') 
+      .groupBy('seminariste.genreSemi') 
+      .getRawMany(); 
+  
+    return result.map(row => ({
+      genre: row.genre,
+      total: Number(row.total),
+    }));
   }
 
-  update(id: number, updateSeminaristeDto: UpdateSeminaristeDto) {
-    return `This action updates a #${id} seminariste`;
+
+
+  //---------------------total seminariste par categorie-------------------------------//
+  async SeminaristeBycateg(): Promise<{ categorie: string; total: number }[]> {
+    const result = await this.seminaristeRepository
+      .createQueryBuilder('seminariste')
+      .select('seminariste.categorie', 'categorie')
+      .addSelect('COUNT(*)', 'total') 
+      .groupBy('seminariste.categorie') 
+      .getRawMany(); 
+  
+    return result.map(row => ({
+      categorie: row.categorie,
+      total: Number(row.total),
+    }));
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} seminariste`;
+
+
+
+  //------------------------Liste des seminaristes par niveau---------------------------//
+  async SeminaristesByNiveau(): Promise<{ niveau: string; seminaristes: SeminaristeEntity[] }[]> {
+    const seminaristes = await this.seminaristeRepository.find();
+  
+    // Grouper les séminaristes par niveau
+    const groupedSeminaristes = seminaristes.reduce((acc, seminariste) => {
+      const { niveau } = seminariste;
+      if (!acc[niveau]) {
+        acc[niveau] = [];
+      }
+      acc[niveau].push(seminariste);
+      return acc;
+    }, {} as Record <string,SeminaristeEntity[]>);
+  
+    // Transformer en tableau
+    return Object.entries(groupedSeminaristes).map(([niveau, seminaristes]) => ({
+      niveau,
+      seminaristes,
+    }));
   }
+  
+  
+  
+
+  
 }
