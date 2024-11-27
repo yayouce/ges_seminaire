@@ -95,11 +95,24 @@ await  this.seminaristeRepository.save(updateSemi)
       .groupBy('seminariste.genreSemi') 
       .getRawMany(); 
   
-    return result.map(row => ({
+    const data = result.map(row => ({
       genre: row.genre,
       total: Number(row.total),
     }));
+  
+
+    if (!data.find(row => row.genre === 'F')) {
+      data.push({ genre: 'F', total: 0 });
+    }
+  
+  
+    if (!data.find(row => row.genre === 'M')) {
+      data.push({ genre: 'M', total: 0 });
+    }
+  
+    return data;
   }
+  
 
 
 
