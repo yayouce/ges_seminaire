@@ -8,7 +8,7 @@ export class CreateDortoirDto {
     @IsNumber()
     nbPlace :number;
     @IsString()
-    genre:string; //femme ou homme ou pepinière
+    genre:string; 
 
     @IsString()
     membreCo:string

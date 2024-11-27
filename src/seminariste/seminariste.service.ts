@@ -87,7 +87,7 @@ await  this.seminaristeRepository.save(updateSemi)
 
   //--------------------Total seminariste par genre-------------------------------//
 
-  async SeminaristeByGender(): Promise<{ genre: string; total: number }[]> {
+  async SeminaristeByGender(): Promise<Record<string, number>> {
     const result = await this.seminaristeRepository
       .createQueryBuilder('seminariste')
       .select('seminariste.genreSemi', 'genre')
@@ -95,23 +95,21 @@ await  this.seminaristeRepository.save(updateSemi)
       .groupBy('seminariste.genreSemi') 
       .getRawMany(); 
   
-    const data = result.map(row => ({
-      genre: row.genre,
-      total: Number(row.total),
-    }));
+
+    const data: Record<string, number> = { frère: 0, soeur: 0, Total: 0 };
   
 
-    if (!data.find(row => row.genre === 'F')) {
-      data.push({ genre: 'F', total: 0 });
-    }
+    result.forEach(row => {
+      const genre = row.genre.toLowerCase();
+      const total = Number(row.total);
   
-  
-    if (!data.find(row => row.genre === 'M')) {
-      data.push({ genre: 'M', total: 0 });
-    }
+      data[genre] += total;
+      data.Total += total;
+    });
   
     return data;
   }
+  
   
 
 

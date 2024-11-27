@@ -55,6 +55,13 @@ return this.membreRepository.save(membreCo)
 }
 
 
+
+
+
+
+//___________________________STAT____________________________________
+
+
 async membreCoByGender(): Promise<Record<string, Record<string, number>>> {
   const result = await this.membreRepository
     .createQueryBuilder('membreco')
