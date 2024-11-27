@@ -29,7 +29,7 @@ export class SeminaristeController {
 
 @Get("totalByGender")
 async SeminaristeByGender(){
-  return this.seminaristeService.SeminaristeByGender()
+  return await this.seminaristeService.SeminaristeByGender()
 }
 
 @Get("totalByCateg")

@@ -55,9 +55,18 @@ return this.membreRepository.save(membreCo)
 }
 
 
-async ajouterRapport(){
+async membreCoByGender(): Promise<{ genre: string; total: number }[]> {
+  const result = await this.membreRepository
+    .createQueryBuilder('membreco')
+    .select('membreco.genrePers', 'genre')
+    .addSelect('COUNT(*)', 'total') 
+    .groupBy('membreco.genrePers') 
+    .getRawMany(); 
 
-  
+  return result.map(row => ({
+    genre: row.genre,
+    total: Number(row.total),
+  }));
 }
 
   

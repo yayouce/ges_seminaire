@@ -33,4 +33,12 @@ export class MembreCoController {
     return this.membreCoService.createMembreCo(createmembreCo,user);
   }
 
+
+
+
+  @Get("totalByGender")
+  async membreCoByGender(){
+    return await this.membreCoService.membreCoByGender()
+  }
+
 }
