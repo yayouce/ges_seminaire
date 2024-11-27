@@ -55,19 +55,45 @@ return this.membreRepository.save(membreCo)
 }
 
 
-async membreCoByGender(): Promise<{ genre: string; total: number }[]> {
+async membreCoByGender(): Promise<Record<string, Record<string, number>>> {
   const result = await this.membreRepository
     .createQueryBuilder('membreco')
     .select('membreco.genrePers', 'genre')
+    .addSelect('membreco.rolePers', 'commission')
     .addSelect('COUNT(*)', 'total') 
-    .groupBy('membreco.genrePers') 
+    .groupBy('membreco.rolePers')
+    .addGroupBy('membreco.genrePers')
     .getRawMany(); 
 
-  return result.map(row => ({
-    genre: row.genre,
-    total: Number(row.total),
-  }));
+
+  const groupedData: Record<string, Record<string, number>> = {};
+
+  result.forEach(row => {
+    const commission = row.commission;
+    const genre = row.genre.toLowerCase();
+    const total = Number(row.total);
+
+    if (!groupedData[commission]) {
+      groupedData[commission] = { masculin: 0, feminin: 0, Total: 0 };
+    }
+
+    groupedData[commission][genre] = total;
+    groupedData[commission].Total += total; 
+  });
+
+
+  Object.keys(groupedData).forEach(commission => {
+    if (!groupedData[commission].masculin) {
+      groupedData[commission].masculin = 0;
+    }
+    if (!groupedData[commission].feminin) {
+      groupedData[commission].feminin = 0;
+    }
+  });
+
+  return groupedData;
 }
+
 
   
 }
