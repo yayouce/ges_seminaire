@@ -46,6 +46,29 @@ private dortoirRepository:Repository <dortoirEntity>,
     }
 
 
+    //_____________________STAT_____________________________
+    async totalDortoirByType() {
+      
+      const result = await this.dortoirRepository
+      .createQueryBuilder('dortoir')
+      .select('dortoir.typedortoir', 'typedortoir')
+      .addSelect('COUNT(*)', 'total') 
+      .groupBy('dortoir.typedortoir') 
+      .getRawMany(); 
+  
+   const resultat= result.map(row => ({
+      [row.typedortoir]: Number(row.total)
+   
+    }))
+
+    return resultat
+  
+    ;
+
+       }
+
+
+
 
    
 

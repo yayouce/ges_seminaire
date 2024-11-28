@@ -24,6 +24,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       status = exception.getStatus();
       message = exception.message || exception.getResponse()['message'];
     }
+  
 
     response.status(status).json({
       statusCode: status,

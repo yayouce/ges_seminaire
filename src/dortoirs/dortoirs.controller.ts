@@ -33,6 +33,22 @@ export class DortoirsController {
     return this.dortoirsService.findAll();
   }
 
+//________________________________STAT____________________________
+
+@Get('totaldortoirBytype')
+async totalDortoirByType() {
+  return await this.dortoirsService.totalDortoirByType()
+}
+
+
+
+
+
+
+
+
+
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.dortoirsService.findOne(+id);
