@@ -47,11 +47,7 @@ private dortoirRepository:Repository <dortoirEntity>,
 
 
 
-    // async findlistPersonneDortoir(){
-    //   const dortoir= this.dortoirRepository.findOne({where:{nomDortoir:nomDortoir}})
-
-    //   return dortoir
-    // }
+   
 
 
   findAll() {
