@@ -48,24 +48,47 @@ private dortoirRepository:Repository <dortoirEntity>,
 
     //_____________________STAT_____________________________
     async totalDortoirByType() {
-      
       const result = await this.dortoirRepository
-      .createQueryBuilder('dortoir')
-      .select('dortoir.typedortoir', 'typedortoir')
-      .addSelect('COUNT(*)', 'total') 
-      .groupBy('dortoir.typedortoir') 
-      .getRawMany(); 
+          .createQueryBuilder('dortoir')
+          .select('dortoir.typedortoir', 'typedortoir')
+          .addSelect('COUNT(*)', 'total')
+          .groupBy('dortoir.typedortoir')
+          .getRawMany();
   
-   const resultat= result.map(row => ({
-      [row.typedortoir]: Number(row.total)
+      const consolidatedData: Record<string, number> = {
+          seminariste: 0,
+          co: 0,
+          non_defini: 0
+      };
+  
+      
+      result.forEach(row => {
+          const typedortoir = row.typedortoir.toLowerCase();
+          consolidatedData[typedortoir] = Number(row.total);
+      });
+  
+      return consolidatedData;
+  }
+  
+
+
+  //     const result = await this.dortoirRepository
+  //     .createQueryBuilder('dortoir')
+  //     .select('dortoir.typedortoir', 'typedortoir')
+  //     .addSelect('COUNT(*)', 'total') 
+  //     .groupBy('dortoir.typedortoir') 
+  //     .getRawMany(); 
+  
+  //  const resultat= result.map(row => ({
+  //     [row.typedortoir]: Number(row.total)
    
-    }))
+  //   }))
 
-    return resultat
+  //   return resultat
   
-    ;
+  //   ;
 
-       }
+       
 
 
 
