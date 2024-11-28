@@ -38,7 +38,7 @@ async SeminaristeBycateg(){
 }
 
 
-@Get("totalByniveau")
+@Get("seminaristeByniveau")
 async SeminaristesByNiveau(){
   return this.seminaristeService.SeminaristesByNiveau()
 }

@@ -60,5 +60,26 @@ return await this.commissionRepository.findOneBy(libell)
     return await this.commissionRepository.find()
   }
 
+
+
+
+  //_________________________STAT_________________________________
+  async findTotalByGenderComi(){
+    const commission = await this.commissionRepository.find()
+    
+    const tab = commission.map((dt:any)=>{
+      const nbFrere = dt.membres.filter((m:any)=>m.genrePers === 'frere').length
+      const nbSoeur = dt.membres.filter((m:any)=>m.genrePers === 'soeur').length
+      return {
+        commission: dt.libelleComi,
+        total_frères: nbFrere,
+        total_soeurs: nbSoeur,
+        total_membres: dt.membres.length,
+      }
+    })
+    return tab
+
+  }
+
   
 }

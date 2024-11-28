@@ -96,7 +96,7 @@ await  this.seminaristeRepository.save(updateSemi)
       .getRawMany(); 
   
 
-    const data: Record<string, number> = { frère: 0, soeur: 0, Total: 0 };
+    const data: Record<string, number> = { frere: 0, soeur: 0, Total: 0 };
   
 
     result.forEach(row => {

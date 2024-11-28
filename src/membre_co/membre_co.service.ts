@@ -81,7 +81,7 @@ async membreCoByGender(): Promise<Record<string, Record<string, number>>> {
     const total = Number(row.total);
 
     if (!groupedData[commission]) {
-      groupedData[commission] = { frère: 0, soeur: 0, Total: 0 };
+      groupedData[commission] = {commission:commission, frere: 0, soeur: 0, Total: 0 };
     }
 
     groupedData[commission][genre] = total;
@@ -90,8 +90,8 @@ async membreCoByGender(): Promise<Record<string, Record<string, number>>> {
 
 
   Object.keys(groupedData).forEach(commission => {
-    if (!groupedData[commission].frère) {
-      groupedData[commission].frère = 0;
+    if (!groupedData[commission].frere) {
+      groupedData[commission].frere = 0;
     }
     if (!groupedData[commission].soeur) {
       groupedData[commission].soeur = 0;

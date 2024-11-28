@@ -23,4 +23,9 @@ async findAllComi(){
 
   return this.commissionService.findAllComi()
 }
+
+@Get("totalByGender")
+async findTotalByGenderComi(){
+  return this.commissionService.findTotalByGenderComi()
+}
 }
