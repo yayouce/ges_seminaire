@@ -4,15 +4,15 @@ export enum CommissionEnum{
     COMMUNICATION="Communication",
     FORMATION = "Formation",
     RESTAURATION = "Restauration",
-    SECURITE="Securité",
+    SECURITE="Securite",
     FINANCE="Finance",
     PROTOCOLE="Protocole",
-    HYGIENE="Hygiène",
+    HYGIENE="Hygiene",
     ADMINISTRATION="Administration",
-    ACCUEIL="Accueil_Hébegement",
+    ACCUEIL="Accueil_Hebergement",
     LOGISTIQUE="Logistique",
-    PEPINIERE="Pépinière",
-    SANTE="Santé"
+    PEPINIERE="Pepiniere",
+    SANTE="Sante"
      
 
 }

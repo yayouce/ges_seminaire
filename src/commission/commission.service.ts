@@ -81,5 +81,25 @@ return await this.commissionRepository.findOneBy(libell)
 
   }
 
+
+  async listeMembreByCo(){
+    const currentComi=await this.commissionRepository.find()
+    const tab=currentComi.map((dt:any)=>{
+
+ return{
+    commission:dt.libelleComi,
+    membres:dt.membres}
+    })
+
+    return tab
+  }
+
+
+
+
+  
+
+  
+
   
 }

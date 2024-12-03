@@ -23,7 +23,7 @@ export class MembreCoController {
   
 
   
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Post("add")
   create(
     
@@ -33,12 +33,26 @@ export class MembreCoController {
     return this.membreCoService.createMembreCo(createmembreCo,user);
   }
 
+@Get('liste')
+async membreCoParcomi(){
+  return await this.membreCoService.membreCoParcomi()
+}
 
+
+@Get("membres")
+async getmembreco(){
+  return await this.membreCoService.getmembreco()
+}
 
 
   @Get("totalByGender")
   async membreCoByGender(){
     return await this.membreCoService.membreCoByGender()
+  }
+
+  @Get("totalFormateur")
+  async TotalformateurCo(){
+    return await this.membreCoService.findTotalByGenderFormateur()
   }
 
 }
