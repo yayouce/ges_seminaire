@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { HttpException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateMembreCoDto } from './dto/create-membre_co.dto';
 import { UpdateMembreCoDto } from './dto/update-membre_co.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -35,10 +35,17 @@ async createMembreCo(createmembreco:CreateMembreCoDto,user){
   if(user?.roleMembre!==roleMembre.RESP){
   throw new UnauthorizedException()
 }
-  const commission = await this.commissionService.findOne(createmembreco.commission);
+  const
+   commission = await this.commissionService.findOne(createmembreco.commission);
 
   if(!commission){
-    throw new NotFoundException("commission non trouvé ")
+    throw new HttpException({
+      statusCode:801,
+      error:"commission non trouvé"
+    },
+  801
+  )
+ 
   }
   if(user.rolePers!==createmembreco.rolePers){
     throw new NotFoundException("N'\est pas de votre commission!")
