@@ -28,4 +28,15 @@ async findAllComi(){
 async findTotalByGenderComi(){
   return this.commissionService.findTotalByGenderComi()
 }
+
+
+@Get("listeparco")
+async listeMembreByCo(){
+  return await this.commissionService.listeMembreByCo()
+}
+
+// @Get('formateurtotalByGender')
+// async findTotalByGenderFormateur(){
+//   return this.commissionService.findTotalByGenderFormateur()
+// }
 }

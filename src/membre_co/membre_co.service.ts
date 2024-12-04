@@ -29,8 +29,21 @@ async findOne(phone){
 }
 
 
+//membreCo par commission
+
+async membreCoParcomi(){
+  const result =await this.membreRepository
+  .createQueryBuilder('membreco')
+  .select("*")
+  .groupBy('membreco.rolePers')
+  .getRawMany();
+  
+  return result
+}
+
 
 async createMembreCo(createmembreco:CreateMembreCoDto,user){
+  
 
   if(user?.roleMembre!==roleMembre.RESP){
   throw new UnauthorizedException()
@@ -47,6 +60,10 @@ async createMembreCo(createmembreco:CreateMembreCoDto,user){
   )
  
   }
+  createmembreco.rolePers = commission.libelleComi
+
+
+
   if(user.rolePers!==createmembreco.rolePers){
     throw new NotFoundException("N'\est pas de votre commission!")
   }
@@ -55,6 +72,7 @@ async createMembreCo(createmembreco:CreateMembreCoDto,user){
   
   const membreCo=this.membreRepository.create({
     ...createmembreco,
+    rolePers:commission.libelleComi,
     motPass:hashedpassword,
     commission
   })
@@ -62,7 +80,9 @@ return this.membreRepository.save(membreCo)
 }
 
 
-
+async getmembreco(){
+  return await this.membreRepository.find()
+}
 
 
 
@@ -107,6 +127,14 @@ async membreCoByGender(): Promise<Record<string, Record<string, number>>> {
 
   return groupedData;
 }
+
+
+async findTotalByGenderFormateur() {
+  
+
+  
+}
+
 
 
   
