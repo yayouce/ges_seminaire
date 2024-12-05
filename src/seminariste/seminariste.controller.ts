@@ -38,10 +38,10 @@ async SeminaristeBycateg(){
 }
 
 
-@Get("seminaristeByniveau")
-async SeminaristesByNiveau(){
-  return this.seminaristeService.SeminaristesByNiveau()
-}
+// @Get("seminaristeByniveau")
+// async SeminaristesByNiveau(){
+//   return this.seminaristeService.SeminaristesByNiveau()
+// }
 
 
 

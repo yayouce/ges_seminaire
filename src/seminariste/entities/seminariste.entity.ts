@@ -7,6 +7,7 @@ import { situation } from "generique/situation.enum";
 import { TimestampEntites } from "generique/timestamp";
 import { dortoirEntity } from "src/dortoirs/entities/dortoir.entity";
 import { MembreCoEntity } from "src/membre_co/entities/membre_co.entity";
+import { Niveau } from "src/niveau/entities/niveau.entity";
 import { personne } from "src/personne/entities/personne.entity";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
@@ -34,7 +35,7 @@ export class SeminaristeEntity extends TimestampEntites{
         default:genreEnum.NON_DEFINI
     })
     genreSemi:string;
-    @Column() //un seminariste peut avoir plusieurs aiutres seminariste sous sa charge
+    @Column() 
     phoneSemi:string
     @Column({
         type:"enum",
@@ -54,12 +55,12 @@ export class SeminaristeEntity extends TimestampEntites{
     @ManyToOne(()=>MembreCoEntity,(membreco)=>membreco.seminariste,{eager:true})
     membreCo:MembreCoEntity
 
-    @Column({
-        type:"enum",
-        enum:NiveauEnum,
-        default:NiveauEnum.NON_SPECIFIE
-    })
-    niveau:string
+    // @Column({
+    //     type:"enum",
+    //     enum:NiveauEnum,
+    //     default:NiveauEnum.NON_SPECIFIE
+    // })
+    // niveau:string
     @Column({
         type:"enum",
         enum:etatSanteEnum,
@@ -68,4 +69,8 @@ export class SeminaristeEntity extends TimestampEntites{
     etatSante:string
     @Column()
     problemeSante:string
+
+
+    @ManyToOne(()=>Niveau,(niveau)=>niveau.seminariste)
+    niveau:dortoirEntity
 }

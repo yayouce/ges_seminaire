@@ -6,7 +6,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('personne')
 export class personne extends TimestampEntites{
-@PrimaryGeneratedColumn("uuid")
+    @PrimaryGeneratedColumn("uuid")
 idpers:string;
 @Column()
 motPass:string;

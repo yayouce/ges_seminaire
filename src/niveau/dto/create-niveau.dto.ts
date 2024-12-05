@@ -1,5 +1,11 @@
-import { IsNotEmpty, IsString } from "class-validator"
+import { IsString } from "class-validator";
+
 export class CreateNiveauDto {
     @IsString()
-    nomNiveau:string
+    nomNiveau:string;
+
+
+    
+    @IsString()
+    membreCo:string;
 }

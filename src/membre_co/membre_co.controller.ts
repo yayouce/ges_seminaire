@@ -38,7 +38,6 @@ async membreCoParcomi(){
   return await this.membreCoService.membreCoParcomi()
 }
 
-
 @Get("membres")
 async getmembreco(){
   return await this.membreCoService.getmembreco()

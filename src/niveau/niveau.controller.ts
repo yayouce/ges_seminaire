@@ -10,33 +10,27 @@ export class NiveauController {
   constructor(private readonly niveauService: NiveauService) {}
 
 
+
   @UseGuards(JwtAuthGuard)
   @Post("add")
-  create(
+  async create(
     @Body() createNiveauDto: CreateNiveauDto,
-    @User() user
-    
+    @User() user,
+
   ) {
-  return this.niveauService.create(createNiveauDto,user);
- }
-
-  @Get()
-  findAll() {
-    return this.niveauService.findAll();
+    return await this.niveauService.create(createNiveauDto,user);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.niveauService.findOne(+id);
+
+  @Get('all')
+  async findAllNiveau(){
+return await this.niveauService.findAllNiveau()
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateNiveauDto: UpdateNiveauDto) {
-    return this.niveauService.update(+id, updateNiveauDto);
-  }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.niveauService.remove(+id);
+  @Get('seminaristeByNiveau')
+  async SeminaristesByNiveau(){
+    return await this.niveauService.SeminaristesByNiveau()
   }
+  
 }

@@ -8,6 +8,7 @@ import { roleMembre } from 'generique/rolemembre.enum';
 import { CommissionEnum } from 'generique/commission.enum';
 import { DortoirsService } from 'src/dortoirs/dortoirs.service';
 import { UpdateCommissionDto } from 'src/commission/dto/update-commission.dto';
+import { NiveauService } from 'src/niveau/niveau.service';
 
 @Injectable()
 export class SeminaristeService {
@@ -15,11 +16,12 @@ constructor(
   @InjectRepository(SeminaristeEntity)
     
   private seminaristeRepository:Repository <SeminaristeEntity>,
-  private dortoirservice : DortoirsService
+  private dortoirservice : DortoirsService,
+  private niveauService:NiveauService
 ){}
 
   async createNewSemi(createSeminaristeDto: CreateSeminaristeDto,user) {
-    const {dortoir,genreSemi,membreCo,age,etatSante,...seminaristedata}=createSeminaristeDto
+    const {dortoir,genreSemi,membreCo,age,etatSante,niveau,...seminaristedata}=createSeminaristeDto
     try{
       if(user?.rolePers!==CommissionEnum.ACCUEIL){
         throw new UnauthorizedException()
@@ -30,12 +32,18 @@ constructor(
       if(!founddortoir){
         throw new NotFoundException('dortoir non trouvé!!!')
       }
+      // const foundniveau =await this.niveauService.findOneNiveau(niveau)
+ 
+      // if(!foundniveau){
+      //   throw new NotFoundException('niveau non trouvé!!!')
+      // }
       if(genreSemi!==founddortoir.genre){
         throw new NotFoundException("le genre du seminariste n\'est pas fait pour ce dortoir")
       }
 
       if(age<=6){
         createSeminaristeDto.categorie="Pepinieres"
+       
       }
       else if(age>6 && age<=10){
         createSeminaristeDto.categorie="Enfants"
@@ -50,6 +58,7 @@ constructor(
 
       const newSeminariste = await this.seminaristeRepository.create({
         ...seminaristedata,
+        // niveau:foundniveau,
         age:createSeminaristeDto.age,
         etatSante:createSeminaristeDto.etatSante,
         problemeSante:createSeminaristeDto.problemeSante,
@@ -72,16 +81,26 @@ constructor(
 
 
   async updatesemi(idSemi:string,updateseminaristeDto:UpdateSeminaristeDto,user){
-    const {dortoir,membreCo,...semi}=updateseminaristeDto
+    const {dortoir,membreCo,niveau,...semi}=updateseminaristeDto
 
     const founddortoir =await this.dortoirservice.findOneDortoir(dortoir)
  
       if(!founddortoir){
         throw new NotFoundException('dortoir non trouvé!!!')
       }
+
+
+      const foundniveau =await this.niveauService.findOneNiveau(niveau)
+
+      
+ 
+      if(!foundniveau){
+        throw new NotFoundException('dortoir non trouvé!!!')
+      }
     const updateSemi= await this.seminaristeRepository.preload(
       {
           idSemi,
+          niveau:foundniveau,
           dortoir:founddortoir,
           nomdortoir:founddortoir.nomDortoir,
           membreCo:user,
@@ -92,7 +111,7 @@ constructor(
   if(!updateSemi){
     throw new NotFoundException(`le seminariste de Id :${idSemi} est introuvable`)
 }
-if(user?.rolePers!==CommissionEnum.ACCUEIL && user?.rolePers!==CommissionEnum.FORMATION){
+if(user?.rolePers!==CommissionEnum.ACCUEIL && user?.rolePers!==CommissionEnum.FORMATION ){
   throw new UnauthorizedException()
 }
 console.log(updateSemi)
@@ -234,37 +253,37 @@ async deleteSeminariste(idSemi:string,user){
 
 
 
-  //------------------------Liste des seminaristes par niveau---------------------------//
-  async SeminaristesByNiveau(): Promise<{ niveau: string; seminaristes: SeminaristeEntity[] }[]> {
-    // Liste des niveaux à initialiser
-    const niveaux = ["Niveau 1", "Niveau 2", "Niveau 3", "Niveau 4", "Niveau 5"];
+  // //------------------------Liste des seminaristes par niveau---------------------------//
+  // async SeminaristesByNiveau(): Promise<{ niveau: string; seminaristes: SeminaristeEntity[] }[]> {
+  //   // Liste des niveaux à initialiser
+  //   const niveaux = ["Niveau 1", "Niveau 2", "Niveau 3", "Niveau 4", "Niveau 5"];
   
-    // Récupération des séminaristes
-    const seminaristes = await this.seminaristeRepository.find();
+  //   // Récupération des séminaristes
+  //   const seminaristes = await this.seminaristeRepository.find();
   
-    // Grouper les séminaristes par niveau
-    const groupedSeminaristes = seminaristes.reduce((acc, seminariste) => {
-      const { niveau } = seminariste;
-      if (!acc[niveau]) {
-        acc[niveau] = [];
-      }
-      acc[niveau].push(seminariste);
-      return acc;
-    }, {} as Record<string, SeminaristeEntity[]>);
+  //   // Grouper les séminaristes par niveau
+  //   const groupedSeminaristes = seminaristes.reduce((acc, seminariste) => {
+  //     const { niveau } = seminariste;
+  //     if (!acc[niveau]) {
+  //       acc[niveau] = [];
+  //     }
+  //     acc[niveau].push(seminariste);
+  //     return acc;
+  //   }, {} as Record<string, SeminaristeEntity[]>);
   
-    // Assurer que tous les niveaux sont présents dans le résultat
-    niveaux.forEach(niveau => {
-      if (!groupedSeminaristes[niveau]) {
-        groupedSeminaristes[niveau] = []; // Initialiser avec un tableau vide si aucun séminariste n'est trouvé
-      }
-    });
+  //   // Assurer que tous les niveaux sont présents dans le résultat
+  //   niveaux.forEach(niveau => {
+  //     if (!groupedSeminaristes[niveau]) {
+  //       groupedSeminaristes[niveau] = []; // Initialiser avec un tableau vide si aucun séminariste n'est trouvé
+  //     }
+  //   });
   
-    // Transformer en tableau
-    return Object.entries(groupedSeminaristes).map(([niveau, seminaristes]) => ({
-      niveau,
-      seminaristes,
-    }));
-  }
+  //   // Transformer en tableau
+  //   return Object.entries(groupedSeminaristes).map(([niveau, seminaristes]) => ({
+  //     niveau,
+  //     seminaristes,
+  //   }));
+  // }
   
   
   
