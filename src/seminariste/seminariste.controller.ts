@@ -21,8 +21,8 @@ export class SeminaristeController {
   }
 
   @Get()
-  findAll() {
-    return this.seminaristeService.findAll();
+  async findAll() {
+    return await this.seminaristeService.findAll();
   }
 
 //--------------------------------stat
@@ -34,7 +34,7 @@ async SeminaristeByGender(){
 
 @Get("totalByCateg")
 async SeminaristeBycateg(){
-  return this.seminaristeService.SeminaristeBycateg()
+  return this.seminaristeService.SeminaristeByCateg()
 }
 
 
@@ -42,6 +42,8 @@ async SeminaristeBycateg(){
 async SeminaristesByNiveau(){
   return this.seminaristeService.SeminaristesByNiveau()
 }
+
+
 
 
 
@@ -58,6 +60,20 @@ async SeminaristesByNiveau(){
   ){
 
     return await this.seminaristeService.updatesemi(id,updateSemi,user)
+  }
+
+
+
+
+
+
+  @Delete('delete/:id')
+  @UseGuards(JwtAuthGuard)
+  async deleteSeminariste(
+    @User() user,
+    @Param('id') id:string
+  ){
+    return await this.seminaristeService.deleteSeminariste(id,user)
   }
 
 }

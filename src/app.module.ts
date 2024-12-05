@@ -14,6 +14,7 @@ import { SuperadminModule } from './superadmin/superadmin.module';
 import { PersonneModule } from './personne/personne.module';
 import { AuthModule } from './Auth/auth.module';
 import { RapportModule } from './rapport/rapport.module';
+import { NiveauModule } from './niveau/niveau.module';
 
 dotenv.config()
 @Module({
@@ -30,7 +31,7 @@ dotenv.config()
       entities: ["dist/**/*.entity{.ts,.js}"],
       synchronize: true,
     }),
-    DortoirsModule, CommissionModule, SeminaristeModule, VisiteurModule, MembreCoModule, SuperadminModule, PersonneModule,AuthModule, RapportModule],
+    DortoirsModule, CommissionModule, SeminaristeModule, VisiteurModule, MembreCoModule, SuperadminModule, PersonneModule,AuthModule, RapportModule, NiveauModule],
   controllers: [AppController],
   providers: [AppService],
 })

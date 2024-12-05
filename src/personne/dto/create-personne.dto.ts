@@ -16,7 +16,7 @@ genrePers:string
 @IsString()
 phonePers:string;
 @IsString()
-situation:boolean
+situation:string
 @IsString()
 rolePers:string
 @IsString()

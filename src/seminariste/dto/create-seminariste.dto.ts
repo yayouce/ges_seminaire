@@ -7,15 +7,13 @@ export class CreateSeminaristeDto {
     @IsString()
     prenomSemi:string;
     @IsString()
-    categorie:string;  //pepinière,enfant, jeune, adulte ...
+    categorie:string; 
     @IsString()
     genreSemi:string;
     @IsString()
     phoneSemi:string
-
     @IsNumber()
     age:number
-    
     @IsString()
     sousComite:string
     @IsString()
@@ -24,10 +22,14 @@ export class CreateSeminaristeDto {
     dortoir:string
     @IsString()
     membreCo:string
-
-
     @IsOptional()
     @IsString()
     niveau:string
+
+    @IsString()
+    etatSante:string
+    @IsString()
+    @IsOptional()
+    problemeSante:string
     
 }

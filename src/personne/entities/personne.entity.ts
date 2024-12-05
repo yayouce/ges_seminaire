@@ -1,5 +1,6 @@
 import { CommissionEnum } from "generique/commission.enum";
 import { genreEnum } from "generique/genre.enum";
+import { situation } from "generique/situation.enum";
 import { TimestampEntites } from "generique/timestamp";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
@@ -22,8 +23,12 @@ pernomPers:string;
 genrePers:string
 @Column({unique:true})
 phonePers:string;
-@Column()
-situation:boolean
+@Column({
+    type:"enum",
+    enum:situation,
+    default:situation.NON_SPECIFIE
+})
+situation:string
 @Column({
     type:"enum",
     enum:CommissionEnum

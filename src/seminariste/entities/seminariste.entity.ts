@@ -1,4 +1,9 @@
 
+import { categorieSem } from "generique/categorieSeminariste.enum";
+import { genreEnum } from "generique/genre.enum";
+import { NiveauEnum } from "generique/niveau.enum";
+import { etatSanteEnum} from "generique/sante.enum";
+import { situation } from "generique/situation.enum";
 import { TimestampEntites } from "generique/timestamp";
 import { dortoirEntity } from "src/dortoirs/entities/dortoir.entity";
 import { MembreCoEntity } from "src/membre_co/entities/membre_co.entity";
@@ -16,16 +21,27 @@ export class SeminaristeEntity extends TimestampEntites{
     @Column()
     age:number;
 
-    @Column()
+
+    @Column({
+        type:"enum",
+        enum:categorieSem,
+        default:categorieSem.NON_SPECIFIE
+    })
     categorie:string;
-    @Column()
+    @Column({
+        type:"enum",
+        enum:genreEnum,
+        default:genreEnum.NON_DEFINI
+    })
     genreSemi:string;
     @Column() //un seminariste peut avoir plusieurs aiutres seminariste sous sa charge
     phoneSemi:string
     @Column({
-        default:true //sur le camps
+        type:"enum",
+        enum:situation,
+        default:situation.NON_SPECIFIE
     })
-    situation:boolean
+    situation:string
     @Column()
     sousComite:string
     @Column()
@@ -38,6 +54,18 @@ export class SeminaristeEntity extends TimestampEntites{
     @ManyToOne(()=>MembreCoEntity,(membreco)=>membreco.seminariste,{eager:true})
     membreCo:MembreCoEntity
 
-    @Column()
+    @Column({
+        type:"enum",
+        enum:NiveauEnum,
+        default:NiveauEnum.NON_SPECIFIE
+    })
     niveau:string
+    @Column({
+        type:"enum",
+        enum:etatSanteEnum,
+        default:etatSanteEnum.NON_SPECIFIE
+    })
+    etatSante:string
+    @Column()
+    problemeSante:string
 }
