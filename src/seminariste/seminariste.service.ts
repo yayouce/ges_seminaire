@@ -20,6 +20,7 @@ constructor(
   private niveauService:NiveauService
 ){}
 
+//creation
   async createNewSemi(createSeminaristeDto: CreateSeminaristeDto,user) {
     const {dortoir,genreSemi,membreCo,age,etatSante,niveau,...seminaristedata}=createSeminaristeDto
     try{
@@ -76,10 +77,7 @@ constructor(
   }
 
 
-
-
-
-
+  //mise à jour
   async updatesemi(idSemi:string,updateseminaristeDto:UpdateSeminaristeDto,user){
     const {dortoir,membreCo,niveau,...semi}=updateseminaristeDto
 
@@ -92,7 +90,7 @@ constructor(
 
       const foundniveau =await this.niveauService.findOneNiveau(niveau)
 
-      
+
  
       if(!foundniveau){
         throw new NotFoundException('dortoir non trouvé!!!')
@@ -120,6 +118,44 @@ await  this.seminaristeRepository.save(updateSemi)
   }
 
 
+  //suppression
+  async deleteSeminariste(idSemi:string,user){
+    const seminaristeDelete = await this.seminaristeRepository.findOneBy({idSemi})
+    if(!seminaristeDelete){
+      throw new NotFoundException("seminariste non trouvé")
+    }
+    if(user?.rolePers!==CommissionEnum.ACCUEIL){
+      throw new UnauthorizedException()
+    }
+        return await this.seminaristeRepository.softDelete(idSemi)
+  
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -133,27 +169,34 @@ await  this.seminaristeRepository.save(updateSemi)
   //--------------------Total seminariste par genre-------------------------------//
 
   async SeminaristeByGender(): Promise<Record<string, number>> {
-    const result = await this.seminaristeRepository
-      .createQueryBuilder('seminariste')
-      .select('seminariste.genreSemi', 'genre')
-      .addSelect('COUNT(*)', 'total') 
-      .groupBy('seminariste.genreSemi') 
-      .getRawMany(); 
-  
+  const result = await this.seminaristeRepository
+    .createQueryBuilder('seminariste')
+    .select('seminariste.genreSemi', 'genre')
+    .addSelect('COUNT(*)', 'total')
+    .groupBy('seminariste.genreSemi')
+    .getRawMany();
 
-    const data: Record<string, number> = { frere: 0, soeur: 0, Total: 0 };
-  
 
-    result.forEach(row => {
-      const genre = row.genre.toLowerCase();
-      const total = Number(row.total);
-  
+  const data: Record<string, number> = { 
+    frere: 0, 
+    soeur: 0, 
+    non_defini: 0, 
+    Total: 0 
+  };
+
+  result.forEach(row => {
+    const genre = row.genre?.toLowerCase() || 'non_defini'; 
+    const total = Number(row.total);
+
+    if (data.hasOwnProperty(genre)) {
       data[genre] += total;
-      data.Total += total;
-    });
-  
-    return data;
-  }
+    }
+    data.Total += total; 
+  });
+
+  return data;
+}
+
 
   //par categorie par genre
   async SeminaristeCategByGender(): Promise<Record<string, number>> {
@@ -236,56 +279,12 @@ await  this.seminaristeRepository.save(updateSemi)
 }
 
 
-async deleteSeminariste(idSemi:string,user){
-  const seminaristeDelete = await this.seminaristeRepository.findOneBy({idSemi})
-  if(!seminaristeDelete){
-    throw new NotFoundException("seminariste non trouvé")
-  }
-  if(user?.rolePers!==CommissionEnum.ACCUEIL){
-    throw new UnauthorizedException()
-  }
-      return await this.seminaristeRepository.softDelete(idSemi)
-
-  }
 
 
 
 
 
 
-  // //------------------------Liste des seminaristes par niveau---------------------------//
-  // async SeminaristesByNiveau(): Promise<{ niveau: string; seminaristes: SeminaristeEntity[] }[]> {
-  //   // Liste des niveaux à initialiser
-  //   const niveaux = ["Niveau 1", "Niveau 2", "Niveau 3", "Niveau 4", "Niveau 5"];
-  
-  //   // Récupération des séminaristes
-  //   const seminaristes = await this.seminaristeRepository.find();
-  
-  //   // Grouper les séminaristes par niveau
-  //   const groupedSeminaristes = seminaristes.reduce((acc, seminariste) => {
-  //     const { niveau } = seminariste;
-  //     if (!acc[niveau]) {
-  //       acc[niveau] = [];
-  //     }
-  //     acc[niveau].push(seminariste);
-  //     return acc;
-  //   }, {} as Record<string, SeminaristeEntity[]>);
-  
-  //   // Assurer que tous les niveaux sont présents dans le résultat
-  //   niveaux.forEach(niveau => {
-  //     if (!groupedSeminaristes[niveau]) {
-  //       groupedSeminaristes[niveau] = []; // Initialiser avec un tableau vide si aucun séminariste n'est trouvé
-  //     }
-  //   });
-  
-  //   // Transformer en tableau
-  //   return Object.entries(groupedSeminaristes).map(([niveau, seminaristes]) => ({
-  //     niveau,
-  //     seminaristes,
-  //   }));
-  // }
-  
-  
   
   
 

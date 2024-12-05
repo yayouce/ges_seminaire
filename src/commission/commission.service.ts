@@ -95,11 +95,5 @@ return await this.commissionRepository.findOneBy(libell)
   }
 
 
-
-
-  
-
-  
-
   
 }

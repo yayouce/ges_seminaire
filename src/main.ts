@@ -7,12 +7,12 @@ import { AllExceptionsFilter } from './Exceptions/all-exceptions.filter';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService)
-  app.useGlobalFilters(new AllExceptionsFilter());
+  //app.useGlobalFilters(new AllExceptionsFilter());
   
 
   // CORS : j'accepte toutes les origines
   app.enableCors({
-    // true for all origins
+    
     origin: '*',
   });
   

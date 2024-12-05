@@ -1,6 +1,6 @@
 export enum CommissionEnum{
 
-    PCO="pco",
+    PCO="Pco",
     COMMUNICATION="Communication",
     FORMATION = "Formation",
     RESTAURATION = "Restauration",

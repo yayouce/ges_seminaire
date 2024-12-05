@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, HttpException } from '@nestjs/common';
 import { VisiteurService } from './visiteur.service';
 import { CreateVisiteurDto } from './dto/create-visiteur.dto';
 import { UpdateVisiteurDto } from './dto/update-visiteur.dto';
@@ -28,7 +28,7 @@ export class VisiteurController {
     return this.visiteurService.findSoftDeletedVisiteurs()
   }
 
-//stat
+
 
 @Get('totalByday')
 async VisiteTotalParJour(){
@@ -36,6 +36,31 @@ async VisiteTotalParJour(){
 }
 
 
+
+
+@Get('totalByJourParGenre')
+async getVisiteTotalParJourParGenre(
+  @Query('date') date: string,
+): Promise<{ date: string; totalVisites: number; genreVisiteur: Record<string, number> }> {
+  if (!date || isNaN(Date.parse(date))) {
+    throw new HttpException( {
+      statusCode:801,
+      error:"commission non trouvé"
+    },
+  801);
+  }
+
+  return this.visiteurService.VisiteTotalParJourParGenre(date);
+}
+
+
+@Get('totalByGenre')
+async getVisiteTotalParGenre(): Promise<{ 
+  totalVisites: number; 
+  genreVisiteur: Record<string, number>; 
+}> {
+  return this.visiteurService.VisiteTotalParGenre();
+}
 
 
   

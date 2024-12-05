@@ -1,4 +1,5 @@
 
+import { genreEnum } from "generique/genre.enum";
 import { TimestampEntites } from "generique/timestamp";
 import { MembreCoEntity } from "src/membre_co/entities/membre_co.entity";
 import { personne } from "src/personne/entities/personne.entity";
@@ -14,7 +15,11 @@ export class Visiteur extends TimestampEntites {
     nomVisiteur: string;
     @Column()
     pernomVisiteur:string;
-    @Column()
+    @Column({
+        type:"enum",
+        enum:genreEnum,
+        default:genreEnum.NON_DEFINI
+    })
     genreVisiteur:string
     @Column()
     phoneVisiteur:string;

@@ -33,14 +33,26 @@ export class MembreCoController {
     return this.membreCoService.createMembreCo(createmembreCo,user);
   }
 
-@Get('liste')
-async membreCoParcomi(){
-  return await this.membreCoService.membreCoParcomi()
-}
+// @Get('liste')
+// async membreCoParcomi(){
+//   return await this.membreCoService.membreCoParcomi()
+// }
 
 @Get("membres")
 async getmembreco(){
   return await this.membreCoService.getmembreco()
+}
+
+@Get("getPco")
+async getPco(){
+  return await this.membreCoService.getPco()
+}
+
+
+
+@Get("TotalGender")
+async membreCoTotalByGender(){
+  return await this.membreCoService.membreCoTotalByGender()
 }
 
 
@@ -52,6 +64,37 @@ async getmembreco(){
   @Get("totalFormateur")
   async TotalformateurCo(){
     return await this.membreCoService.findTotalByGenderFormateur()
+  }
+
+
+
+
+
+
+
+
+
+
+  @Patch("update/:id")
+  @UseGuards(JwtAuthGuard)
+  async updateSemi(
+    @User() user,
+    @Param("id") id:string,
+    @Body() updateMembre :UpdateMembreCoDto
+  ){
+
+    return await this.membreCoService.updateMembre(id,updateMembre,user)
+  }
+
+
+  
+  @Delete('delete/:id')
+  @UseGuards(JwtAuthGuard)
+  async deleteMembreCo(
+    @User() user,
+    @Param('id') id:string
+  ){
+    return await this.membreCoService.deleteMembreCo(id,user)
   }
 
 }

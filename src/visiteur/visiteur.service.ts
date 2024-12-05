@@ -32,7 +32,7 @@ export class VisiteurService {
     }
   }
 
-  async findAll() { //visite en cours
+  async findAll() {
     return await this.visiteurRepository.find();
   }
 
@@ -54,9 +54,7 @@ export class VisiteurService {
 
 ////////////////////////Statistique///////////////////////////////////
 //NombreTotal de visite par jour : 
-async VisiteTotalParJour(): Promise<
-    { date: string; totalVisites: number; softDeletedVisites: number }[]
-  > {
+async VisiteTotalParJour(): Promise<{ date: string; totalVisites: number; softDeletedVisites: number }[]> {
     const result = await this.visiteurRepository
       .createQueryBuilder('visiteur')
       .select('DATE(visiteur.createdAt)', 'date') // Extract only the date part of createdAt
@@ -77,6 +75,89 @@ async VisiteTotalParJour(): Promise<
       softDeletedVisites: Number(row.softDeletedVisites),
     }));
   }
+
+  async VisiteTotalParJourParGenre(date: string): Promise<{ 
+    date: string; 
+    totalVisites: number; 
+    genreVisiteur: Record<string, number>; }> {
+    const result = await this.visiteurRepository
+      .createQueryBuilder('visiteur')
+      .select('DATE(visiteur.createdAt)', 'date') 
+      .addSelect('visiteur.genreVisiteur', 'genre')
+      .addSelect('COUNT(*)', 'total') 
+      .withDeleted()
+      .where('DATE(visiteur.createdAt) = :date', { date }) // Filter by date
+      .groupBy('DATE(visiteur.createdAt)')
+      .addGroupBy('visiteur.genreVisiteur')
+      .getRawMany();
+  
+    const genreData: Record<string, number> = {
+      frere: 0,
+      soeur: 0,
+      non_defini: 0,
+    };
+  
+    let totalVisites = 0;
+  
+
+    result.forEach(row => {
+      const genre = row.genre || 'non_defini';
+      const total = Number(row.total);
+  
+      if (genreData.hasOwnProperty(genre)) {
+        genreData[genre] += total;
+      }
+  
+      totalVisites += total;
+    });
+  
+    return {
+      date,
+      totalVisites,
+      genreVisiteur: genreData,
+    };
+  }
+  
+  async VisiteTotalParGenre(): Promise<{ 
+    totalVisites: number; 
+    genreVisiteur: Record<string, number>; 
+  }> {
+    const result = await this.visiteurRepository
+      .createQueryBuilder('visiteur')
+      .select('visiteur.genreVisiteur', 'genre') 
+      .addSelect('COUNT(*)', 'total')
+      .withDeleted() 
+      .groupBy('visiteur.genreVisiteur')
+      .getRawMany();
+  
+    const genreData: Record<string, number> = {
+      frere: 0,
+      soeur: 0,
+      non_defini: 0,
+    };
+  
+    let totalVisites = 0;
+  
+    result.forEach(row => {
+      const genre = row.genre || 'non_defini';
+      const total = Number(row.total);
+  
+      if (genreData.hasOwnProperty(genre)) {
+        genreData[genre] += total;
+      }
+  
+      totalVisites += total;
+    });
+  
+    return {
+      totalVisites,
+      genreVisiteur: genreData,
+    };
+  }
+  
+
+
+
 
 
 
