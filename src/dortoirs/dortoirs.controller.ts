@@ -4,6 +4,7 @@ import { CreateDortoirDto } from './dto/create-dortoir.dto';
 import { UpdateDortoirDto } from './dto/update-dortoir.dto';
 import { User } from 'src/decorator/user.decorator';
 import { JwtAuthGuard } from 'src/Auth/jwt-auth.guard';
+import { dortoirEntity } from './entities/dortoir.entity';
 
 @Controller('dortoirs')
 export class DortoirsController {
@@ -33,12 +34,37 @@ export class DortoirsController {
     return this.dortoirsService.findAll();
   }
 
+
+
+  @Patch(':dortoirId/add-seminariste/:id')
+  async addSeminaristeToDortoir(
+    @Param('dortoirId') dortoirId: string,
+    @Param('id') seminaristeId: string,
+  ): Promise<dortoirEntity> {
+    return this.dortoirsService.updateDortoirWithSeminariste(dortoirId, seminaristeId);
+  }
+
+
+
 //________________________________STAT____________________________
 
 @Get('totaldortoirBytype')
 async totalDortoirByType() {
   return await this.dortoirsService.totalDortoirByType()
 }
+
+
+@Get('totaldortoirByGenre')
+async totalDortoirByGenre() {
+  return await this.dortoirsService.totalDortoirByGenre()
+}
+
+
+@Get("listeDortoir")
+async findDortoirListe(){
+  return this.dortoirsService.findDortoirListe()
+}
+
 
 
 

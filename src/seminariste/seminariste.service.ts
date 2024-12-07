@@ -133,6 +133,11 @@ await  this.seminaristeRepository.save(updateSemi)
 
 
 
+    async findOneById(idParam){
+      return await this.seminaristeRepository.findOne({
+        where: { idSemi: idParam },
+      })
+    }
 
 
 

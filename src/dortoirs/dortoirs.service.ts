@@ -6,6 +6,8 @@ import { dortoirEntity } from './entities/dortoir.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CommissionEnum } from 'generique/commission.enum';
 import { MembreCoService } from 'src/membre_co/membre_co.service';
+import { SeminaristeEntity } from 'src/seminariste/entities/seminariste.entity';
+import { SeminaristeService } from 'src/seminariste/seminariste.service';
 
 @Injectable()
 export class DortoirsService {
@@ -13,6 +15,7 @@ export class DortoirsService {
 constructor(
   @InjectRepository(dortoirEntity)
 private dortoirRepository:Repository <dortoirEntity>,
+// private seminaristeService:SeminaristeService
 
 
 ){}
@@ -45,6 +48,36 @@ private dortoirRepository:Repository <dortoirEntity>,
     return dortoir
     }
 
+   
+
+    async findDortoirListe(){
+      return this.dortoirRepository.find()
+    }
+
+    async updateDortoirWithSeminariste(dortoirId: string, seminaristeId: string): Promise<dortoirEntity> {
+      const dortoir = await this.dortoirRepository.findOne({
+        where: { idDortoir: dortoirId },
+      });
+    
+      if (!dortoir) {
+        throw new NotFoundException(`Dortoir avec ID ${dortoirId} introuvable`);
+      }
+    
+      // const seminariste = await this.seminaristeService.findOneById(dortoirId);
+    
+      // if (!seminariste) {
+      //   throw new NotFoundException(`Séminariste avec ID ${seminaristeId} introuvable`);
+      // }
+    
+      // dortoir.seminaristes.push(seminariste);
+    
+
+      return this.dortoirRepository.save(dortoir);
+    }
+    
+
+
+
 
     //_____________________STAT_____________________________
     async totalDortoirByType() {
@@ -69,24 +102,33 @@ private dortoirRepository:Repository <dortoirEntity>,
   
       return consolidatedData;
   }
-  
 
 
-  //     const result = await this.dortoirRepository
-  //     .createQueryBuilder('dortoir')
-  //     .select('dortoir.typedortoir', 'typedortoir')
-  //     .addSelect('COUNT(*)', 'total') 
-  //     .groupBy('dortoir.typedortoir') 
-  //     .getRawMany(); 
-  
-  //  const resultat= result.map(row => ({
-  //     [row.typedortoir]: Number(row.total)
-   
-  //   }))
+  async totalDortoirByGenre() {
+    const result = await this.dortoirRepository
+        .createQueryBuilder('dortoir')
+        .select('dortoir.genre', 'genre')
+        .addSelect('COUNT(*)', 'total')
+        .groupBy('dortoir.genre')
+        .getRawMany();
 
-  //   return resultat
+    const consolidatedData: Record<string, number> = {
+        pepiniere:0,
+        frere: 0,
+        soeur: 0,
+        non_defini: 0
+    };
+
+    
+    result.forEach(row => {
+        const genre = row.genre.toLowerCase();
+        consolidatedData[genre] = Number(row.total);
+    });
+
+    return consolidatedData;
+}
+
   
-  //   ;
 
        
 

@@ -6,6 +6,7 @@ import { dortoirEntity } from './entities/dortoir.entity';
 import { MembreCoService } from 'src/membre_co/membre_co.service';
 import { MembreCoModule } from 'src/membre_co/membre_co.module';
 
+
 @Module({
   imports:[TypeOrmModule.forFeature([dortoirEntity]),MembreCoModule],
   controllers: [DortoirsController],

@@ -1,3 +1,4 @@
+import { genreEnum } from "generique/genre.enum";
 import { typeDortoir } from "generique/typedortoir.enum";
 import { MembreCoEntity } from "src/membre_co/entities/membre_co.entity";
 import { SeminaristeEntity } from "src/seminariste/entities/seminariste.entity";
@@ -12,7 +13,11 @@ export class dortoirEntity {
     nomDortoir:string;
     @Column()
     nbPlace :number;
-    @Column()
+    @Column({
+        type:"enum",
+        enum:genreEnum,
+        default:genreEnum.NON_DEFINI
+    })
     genre:string;
 
     @Column(

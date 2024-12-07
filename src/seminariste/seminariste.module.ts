@@ -10,5 +10,6 @@ import { NiveauModule } from 'src/niveau/niveau.module';
   imports:[TypeOrmModule.forFeature([SeminaristeEntity]),DortoirsModule,NiveauModule],
   controllers: [SeminaristeController],
   providers: [SeminaristeService],
+  exports:[SeminaristeService],
 })
 export class SeminaristeModule {}
