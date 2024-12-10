@@ -174,33 +174,33 @@ await  this.seminaristeRepository.save(updateSemi)
   //--------------------Total seminariste par genre-------------------------------//
 
   async SeminaristeByGender(): Promise<Record<string, number>> {
-  const result = await this.seminaristeRepository
-    .createQueryBuilder('seminariste')
-    .select('seminariste.genreSemi', 'genre')
-    .addSelect('COUNT(*)', 'total')
-    .groupBy('seminariste.genreSemi')
-    .getRawMany();
-
-
-  const data: Record<string, number> = { 
-    frere: 0, 
-    soeur: 0, 
-    non_defini: 0, 
-    Total: 0 
-  };
-
-  result.forEach(row => {
-    const genre = row.genre?.toLowerCase() || 'non_defini'; 
-    const total = Number(row.total);
-
-    if (data.hasOwnProperty(genre)) {
-      data[genre] += total;
-    }
-    data.Total += total; 
-  });
-
-  return data;
-}
+    const result = await this.seminaristeRepository
+      .createQueryBuilder('seminariste')
+      .select('seminariste.genreSemi', 'genre')
+      .addSelect('COUNT(*)', 'total')
+      .groupBy('seminariste.genreSemi')
+      .getRawMany();
+  
+  
+    const data: Record<string, number> = { 
+      frere: 0, 
+      soeur: 0, 
+      non_defini: 0, 
+      Total: 0 
+    };
+  
+    result.forEach(row => {
+      const genre = row.genre?.toLowerCase() || 'non_defini'; 
+      const total = Number(row.total);
+  
+      if (data.hasOwnProperty(genre)) {
+        data[genre] += total;
+      }
+      data.Total += total; 
+    });
+  
+    return data;
+  }
 
 
   //par categorie par genre
@@ -234,14 +234,14 @@ await  this.seminaristeRepository.save(updateSemi)
 
 
   //---------------------total seminariste par categorie-------------------------------//
-  async SeminaristeByCateg(): Promise<
-  {
-    categorie: string;
-    totalFrere: number;
-    totalSoeur: number;
-  }[]
+  async SeminaristeByCateg(): Promise<any
+  // {
+  //   categorie: string;
+  //   totalFrere: number;
+  //   totalSoeur: number;
+  // }[]
 > {
-  const categories = ["Pepinieres", "Enfants", "Jeunes et Adultes", "Non_specifie"];
+  const categories = ["Pepinieres", "Enfants", "Jeunes_et_Adultes", "Non_specifie"];
   
   // Exécute la requête groupée par catégorie et genre
   const result = await this.seminaristeRepository
@@ -276,11 +276,20 @@ await  this.seminaristeRepository.save(updateSemi)
   });
 
 
-  return Object.entries(data).map(([categorie, { totalFrere, totalSoeur }]) => ({
+ const dataTab  =  Object.entries(data).map(([categorie, { totalFrere, totalSoeur }]) => ({
     categorie,
     totalFrere,
     totalSoeur,
-  }));
+  }))
+  const transformedData = dataTab.reduce((acc, item) => {
+    acc[item.categorie] = {
+        totalFrere: item.totalFrere,
+        totalSoeur: item.totalSoeur
+    };
+    return acc;
+}, {});
+
+  return transformedData;
 }
 
 

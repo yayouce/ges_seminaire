@@ -3,6 +3,7 @@ import { responsabilite } from "generique/responsabilite.enum";
 import { roleMembre } from "generique/rolemembre.enum";
 import { CommissionEntity } from "src/commission/entities/commission.entity";
 import { dortoirEntity } from "src/dortoirs/entities/dortoir.entity";
+import { Materiel } from "src/materiel/entities/materiel.entity";
 import { Niveau } from "src/niveau/entities/niveau.entity";
 
 import { personne } from "src/personne/entities/personne.entity";
@@ -38,5 +39,8 @@ rapport:Rapport[]
 
 @OneToMany(()=>Niveau,(niveau)=>niveau.membreCo)
 niveau:Niveau[]
+
+@OneToMany(()=>Materiel,(materiel)=>materiel.membreCo)
+materiel:Materiel[]
 
 }

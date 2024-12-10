@@ -8,7 +8,9 @@ export class Niveau {
     @PrimaryGeneratedColumn("uuid")
     idniveau:string;
 
-    @Column()
+    @Column({
+        unique:true
+    })
     nomNiveau:string;
 
 

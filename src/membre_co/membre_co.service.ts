@@ -111,7 +111,7 @@ async deleteMembreCo(idpers:string,user){
   ) {
   
     if (user?.roleMembre !== roleMembre.RESP) {
-      throw new UnauthorizedException('Permission refusée');
+      throw new UnauthorizedException('vous n\'êtes pas responsable');
     }
     const membre = await this.membreRepository.findOne({
       where: { idpers },

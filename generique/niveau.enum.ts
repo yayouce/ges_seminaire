@@ -1,7 +1,6 @@
 export enum NiveauEnum{
-    PEPINIERE="pepiniere",
     NIVEAU1="Niveau 1",
-    NIVEAU2="NIveau 2",
+    NIVEAU2="Niveau 2",
     NIVEAU3="Niveau 3",
     NIVEAU4="Niveau 4",
     NIVEAU6="Niveau 6",
@@ -12,5 +11,6 @@ export enum NiveauEnum{
     NIVEAU11="Niveau 11",
     NIVEAU12="Niveau 12",
     NIVEAU13="Niveau 13",
+    PEPINIERE="pepiniere",
     NON_SPECIFIE="Non_Specifie"
 }
