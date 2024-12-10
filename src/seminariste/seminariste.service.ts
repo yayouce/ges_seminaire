@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateSeminaristeDto } from './dto/create-seminariste.dto';
 import { UpdateSeminaristeDto } from './dto/update-seminariste.dto';
 import { Repository } from 'typeorm';
@@ -16,6 +16,7 @@ constructor(
   @InjectRepository(SeminaristeEntity)
     
   private seminaristeRepository:Repository <SeminaristeEntity>,
+ 
   private dortoirservice : DortoirsService,
   private niveauService:NiveauService
 ){}
@@ -66,7 +67,8 @@ constructor(
         categorie:createSeminaristeDto.categorie,
         nomdortoir:founddortoir.nomDortoir,
         membreCo:user,
-        dortoir:founddortoir
+        dortoir:founddortoir,
+        genreSemi:genreSemi
       })
       await  this.seminaristeRepository.save(newSeminariste)
 
@@ -112,10 +114,11 @@ constructor(
 if(user?.rolePers!==CommissionEnum.ACCUEIL && user?.rolePers!==CommissionEnum.FORMATION ){
   throw new UnauthorizedException()
 }
+
 console.log(updateSemi)
 await  this.seminaristeRepository.save(updateSemi)
 
-  }
+}
 
 
   //suppression

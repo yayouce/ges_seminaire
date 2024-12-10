@@ -87,7 +87,6 @@ return this.membreRepository.save(membreCo)
 
 
 
-
 //suppimer
 async deleteMembreCo(idpers:string,user){
   const membreDelete = await this.membreRepository.findOneBy({idpers})

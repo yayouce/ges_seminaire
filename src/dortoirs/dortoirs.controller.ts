@@ -36,13 +36,7 @@ export class DortoirsController {
 
 
 
-  @Patch(':dortoirId/add-seminariste/:id')
-  async addSeminaristeToDortoir(
-    @Param('dortoirId') dortoirId: string,
-    @Param('id') seminaristeId: string,
-  ): Promise<dortoirEntity> {
-    return this.dortoirsService.updateDortoirWithSeminariste(dortoirId, seminaristeId);
-  }
+
 
 
 

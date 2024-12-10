@@ -1,4 +1,4 @@
-import { HttpCode, HttpException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, HttpCode, HttpException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateDortoirDto } from './dto/create-dortoir.dto';
 import { UpdateDortoirDto } from './dto/update-dortoir.dto';
 import { Repository } from 'typeorm';
@@ -15,7 +15,6 @@ export class DortoirsService {
 constructor(
   @InjectRepository(dortoirEntity)
 private dortoirRepository:Repository <dortoirEntity>,
-// private seminaristeService:SeminaristeService
 
 
 ){}
@@ -54,26 +53,55 @@ private dortoirRepository:Repository <dortoirEntity>,
       return this.dortoirRepository.find()
     }
 
-    async updateDortoirWithSeminariste(dortoirId: string, seminaristeId: string): Promise<dortoirEntity> {
-      const dortoir = await this.dortoirRepository.findOne({
-        where: { idDortoir: dortoirId },
-      });
-    
-      if (!dortoir) {
-        throw new NotFoundException(`Dortoir avec ID ${dortoirId} introuvable`);
-      }
-    
-      // const seminariste = await this.seminaristeService.findOneById(dortoirId);
-    
-      // if (!seminariste) {
-      //   throw new NotFoundException(`Séminariste avec ID ${seminaristeId} introuvable`);
-      // }
-    
-      // dortoir.seminaristes.push(seminariste);
-    
 
-      return this.dortoirRepository.save(dortoir);
-    }
+    // async ajouterSeminariste(dortoirId: string, seminaristeId: string): Promise<dortoirEntity> {
+    //   // Trouver le dortoir
+    //   const dortoir = await this.dortoirRepository.findOne({
+    //     where: { idDortoir: dortoirId },
+    //     relations: ['seminaristes'],
+    //   });
+  
+    //   if (!dortoir) {
+    //     throw new NotFoundException(`Dortoir avec l'id ${dortoirId} non trouvé.`);
+    //   }
+  
+    //   // Trouver le séminariste
+    //   const seminariste = await this.seminaristeRepository.findOne({
+    //     where: { idSemi: seminaristeId },
+    //   });
+  
+    //   if (!seminariste) {
+    //     throw new NotFoundException(`Séminariste avec l'id ${seminaristeId} non trouvé.`);
+    //   }
+  
+    //   // Vérifier s'il reste des places dans le dortoir
+    //   if (dortoir.seminaristes.length >= dortoir.nbPlace) {
+    //     throw new BadRequestException('Le dortoir est plein.');
+    //   }
+  
+    //   // Vérifier la compatibilité du genre
+    //   if (dortoir.genre !== seminariste.genreSemi) {
+    //     throw new BadRequestException(
+    //       `Le genre du séminariste (${seminariste.genreSemi}) ne correspond pas au genre du dortoir (${dortoir.genre}).`,
+    //     );
+    //   }
+  
+    //   // Ajouter le séminariste au dortoir
+    //   seminariste.dortoir = dortoir;
+    //   await this.seminaristeRepository.save(seminariste);
+  
+    //   // Retourner le dortoir mis à jour
+    //   return await this.dortoirRepository.findOne({
+    //     where: { idDortoir: dortoirId },
+    //     relations: ['seminaristes'],
+    //   });
+    // }
+
+
+
+
+
+
     
 
 
