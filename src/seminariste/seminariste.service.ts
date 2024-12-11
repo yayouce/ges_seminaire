@@ -51,7 +51,7 @@ constructor(
         createSeminaristeDto.categorie="Enfants"
       }
       else{
-        createSeminaristeDto.categorie="Jeunes et adultes"
+        createSeminaristeDto.categorie="Jeunes_et_adultes"
       }
 
       if(etatSante!=="Malade" && etatSante!=="Autres"){
