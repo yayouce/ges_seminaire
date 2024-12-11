@@ -93,13 +93,17 @@ export class MaterielService {
         throw new NotFoundException(`Le matériel avec l'ID : ${idMateriel} est introuvable.`);
       }
     
-      if (user?.rolePers !== roleMembre.RESP) {
-        throw new UnauthorizedException("Vous n'avez pas l'autorisation de supprimer ce matériel.");
+      if (user?.roleMembre !== roleMembre.RESP) {
+        throw new UnauthorizedException("seul le responsable peut supprimer");
       }
+
+      if (user?.rolePers !== materielToDelete.membreCo?.rolePers) {
+        throw new UnauthorizedException("Vous n'avez pas l'autorisation de supprimer ce matériel. Car ce n'est pas le votre!");
+      }
+
+
     
       return await this.materielRepo.softDelete(idMateriel);
     }
 
-
-  
 }

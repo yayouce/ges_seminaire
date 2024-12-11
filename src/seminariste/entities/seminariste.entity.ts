@@ -71,6 +71,6 @@ export class SeminaristeEntity extends TimestampEntites{
     problemeSante:string
 
 
-    @ManyToOne(()=>Niveau,(niveau)=>niveau.seminariste)
+    @ManyToOne(()=>Niveau,(niveau)=>niveau.seminariste,{eager:true})
     niveau:dortoirEntity
 }

@@ -24,7 +24,7 @@ export class MaterielController {
 
   @UseGuards(JwtAuthGuard)
   @Patch('update/:id')
-  async updateRapport(
+  async updateMateriel(
     @User() user,
     @Param('id') id:string,
     @Body() materiel:CreateMaterielDto
@@ -33,6 +33,33 @@ export class MaterielController {
     return this.materielService.updateMateriel(id,materiel,user)
   }
 
+
+
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('getAll')
+  async getMateriel(
+    @User() user,
+    @Param('id') id:string,
+
+  ){
+
+    return this.materielService.deleteMateriel(id,user)
+  }
+
+
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('delete/:id')
+  async deleteMateriel(
+    @User() user,
+    @Param('id') id:string,
+
+  ){
+
+    return this.materielService.deleteMateriel(id,user)
+  }
+  
 
 
   
