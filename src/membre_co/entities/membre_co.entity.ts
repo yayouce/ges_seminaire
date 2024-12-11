@@ -40,7 +40,7 @@ rapport:Rapport[]
 @OneToMany(()=>Niveau,(niveau)=>niveau.membreCo)
 niveau:Niveau[]
 
-@OneToMany(()=>Materiel,(materiel)=>materiel.membreCo)
+@OneToMany(()=>Materiel,(materiel)=>materiel.membreCo,{eager:true})
 materiel:Materiel[]
 
 }

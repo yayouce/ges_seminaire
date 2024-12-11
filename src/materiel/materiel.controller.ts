@@ -10,6 +10,21 @@ export class MaterielController {
   constructor(private readonly materielService: MaterielService) {}
 
 
+
+  @UseGuards(JwtAuthGuard)
+  @Get('getTotalByComi')
+  async getTotalMaterielByComi(
+    @User() user,
+
+  ){
+
+    return this.materielService.getStatisticsByCommission(user)
+  }
+
+
+
+
+
   @UseGuards(JwtAuthGuard)
   @Post('add')
   async creationRapport(

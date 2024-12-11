@@ -29,7 +29,7 @@ export class Materiel extends TimestampEntites {
     @Column()
     cout:Number
 
-    @ManyToOne(()=>MembreCoEntity,(membreco)=>membreco.materiel,{eager:true})
+    @ManyToOne(()=>MembreCoEntity,(membreco)=>membreco.materiel)
     membreCo:MembreCoEntity
 
 }

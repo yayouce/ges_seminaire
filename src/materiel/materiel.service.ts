@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateMaterielDto } from './dto/create-materiel.dto';
 import { UpdateMaterielDto } from './dto/update-materiel.dto';
 import { CommissionEnum } from 'generique/commission.enum';
@@ -105,5 +105,53 @@ export class MaterielService {
     
       return await this.materielRepo.softDelete(idMateriel);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //______________________________________STAT___________________________________________
+    async getStatisticsByCommission(user) {
+      try {
+        // if (user?.roleMembre !== roleMembre.RESP) {
+        //   throw new UnauthorizedException("Vous n'êtes pas habilité à accéder à cette ressource.");
+        // }
+    
+        const materiels = await this.materielRepo.find({
+          where: { membreCo: { idpers: user.idComi } },
+        });
+    
+        // Calculer les statistiques
+        const loues = materiels.filter(m => m.statut === "Loue").length;
+        const achetes = materiels.filter(m => m.statut === "achete").length;
+        const totalDepenses = materiels.reduce((sum, m) => sum + Number(m.cout || 0), 0);
+    
+        return {
+          loues,
+          achetes,
+          totalDepenses,
+        };
+      } catch (err) {
+        throw new InternalServerErrorException("Erreur lors de la récupération des statistiques.");
+      }
+    }
+    
 
 }

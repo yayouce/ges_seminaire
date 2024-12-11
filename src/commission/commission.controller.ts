@@ -24,6 +24,9 @@ async findAllComi(){
   return this.commissionService.findAllComi()
 }
 
+
+
+
 @Get("totalByGender")
 async findTotalByGenderComi(){
   return this.commissionService.findTotalByGenderComi()
@@ -33,6 +36,13 @@ async findTotalByGenderComi(){
 @Get("listeparco")
 async listeMembreByCo(){
   return await this.commissionService.listeMembreByCo()
+}
+
+
+
+@Get("statistiquematerielBycomi")
+async getStatisticsByCommission(){
+  return await this.commissionService.mapCommissionWithMaterials()
 }
 
 // @Get('formateurtotalByGender')

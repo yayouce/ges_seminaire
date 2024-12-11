@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateCommissionDto } from './dto/create-commission.dto';
 import { UpdateCommissionDto } from './dto/update-commission.dto';
 import { Repository } from 'typeorm';
@@ -80,6 +80,69 @@ return await this.commissionRepository.findOneBy(libell)
     return tab
 
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  async mapCommissionWithMaterials() {
+    try {
+      // Fetch commissions and their members
+      const commissions = await this.commissionRepository.find({
+        relations: ['membres', 'membres.materiel'], // Ensure nested relations are fetched
+      });
+
+      // Map and calculate statistics
+      const result = commissions.map((commission: any) => {
+        // Flatten and filter materials by their status
+        const rentedMaterials = commission.membres.flatMap((member: any) =>
+          member.materiel.filter((material: any) => material.statut === 'Loue'),
+        );
+        const purchasedMaterials = commission.membres.flatMap((member: any) =>
+          member.materiel.filter((material: any) => material.statut === 'achete'),
+        );
+
+        // Aggregate data
+        const totalRented = rentedMaterials.reduce((sum, material: any) => sum + material.quantite, 0);
+        const totalPurchased = purchasedMaterials.reduce((sum, material: any) => sum + material.quantite, 0);
+        const totalMaterials = totalRented + totalPurchased;
+        const totalSpent = [...rentedMaterials, ...purchasedMaterials].reduce(
+          (sum, material: any) => sum + (material.cout || 0),
+          0,
+        );
+
+        return {
+          commission: commission.libelleComi, // Commission name
+          materiels_loues: totalRented, // Total rented materials
+          materiels_achete: totalPurchased, // Total purchased materials
+          total_materiels: totalMaterials, // Total materials
+          total_depense: totalSpent, // Total cost
+        };
+      });
+
+      return result;
+    } catch (err) {
+      throw new InternalServerErrorException(
+        'Erreur lors de la récupération des données des commissions',
+      );
+    }
+  }
+  
+
+
 
 
   async listeMembreByCo(){
