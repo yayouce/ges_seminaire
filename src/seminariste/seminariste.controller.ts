@@ -67,6 +67,7 @@ async SeminaristeBycateg(){
 
 
 @Get('getone/:id')
+@UseGuards(JwtAuthGuard)
 async findOneById(@Param('id') id:string){
   
 return this.seminaristeService.findOneById(id)
