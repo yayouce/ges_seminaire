@@ -40,37 +40,43 @@ export class MaterielService {
 
 
 
-    async updateMateriel(idMateriel:string,updateMaterielDto: UpdateMaterielDto,user) {
-      const {membreCo,...creation} = updateMaterielDto
+    async updateMateriel(
+      idMateriel: string,
+      updateMaterielDto: UpdateMaterielDto,
+      user: any
+    ) {
+      const { membreCo, ...creation } = updateMaterielDto;
     
-       
+      // Vérification du rôle de l'utilisateur
+      if (user?.roleMembre !== roleMembre.RESP) {
+        throw new UnauthorizedException(
+          "Vous n'avez pas l'autorisation de mettre à jour ce matériel."
+        );
+      }
     
-          if(user?.roleMembre!==roleMembre.RESP){
-            throw new UnauthorizedException()
-          }
-
-         
-          const matl = await this.getOneMateriel(idMateriel)
-          const updateMateriel= await this.materielRepo.preload({
-            idMateriel, 
-            ...creation,
-            // membreCo:
-          }
-          )
-
-          if(!updateMateriel){
-            throw new NotFoundException(`le materiel de Id :${idMateriel} est introuvable`)
-        }
-
-    console.log(user.rolePers)
-        console.log(updateMateriel.membreCo.rolePers)
-
-      //   if (user.rolePers!==updateMateriel.membreCo.rolePers ) {
-      //     throw new UnauthorizedException("ce n'est pas votre materiel!");
-      //  }
-
-        return await  this.materielRepo.save(updateMateriel)
-
+      // Vérifier l'existence du matériel
+      const matl = await this.getOneMateriel(idMateriel);
+      if (!matl) {
+        throw new NotFoundException(`Le matériel avec l'ID : ${idMateriel} est introuvable.`);
+      }
+    
+    
+      // Précharger les données pour la mise à jour
+      const updateMateriel = await this.materielRepo.preload({
+        idMateriel,
+        ...creation,
+      });
+    
+      if (!updateMateriel) {
+        throw new NotFoundException(`Impossible de charger le matériel avec l'ID : ${idMateriel}.`);
+      }
+    
+      if (user.rolePers !== matl.membreCo.rolePers) {
+      
+        throw new UnauthorizedException("Ce matériel ne vous appartient pas!");
+      }
+    
+      return await this.materielRepo.save(updateMateriel);
     }
 
 
@@ -79,5 +85,21 @@ export class MaterielService {
     async getOneMateriel(idMateriel){
       return await this.materielRepo.findOneBy({idMateriel})
     }
+
+    async deleteMateriel(idMateriel: string, user: any) {
+    
+      const materielToDelete = await this.materielRepo.findOneBy({ idMateriel });
+      if (!materielToDelete) {
+        throw new NotFoundException(`Le matériel avec l'ID : ${idMateriel} est introuvable.`);
+      }
+    
+      if (user?.rolePers !== roleMembre.RESP) {
+        throw new UnauthorizedException("Vous n'avez pas l'autorisation de supprimer ce matériel.");
+      }
+    
+      return await this.materielRepo.softDelete(idMateriel);
+    }
+
+
   
 }

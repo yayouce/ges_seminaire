@@ -66,6 +66,12 @@ async SeminaristeBycateg(){
 
 
 
+@Get('getone/:id')
+async findOneById(@Param('id') id:string){
+  
+return this.seminaristeService.findOneById(id)
+}
+
 
   @Delete('delete/:id')
   @UseGuards(JwtAuthGuard)

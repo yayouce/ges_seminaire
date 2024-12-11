@@ -145,6 +145,11 @@ await  this.seminaristeRepository.save(updateSemi)
 
 
 
+    
+
+
+
+
 
 
 
