@@ -17,6 +17,6 @@ export class Niveau {
     @ManyToOne(()=>MembreCoEntity,(membreco)=>membreco.rapport,{eager:true})
     membreCo:MembreCoEntity
 
-    @OneToMany(()=>SeminaristeEntity,(seminariste)=>seminariste.niveau)
+    @OneToMany(()=>SeminaristeEntity,(seminariste)=>seminariste.niveau,{eager:true})
     seminariste:SeminaristeEntity[]
 }

@@ -136,11 +136,16 @@ await  this.seminaristeRepository.save(updateSemi)
 
 
 
-    async findOneById(idParam){
-      return await this.seminaristeRepository.findOne({
-        where: { idSemi: idParam },
-      })
+    async findOneById(idParam: string) {
+      return await this.seminaristeRepository
+        .createQueryBuilder("seminariste")
+        .leftJoinAndSelect("seminariste.niveau", "niveau")
+        .leftJoinAndSelect("seminariste.dortoir", "dortoir")
+        .leftJoinAndSelect("seminariste.membreCo", "membreCo")
+        .where("seminariste.idSemi = :id", { id: idParam })
+        .getOne();
     }
+    
 
 
 
