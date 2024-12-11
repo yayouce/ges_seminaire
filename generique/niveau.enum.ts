@@ -3,6 +3,7 @@ export enum NiveauEnum{
     NIVEAU2="Niveau 2",
     NIVEAU3="Niveau 3",
     NIVEAU4="Niveau 4",
+    Niveau="Niveau 5",
     NIVEAU6="Niveau 6",
     NIVEAU7="Niveau 7",
     NIVEAU8="Niveau 8",
