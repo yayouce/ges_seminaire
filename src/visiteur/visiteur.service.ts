@@ -78,6 +78,12 @@ async updateVisiteur(idVisiteur: string, updateVisiteurDto: UpdateVisiteurDto, u
 
 
 
+async findOneById(idVisiteur){
+  return await this.visiteurRepository.findOneBy({idVisiteur})
+}
+
+
+
 ////////////////////////Statistique///////////////////////////////////
 //NombreTotal de visite par jour : 
 async VisiteTotalParJour(): Promise<{ date: string; totalVisites: number; softDeletedVisites: number }[]> {
@@ -195,8 +201,8 @@ async VisiteTotalParJour(): Promise<{ date: string; totalVisites: number; softDe
 
 
 
-  //suppression d'un visiteur : il n'est plus présent
-  async deleteVisiteur(idVisiteur:string,user){
+  //softdelete d'un visiteur : il n'est plus présent
+  async softdeleteVisiteur(idVisiteur:string,user){
     const visiteurtodelete = await this.visiteurRepository.findOneBy({idVisiteur})
     if(user?.rolePers!==CommissionEnum.ACCUEIL){
       throw new UnauthorizedException()
@@ -204,6 +210,19 @@ async VisiteTotalParJour(): Promise<{ date: string; totalVisites: number; softDe
         return await this.visiteurRepository.softDelete(idVisiteur)
 
     }
+
+
+
+
+    //suppression de visiteur ajouté par erreur
+    async deleteVisiteur(idVisiteur:string,user){
+      const visiteurtodelete = await this.visiteurRepository.findOneBy({idVisiteur})
+      if(user?.rolePers!==CommissionEnum.ACCUEIL){
+        throw new UnauthorizedException()
+      }
+          return await this.visiteurRepository.delete(idVisiteur)
+  
+      }
 
     
 

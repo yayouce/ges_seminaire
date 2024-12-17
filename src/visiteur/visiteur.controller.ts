@@ -64,17 +64,35 @@ async getVisiteTotalParGenre(): Promise<{
 
 
   
+@Get('getone/:id')
+@UseGuards(JwtAuthGuard)
+async findOneById(@Param('id') id:string){
+  
+return this.visiteurService.findOneById(id)
+}
 
-
-  @Delete(':id')
+  @Delete('softdelete/:id')
   @UseGuards(JwtAuthGuard)
    async deleteCv(
       @User() user,
       @Param('id') id:string
   )
   {
+  return await this.visiteurService.softdeleteVisiteur(id,user);
+  }
+
+
+
+  @Delete('delete/:id')
+  @UseGuards(JwtAuthGuard)
+   async deletevisiteur(
+      @User() user,
+      @Param('id') id:string
+  )
+  {
   return await this.visiteurService.deleteVisiteur(id,user);
   }
+
 
    @Patch("update/:id")
     @UseGuards(JwtAuthGuard)
