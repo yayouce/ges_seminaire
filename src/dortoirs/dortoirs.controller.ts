@@ -69,18 +69,5 @@ async findDortoirListe(){
 
 
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.dortoirsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDortoirDto: UpdateDortoirDto) {
-    return this.dortoirsService.update(+id, updateDortoirDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.dortoirsService.remove(+id);
-  }
+  
 }

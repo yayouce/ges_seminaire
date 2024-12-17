@@ -1,1 +1,3 @@
-export class CreateCaisseDto {}
+export class CreateCaisseDto {
+    
+}
