@@ -75,4 +75,16 @@ async getVisiteTotalParGenre(): Promise<{
   {
   return await this.visiteurService.deleteVisiteur(id,user);
   }
+
+   @Patch("update/:id")
+    @UseGuards(JwtAuthGuard)
+    async updateVisiteur(
+      @User() user,
+      @Param("id") id:string,
+      @Body() updateSemi :UpdateVisiteurDto
+    ){
+  
+      return await this.visiteurService.updateVisiteur(id,updateSemi,user)
+    }
+  
 }

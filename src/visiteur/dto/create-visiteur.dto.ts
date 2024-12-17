@@ -13,7 +13,7 @@ export class CreateVisiteurDto {
     genreVisiteur:string
     @IsString()
     phoneVisiteur:string;
- 
+    @IsString()
     roleVisiteur:string // role dans son sous-comité
     @IsString()
     sousComite:string

@@ -11,6 +11,21 @@ export class Rapport extends TimestampEntites {
     @Column()
     libelleRapport:string
 
+    @Column()
+    tacheRealisees:string
+    @Column()
+    commentaires:string
+    @Column()
+    tachesNonRealisees:string
+    @Column()
+    causes:string
+    @Column()
+    difficultes:string
+    @Column()
+    suggestions:string
+    @Column()
+    infoSuplementaire:string
+
     @ManyToOne(()=>MembreCoEntity,(membreco)=>membreco.rapport,{eager:true})
     membreCo:MembreCoEntity
 

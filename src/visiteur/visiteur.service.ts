@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateVisiteurDto } from './dto/create-visiteur.dto';
 import { UpdateVisiteurDto } from './dto/update-visiteur.dto';
 import { Repository } from 'typeorm';
@@ -48,6 +48,32 @@ export class VisiteurService {
     .getMany();
 
   return softDeletedVisiteurs;
+}
+
+
+async updateVisiteur(idVisiteur: string, updateVisiteurDto: UpdateVisiteurDto, user) {
+  const { membreCo, ...visiteurData } = updateVisiteurDto;
+
+  // Vérifier le rôle de l'utilisateur
+  if (user?.rolePers !== CommissionEnum.ACCUEIL) {
+    throw new UnauthorizedException();
+  }
+
+ 
+
+  // Préparer l'objet à mettre à jour
+  const updateVisiteur = await this.visiteurRepository.preload({
+    idVisiteur,
+    ...visiteurData
+  });
+
+  if (!updateVisiteur) {
+    throw new NotFoundException(`Le visiteur avec l'ID ${idVisiteur} est introuvable`);
+  }
+
+  await this.visiteurRepository.save(updateVisiteur);
+
+  return updateVisiteur;
 }
 
 
