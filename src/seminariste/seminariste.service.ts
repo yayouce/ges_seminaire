@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, NotFoundException, UnauthorizedException, HttpException } from '@nestjs/common';
 import { CreateSeminaristeDto } from './dto/create-seminariste.dto';
 import { UpdateSeminaristeDto } from './dto/update-seminariste.dto';
 import { Repository } from 'typeorm';
@@ -14,306 +14,231 @@ import { NiveauService } from 'src/niveau/niveau.service';
 export class SeminaristeService {
 constructor(
   @InjectRepository(SeminaristeEntity)
-    
-  private seminaristeRepository:Repository <SeminaristeEntity>,
- 
-  private dortoirservice : DortoirsService,
-  private niveauService:NiveauService
-){}
+  private seminaristeRepository: Repository<SeminaristeEntity>,
+  private dortoirservice: DortoirsService,
+  private niveauService: NiveauService
+) {}
 
-//creation
-  async createNewSemi(createSeminaristeDto: CreateSeminaristeDto,user) {
-    const {dortoir,genreSemi,membreCo,age,etatSante,niveau,...seminaristedata}=createSeminaristeDto
-    try{
-      if(user?.rolePers!==CommissionEnum.ACCUEIL){
-        throw new UnauthorizedException()
-      }
-      
-      const founddortoir =await this.dortoirservice.findOneDortoir(dortoir)
- 
-      if(!founddortoir){
-        throw new NotFoundException('dortoir non trouvé!!!')
-      }
-      // const foundniveau =await this.niveauService.findOneNiveau(niveau)
- 
-      // if(!foundniveau){
-      //   throw new NotFoundException('niveau non trouvé!!!')
-      // }
-      if(genreSemi!==founddortoir.genre){
-        throw new NotFoundException("le genre du seminariste n\'est pas fait pour ce dortoir")
-      }
-
-      if(age<=6){
-        createSeminaristeDto.categorie="Pepinieres"
-       
-      }
-      else if(age>6 && age<=10){
-        createSeminaristeDto.categorie="Enfants"
-      }
-      else{
-        createSeminaristeDto.categorie="Jeunes_et_adultes"
-      }
-
-      if(etatSante!=="Malade" && etatSante!=="Autres"){
-        createSeminaristeDto.problemeSante="Ras"
-      }
-
-      const newSeminariste = await this.seminaristeRepository.create({
-        ...seminaristedata,
-        // niveau:foundniveau,
-        age:createSeminaristeDto.age,
-        etatSante:createSeminaristeDto.etatSante,
-        problemeSante:createSeminaristeDto.problemeSante,
-        categorie:createSeminaristeDto.categorie,
-        nomdortoir:founddortoir.nomDortoir,
-        membreCo:user,
-        dortoir:founddortoir,
-        genreSemi:genreSemi
-      })
-      await  this.seminaristeRepository.save(newSeminariste)
-
+// Creation
+async createNewSemi(createSeminaristeDto: CreateSeminaristeDto, user) {
+  try {
+    const { dortoir, genreSemi, membreCo, age, etatSante, niveau, ...seminaristedata } = createSeminaristeDto;
+    if (user?.rolePers !== CommissionEnum.ACCUEIL) {
+      throw new HttpException('Access denied: Insufficient permissions', 701);
     }
-    catch(err){
-      throw new UnauthorizedException(err)
+
+    const founddortoir = await this.dortoirservice.findOneDortoir(dortoir);
+    if (!founddortoir) {
+      throw new HttpException('Dormitory not found', 702);
     }
+
+    if (genreSemi !== founddortoir.genre) {
+      throw new HttpException("The seminarist's gender does not match the dormitory", 703);
+    }
+
+    if (age <= 6) {
+      createSeminaristeDto.categorie = 'Pepinieres';
+    } else if (age > 6 && age <= 10) {
+      createSeminaristeDto.categorie = 'Enfants';
+    } else {
+      createSeminaristeDto.categorie = 'Jeunes_et_adultes';
+    }
+
+    if (etatSante !== 'Malade' && etatSante !== 'Autres') {
+      createSeminaristeDto.problemeSante = 'Ras';
+    }
+
+    const newSeminariste = await this.seminaristeRepository.create({
+      ...seminaristedata,
+      age: createSeminaristeDto.age,
+      etatSante: createSeminaristeDto.etatSante,
+      problemeSante: createSeminaristeDto.problemeSante,
+      categorie: createSeminaristeDto.categorie,
+      nomdortoir: founddortoir.nomDortoir,
+      membreCo: user,
+      dortoir: founddortoir,
+      genreSemi,
+    });
+    await this.seminaristeRepository.save(newSeminariste);
+    return newSeminariste;
+  } catch (err) {
+    throw new HttpException(`Error creating seminarist: ${err.message}`, 704);
   }
-
-
-  //mise à jour
-  async updatesemi(idSemi:string,updateseminaristeDto:UpdateSeminaristeDto,user){
-    const {dortoir,membreCo,niveau,...semi}=updateseminaristeDto
-
-    const founddortoir =await this.dortoirservice.findOneDortoir(dortoir)
- 
-      if(!founddortoir){
-        throw new NotFoundException('dortoir non trouvé!!!')
-      }
-
-
-      const foundniveau =await this.niveauService.findOneNiveau(niveau)
-
-
- 
-      if(!foundniveau){
-        throw new NotFoundException('dortoir non trouvé!!!')
-      }
-    const updateSemi= await this.seminaristeRepository.preload(
-      {
-          idSemi,
-          niveau:foundniveau,
-          dortoir:founddortoir,
-          nomdortoir:founddortoir.nomDortoir,
-          membreCo:user,
-          ...semi
-      }
-  );
-
-  if(!updateSemi){
-    throw new NotFoundException(`le seminariste de Id :${idSemi} est introuvable`)
-}
-if(user?.rolePers!==CommissionEnum.ACCUEIL && user?.rolePers!==CommissionEnum.FORMATION ){
-  throw new UnauthorizedException()
 }
 
-console.log(updateSemi)
-await  this.seminaristeRepository.save(updateSemi)
+// Update
+async updatesemi(idSemi: string, updateseminaristeDto: UpdateSeminaristeDto, user) {
+  try {
+    const { dortoir, membreCo, niveau, ...semi } = updateseminaristeDto;
+    const founddortoir = await this.dortoirservice.findOneDortoir(dortoir);
+    if (!founddortoir) {
+      throw new HttpException('Dormitory not found', 702);
+    }
 
+    const foundniveau = await this.niveauService.findOneNiveau(niveau);
+    if (!foundniveau) {
+      throw new HttpException('Level not found', 705);
+    }
+
+    const updateSemi = await this.seminaristeRepository.preload({
+      idSemi,
+      niveau: foundniveau,
+      dortoir: founddortoir,
+      nomdortoir: founddortoir.nomDortoir,
+      membreCo: user,
+      ...semi,
+    });
+
+    if (!updateSemi) {
+      throw new HttpException(`Seminarist with ID ${idSemi} not found`, 706);
+    }
+    if (user?.rolePers !== CommissionEnum.ACCUEIL && user?.rolePers !== CommissionEnum.FORMATION) {
+      throw new HttpException('Access denied: Insufficient permissions', 701);
+    }
+
+    await this.seminaristeRepository.save(updateSemi);
+    return updateSemi;
+  } catch (err) {
+    throw new HttpException(`Error updating seminarist: ${err.message}`, 707);
+  }
 }
 
-
-  //suppression
-  async deleteSeminariste(idSemi:string,user){
-    const seminaristeDelete = await this.seminaristeRepository.findOneBy({idSemi})
-    if(!seminaristeDelete){
-      throw new NotFoundException("seminariste non trouvé")
+// Delete
+async deleteSeminariste(idSemi: string, user) {
+  try {
+    const seminaristeDelete = await this.seminaristeRepository.findOneBy({ idSemi });
+    if (!seminaristeDelete) {
+      throw new HttpException('Seminarist not found', 706);
     }
-    if(user?.rolePers!==CommissionEnum.ACCUEIL){
-      throw new UnauthorizedException()
+    if (user?.rolePers !== CommissionEnum.ACCUEIL) {
+      throw new HttpException('Access denied: Insufficient permissions', 701);
     }
-        return await this.seminaristeRepository.softDelete(idSemi)
-  
+    await this.seminaristeRepository.softDelete(idSemi);
+    return { message: 'Seminarist soft deleted successfully' };
+  } catch (err) {
+    throw new HttpException(`Error deleting seminarist: ${err.message}`, 708);
+  }
+}
+
+async findOneById(idParam: string) {
+  try {
+    const seminariste = await this.seminaristeRepository
+      .createQueryBuilder('seminariste')
+      .leftJoinAndSelect('seminariste.niveau', 'niveau')
+      .leftJoinAndSelect('seminariste.dortoir', 'dortoir')
+      .leftJoinAndSelect('seminariste.membreCo', 'membreCo')
+      .where('seminariste.idSemi = :id', { id: idParam })
+      .getOne();
+    if (!seminariste) {
+      throw new HttpException(`Seminarist with ID ${idParam} not found`, 706);
     }
+    return seminariste;
+  } catch (err) {
+    throw new HttpException(`Error fetching seminarist: ${err.message}`, 709);
+  }
+}
 
-
-
-    async findOneById(idParam: string) {
-      return await this.seminaristeRepository
-        .createQueryBuilder("seminariste")
-        .leftJoinAndSelect("seminariste.niveau", "niveau")
-        .leftJoinAndSelect("seminariste.dortoir", "dortoir")
-        .leftJoinAndSelect("seminariste.membreCo", "membreCo")
-        .where("seminariste.idSemi = :id", { id: idParam })
-        .getOne();
-    }
-    
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  /////////////////////////STAT////////////////////////////////
-  
-  async findAll() {
+// Find All
+async findAll() {
+  try {
     return await this.seminaristeRepository.find();
+  } catch (err) {
+    throw new HttpException('Error fetching seminarists', 710);
   }
+}
 
-
-  //--------------------Total seminariste par genre-------------------------------//
-
-  async SeminaristeByGender(): Promise<Record<string, number>> {
+// Seminarists by Gender
+async SeminaristeByGender(): Promise<Record<string, number>> {
+  try {
     const result = await this.seminaristeRepository
       .createQueryBuilder('seminariste')
       .select('seminariste.genreSemi', 'genre')
       .addSelect('COUNT(*)', 'total')
       .groupBy('seminariste.genreSemi')
       .getRawMany();
-  
-  
-    const data: Record<string, number> = { 
-      frere: 0, 
-      soeur: 0, 
-      non_defini: 0, 
-      Total: 0 
-    };
-  
-    result.forEach(row => {
-      const genre = row.genre?.toLowerCase() || 'non_defini'; 
+
+    const data: Record<string, number> = { frere: 0, soeur: 0, non_defini: 0, Total: 0 };
+
+    result.forEach((row) => {
+      const genre = row.genre?.toLowerCase() || 'non_defini';
       const total = Number(row.total);
-  
       if (data.hasOwnProperty(genre)) {
         data[genre] += total;
       }
-      data.Total += total; 
+      data.Total += total;
     });
-  
+
     return data;
+  } catch (err) {
+    throw new HttpException('Error fetching seminarists by gender', 711);
   }
+}
 
-
-  //par categorie par genre
-  async SeminaristeCategByGender(): Promise<Record<string, number>> {
+// Seminarists by Category and Gender
+async SeminaristeCategByGender(): Promise<Record<string, number>> {
+  try {
     const result = await this.seminaristeRepository
       .createQueryBuilder('seminariste')
       .select('seminariste.genreSemi', 'genre')
-      .addSelect('seminariste.categorie','categorie')
-      .addSelect('COUNT(*)', 'total') 
-      
-      .groupBy('seminariste.genreSemi') 
-      .getRawMany(); 
-  
+      .addSelect('seminariste.categorie', 'categorie')
+      .addSelect('COUNT(*)', 'total')
+      .groupBy('seminariste.genreSemi')
+      .getRawMany();
 
     const data: Record<string, number> = { frere: 0, soeur: 0, Total: 0 };
-  
-
-    result.forEach(row => {
-      const genre = row.genre.toLowerCase();
+    result.forEach((row) => {
+      const genre = row.genre?.toLowerCase() || 'non_defini';
       const total = Number(row.total);
-  
-      data[genre] += total;
+      if (data.hasOwnProperty(genre)) {
+        data[genre] += total;
+      }
       data.Total += total;
     });
-  
+
     return data;
+  } catch (err) {
+    throw new HttpException('Error fetching seminarists by category and gender', 712);
   }
-  
-  
-
-
-
-  //---------------------total seminariste par categorie-------------------------------//
-  async SeminaristeByCateg(): Promise<any
-  // {
-  //   categorie: string;
-  //   totalFrere: number;
-  //   totalSoeur: number;
-  // }[]
-> {
-  const categories = ["Pepinieres", "Enfants", "Jeunes_et_Adultes", "Non_specifie"];
-  
-  // Exécute la requête groupée par catégorie et genre
-  const result = await this.seminaristeRepository
-    .createQueryBuilder('seminariste')
-    .select('seminariste.categorie', 'categorie')
-    .addSelect('seminariste.genreSemi', 'genre')
-    .addSelect('COUNT(*)', 'total')
-    .groupBy('seminariste.categorie')
-    .addGroupBy('seminariste.genreSemi')
-    .getRawMany();
-
-
-  const data: Record<string, { totalFrere: number; totalSoeur: number }> = {};
-  
-  categories.forEach(category => {
-    data[category] = { totalFrere: 0, totalSoeur: 0 };
-  });
-
-
-  result.forEach(row => {
-    const categorie = row.categorie;
-    const genre = row.genre.toLowerCase();
-    const total = Number(row.total);
-
-    if (data[categorie]) {
-      if (genre === 'frere') {
-        data[categorie].totalFrere += total;
-      } else if (genre === 'soeur') {
-        data[categorie].totalSoeur += total;
-      }
-    }
-  });
-
-
- const dataTab  =  Object.entries(data).map(([categorie, { totalFrere, totalSoeur }]) => ({
-    categorie,
-    totalFrere,
-    totalSoeur,
-  }))
-  const transformedData = dataTab.reduce((acc, item) => {
-    acc[item.categorie] = {
-        totalFrere: item.totalFrere,
-        totalSoeur: item.totalSoeur
-    };
-    return acc;
-}, {});
-
-  return transformedData;
 }
 
+// Seminarists by Category
+async SeminaristeByCateg(): Promise<any> {
+  try {
+    const categories = ['Pepinieres', 'Enfants', 'Jeunes_et_Adultes', 'Non_specifie'];
 
+    const result = await this.seminaristeRepository
+      .createQueryBuilder('seminariste')
+      .select('seminariste.categorie', 'categorie')
+      .addSelect('seminariste.genreSemi', 'genre')
+      .addSelect('COUNT(*)', 'total')
+      .groupBy('seminariste.categorie')
+      .addGroupBy('seminariste.genreSemi')
+      .getRawMany();
 
+    const data: Record<string, { totalFrere: number; totalSoeur: number }> = {};
+    categories.forEach((category) => {
+      data[category] = { totalFrere: 0, totalSoeur: 0 };
+    });
 
+    result.forEach((row) => {
+      const categorie = row.categorie;
+      const genre = row.genre?.toLowerCase();
+      const total = Number(row.total);
+      if (data[categorie]) {
+        if (genre === 'frere') {
+          data[categorie].totalFrere += total;
+        } else if (genre === 'soeur') {
+          data[categorie].totalSoeur += total;
+        }
+      }
+    });
 
-
-
-
-  
-  
-
-  
+    return Object.entries(data).reduce((acc, [categorie, { totalFrere, totalSoeur }]) => {
+      acc[categorie] = { totalFrere, totalSoeur };
+      return acc;
+    }, {});
+  } catch (err) {
+    throw new HttpException('Error fetching seminarists by category', 713);
+  }
+}
 }

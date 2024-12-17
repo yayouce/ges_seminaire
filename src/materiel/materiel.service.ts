@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { HttpException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateMaterielDto } from './dto/create-materiel.dto';
 import { UpdateMaterielDto } from './dto/update-materiel.dto';
 import { CommissionEnum } from 'generique/commission.enum';
@@ -9,149 +9,102 @@ import { roleMembre } from 'generique/rolemembre.enum';
 
 @Injectable()
 export class MaterielService {
-
-
   constructor(
     @InjectRepository(Materiel)
-    private materielRepo : Repository<Materiel>
-   ){}
- 
-  async createMateriel(CreateMaterielDto: CreateMaterielDto,user) {
-    const {membreCo,...creation} = CreateMaterielDto
-  
-      try{
-  
-        if(user?.roleMembre!==roleMembre.RESP){
-          throw new UnauthorizedException()
-        }
-       
-        const newMateriel= this.materielRepo.create({
-  
-          ...creation,
-          membreCo : user
-        }
-        )
-       this.materielRepo.save(newMateriel)
+    private materielRepo: Repository<Materiel>,
+  ) {}
+
+  async createMateriel(createMaterielDto: CreateMaterielDto, user) {
+    const { membreCo, ...creation } = createMaterielDto;
+    try {
+      if (user?.roleMembre !== roleMembre.RESP) {
+        throw new UnauthorizedException("You are not authorized to create material.");
       }
-      catch(err){
-        throw new UnauthorizedException(`vous n'êtes pas habilité à le faire!!`)
-      }
+      const newMateriel = this.materielRepo.create({
+        ...creation,
+        membreCo: user,
+      });
+      return await this.materielRepo.save(newMateriel);
+    } catch (err) {
+      throw new HttpException(`Error creating material: ${err.message}`, 701);
     }
+  }
 
-
-
-    async updateMateriel(
-      idMateriel: string,
-      updateMaterielDto: UpdateMaterielDto,
-      user: any
-    ) {
-      const { membreCo, ...creation } = updateMaterielDto;
-    
-      // Vérification du rôle de l'utilisateur
+  async updateMateriel(idMateriel: string, updateMaterielDto: UpdateMaterielDto, user: any) {
+    const { membreCo, ...creation } = updateMaterielDto;
+    try {
       if (user?.roleMembre !== roleMembre.RESP) {
         throw new UnauthorizedException(
-          "Vous n'avez pas l'autorisation de mettre à jour ce matériel."
+          "You are not authorized to update this material."
         );
       }
-    
-      // Vérifier l'existence du matériel
       const matl = await this.getOneMateriel(idMateriel);
       if (!matl) {
-        throw new NotFoundException(`Le matériel avec l'ID : ${idMateriel} est introuvable.`);
+        throw new NotFoundException(`Material with ID ${idMateriel} not found.`);
       }
-    
-    
-      // Précharger les données pour la mise à jour
       const updateMateriel = await this.materielRepo.preload({
         idMateriel,
         ...creation,
       });
-    
       if (!updateMateriel) {
-        throw new NotFoundException(`Impossible de charger le matériel avec l'ID : ${idMateriel}.`);
+        throw new NotFoundException(`Failed to load material with ID ${idMateriel}.`);
       }
-    
       if (user.rolePers !== matl.membreCo.rolePers) {
-      
-        throw new UnauthorizedException("Ce matériel ne vous appartient pas!");
+        throw new UnauthorizedException("You are not the owner of this material.");
       }
-    
       return await this.materielRepo.save(updateMateriel);
+    } catch (err) {
+      throw new HttpException(`Error updating material: ${err.message}`, 702);
     }
+  }
 
-
-
-
-    async getOneMateriel(idMateriel){
-      return await this.materielRepo.findOneBy({idMateriel})
+  async getOneMateriel(idMateriel: string) {
+    try {
+      const materiel = await this.materielRepo.findOneBy({ idMateriel });
+      if (!materiel) {
+        throw new NotFoundException(`Material with ID ${idMateriel} not found.`);
+      }
+      return materiel;
+    } catch (err) {
+      throw new HttpException(`Error fetching material: ${err.message}`, 703);
     }
+  }
 
-    async deleteMateriel(idMateriel: string, user: any) {
-    
+  async deleteMateriel(idMateriel: string, user: any) {
+    try {
       const materielToDelete = await this.materielRepo.findOneBy({ idMateriel });
       if (!materielToDelete) {
-        throw new NotFoundException(`Le matériel avec l'ID : ${idMateriel} est introuvable.`);
+        throw new NotFoundException(`Material with ID ${idMateriel} not found.`);
       }
-    
       if (user?.roleMembre !== roleMembre.RESP) {
-        throw new UnauthorizedException("seul le responsable peut supprimer");
+        throw new UnauthorizedException("Only the responsible person can delete this material.");
       }
-
       if (user?.rolePers !== materielToDelete.membreCo?.rolePers) {
-        throw new UnauthorizedException("Vous n'avez pas l'autorisation de supprimer ce matériel. Car ce n'est pas le votre!");
+        throw new UnauthorizedException(
+          "You are not authorized to delete this material because it is not yours."
+        );
       }
-
-
-    
       return await this.materielRepo.softDelete(idMateriel);
+    } catch (err) {
+      throw new HttpException(`Error deleting material: ${err.message}`, 704);
     }
+  }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    //______________________________________STAT___________________________________________
-    async getStatisticsByCommission(user) {
-      try {
-        // if (user?.roleMembre !== roleMembre.RESP) {
-        //   throw new UnauthorizedException("Vous n'êtes pas habilité à accéder à cette ressource.");
-        // }
-    
-        const materiels = await this.materielRepo.find({
-          where: { membreCo: { idpers: user.idComi } },
-        });
-    
-        // Calculer les statistiques
-        const loues = materiels.filter(m => m.statut === "Loue").length;
-        const achetes = materiels.filter(m => m.statut === "achete").length;
-        const totalDepenses = materiels.reduce((sum, m) => sum + Number(m.cout || 0), 0);
-    
-        return {
-          loues,
-          achetes,
-          totalDepenses,
-        };
-      } catch (err) {
-        throw new InternalServerErrorException("Erreur lors de la récupération des statistiques.");
-      }
+  async getStatisticsByCommission(user) {
+    try {
+      const materiels = await this.materielRepo.find({
+        where: { membreCo: { idpers: user.idComi } },
+      });
+      const loues = materiels.filter((m) => m.statut === 'Loue').length;
+      const achetes = materiels.filter((m) => m.statut === 'achete').length;
+      const totalDepenses = materiels.reduce((sum, m) => sum + Number(m.cout || 0), 0);
+      return {
+        loues,
+        achetes,
+        totalDepenses,
+      };
+    } catch (err) {
+      throw new HttpException(`Error fetching statistics: ${err.message}`, 705);
     }
-    
-
+  }
 }

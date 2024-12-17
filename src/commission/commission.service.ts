@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { ConflictException, HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCommissionDto } from './dto/create-commission.dto';
 import { UpdateCommissionDto } from './dto/update-commission.dto';
 import { Repository } from 'typeorm';
@@ -8,106 +8,73 @@ import { MembreCoEntity } from 'src/membre_co/entities/membre_co.entity';
 
 @Injectable()
 export class CommissionService {
+  constructor(
+    @InjectRepository(CommissionEntity)
+    private commissionRepository: Repository<CommissionEntity>,
+  ) {}
 
-constructor(
-  @InjectRepository(CommissionEntity)
-  private commissionRepository:Repository<CommissionEntity>,
- 
-){}
-
-async findOne(membrecomi){
-
-  const commission = await this.commissionRepository.findOne({
-    where:{libelleComi: membrecomi},
-  });
-
-  return commission
-}
+  async findOne(membrecomi) {
+    try {
+      const commission = await this.commissionRepository.findOne({
+        where: { libelleComi: membrecomi },
+      });
+      return commission;
+    } catch (err) {
+      throw new HttpException(`Error finding commission: ${err.message}`, 701);
+    }
+  }
 
   async createCommision(createCommission: CreateCommissionDto) {
-
-
-   try{
-     return await this.commissionRepository.save(createCommission)
-    
+    try {
+      return await this.commissionRepository.save(createCommission);
+    } catch (err) {
+      throw new HttpException("The commission already exists.", 702);
     }
-   catch(err){
-    throw new ConflictException("la commission existe dejà!")
-   }
-
   }
 
-  //ajout de membre co dans la commission
-  // async AjoutMembreCo(membrecomi){
-  //   const {motPass,...object}=membrecomi
-
-
-  //   const commission = await this.commissionRepository.findOne({
-  //     where:{libelleComi: object},
-  //   });
-
-  //   await commission.membres.push(membrecomi)
-  
-  //   return commission
-  // }
-
-
-  async findByLibelle(libell){
-return await this.commissionRepository.findOneBy(libell)
+  async findByLibelle(libell) {
+    try {
+      return await this.commissionRepository.findOneBy(libell);
+    } catch (err) {
+      throw new HttpException(`Error fetching commission by libelle: ${err.message}`, 703);
+    }
   }
 
-  async findAllComi(){
-    return await this.commissionRepository.find()
+  async findAllComi() {
+    try {
+      return await this.commissionRepository.find();
+    } catch (err) {
+      throw new HttpException(`Error fetching all commissions: ${err.message}`, 704);
+    }
   }
 
+  async findTotalByGenderComi() {
+    try {
+      const commission = await this.commissionRepository.find();
 
-
-
-  //_________________________STAT_________________________________
-  async findTotalByGenderComi(){
-    const commission = await this.commissionRepository.find()
-    
-    const tab = commission.map((dt:any)=>{
-      const nbFrere = dt.membres.filter((m:any)=>m.genrePers === 'frere').length
-      const nbSoeur = dt.membres.filter((m:any)=>m.genrePers === 'soeur').length
-      return {
-        commission: dt.libelleComi,
-        total_frères: nbFrere,
-        total_soeurs: nbSoeur,
-        total_membres: dt.membres.length,
-      }
-    })
-    return tab
-
+      const tab = commission.map((dt: any) => {
+        const nbFrere = dt.membres.filter((m: any) => m.genrePers === 'frere').length;
+        const nbSoeur = dt.membres.filter((m: any) => m.genrePers === 'soeur').length;
+        return {
+          commission: dt.libelleComi,
+          total_frères: nbFrere,
+          total_soeurs: nbSoeur,
+          total_membres: dt.membres.length,
+        };
+      });
+      return tab;
+    } catch (err) {
+      throw new HttpException(`Error fetching gender statistics: ${err.message}`, 705);
+    }
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   async mapCommissionWithMaterials() {
     try {
-      // Fetch commissions and their members
       const commissions = await this.commissionRepository.find({
-        relations: ['membres', 'membres.materiel'], // Ensure nested relations are fetched
+        relations: ['membres', 'membres.materiel'],
       });
 
-      // Map and calculate statistics
       const result = commissions.map((commission: any) => {
-        // Flatten and filter materials by their status
         const rentedMaterials = commission.membres.flatMap((member: any) =>
           member.materiel.filter((material: any) => material.statut === 'Loue'),
         );
@@ -115,7 +82,6 @@ return await this.commissionRepository.findOneBy(libell)
           member.materiel.filter((material: any) => material.statut === 'achete'),
         );
 
-        // Aggregate data
         const totalRented = rentedMaterials.reduce((sum, material: any) => sum + material.quantite, 0);
         const totalPurchased = purchasedMaterials.reduce((sum, material: any) => sum + material.quantite, 0);
         const totalMaterials = totalRented + totalPurchased;
@@ -125,38 +91,35 @@ return await this.commissionRepository.findOneBy(libell)
         );
 
         return {
-          commission: commission.libelleComi, // Commission name
-          materiels_loues: totalRented, // Total rented materials
-          materiels_achete: totalPurchased, // Total purchased materials
-          total_materiels: totalMaterials, // Total materials
-          total_depense: totalSpent, // Total cost
+          commission: commission.libelleComi,
+          materiels_loues: totalRented,
+          materiels_achete: totalPurchased,
+          total_materiels: totalMaterials,
+          total_depense: totalSpent,
         };
       });
 
       return result;
     } catch (err) {
-      throw new InternalServerErrorException(
-        'Erreur lors de la récupération des données des commissions',
+      throw new HttpException(
+        `Error fetching commission materials statistics: ${err.message}`,
+        706,
       );
     }
   }
-  
 
-
-
-
-  async listeMembreByCo(){
-    const currentComi=await this.commissionRepository.find()
-    const tab=currentComi.map((dt:any)=>{
-
- return{
-    commission:dt.libelleComi,
-    membres:dt.membres}
-    })
-
-    return tab
+  async listeMembreByCo() {
+    try {
+      const currentComi = await this.commissionRepository.find();
+      const tab = currentComi.map((dt: any) => {
+        return {
+          commission: dt.libelleComi,
+          membres: dt.membres,
+        };
+      });
+      return tab;
+    } catch (err) {
+      throw new HttpException(`Error fetching members by commission: ${err.message}`, 707);
+    }
   }
-
-
-  
 }
