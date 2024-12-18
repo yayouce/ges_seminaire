@@ -2,10 +2,8 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@n
 import { MembreCoService } from './membre_co.service';
 import { CreateMembreCoDto } from './dto/create-membre_co.dto';
 import { UpdateMembreCoDto } from './dto/update-membre_co.dto';
-import { AuthGuard } from '@nestjs/passport';
 import { JwtAuthGuard } from 'src/Auth/jwt-auth.guard';
 
-import { RolesGuard } from 'src/Auth/Guard&decorators/roleGuard';
 import { User } from 'src/decorator/user.decorator';
 
 

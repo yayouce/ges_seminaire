@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { CreateSuperadminDto } from './dto/create-superadmin.dto';
-import { UpdateSuperadminDto } from './dto/update-superadmin.dto';
 import { Repository } from 'typeorm';
 import { Superadmin } from './entities/superadmin.entity';
 import { InjectRepository } from '@nestjs/typeorm';

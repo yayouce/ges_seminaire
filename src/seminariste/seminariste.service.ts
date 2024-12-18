@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable, NotFoundException, UnauthorizedException, HttpException } from '@nestjs/common';
+import {  Injectable, HttpException } from '@nestjs/common';
 import { CreateSeminaristeDto } from './dto/create-seminariste.dto';
 import { UpdateSeminaristeDto } from './dto/update-seminariste.dto';
 import { Repository } from 'typeorm';

@@ -1,6 +1,5 @@
 import { Injectable, HttpException } from '@nestjs/common';
 import { CreateRapportDto } from './dto/create-rapport.dto';
-import { UpdateRapportDto } from './dto/update-rapport.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Rapport } from './entities/rapport.entity';
 import { Repository } from 'typeorm';

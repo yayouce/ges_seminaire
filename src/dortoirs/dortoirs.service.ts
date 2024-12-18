@@ -1,6 +1,5 @@
-import { BadRequestException, HttpException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {  HttpException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateDortoirDto } from './dto/create-dortoir.dto';
-import { UpdateDortoirDto } from './dto/update-dortoir.dto';
 import { Repository } from 'typeorm';
 import { dortoirEntity } from './entities/dortoir.entity';
 import { InjectRepository } from '@nestjs/typeorm';

@@ -3,9 +3,7 @@ import { SeminaristeService } from './seminariste.service';
 import { CreateSeminaristeDto } from './dto/create-seminariste.dto';
 import { UpdateSeminaristeDto } from './dto/update-seminariste.dto';
 import { JwtAuthGuard } from 'src/Auth/jwt-auth.guard';
-import { RolesGuard } from 'src/Auth/Guard&decorators/roleGuard';
 import { User } from 'src/decorator/user.decorator';
-import { UpdateCommissionDto } from 'src/commission/dto/update-commission.dto';
 
 @Controller('seminariste')
 export class SeminaristeController {

@@ -2,7 +2,6 @@
 import { genreEnum } from "generique/genre.enum";
 import { TimestampEntites } from "generique/timestamp";
 import { MembreCoEntity } from "src/membre_co/entities/membre_co.entity";
-import { personne } from "src/personne/entities/personne.entity";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('visiteur')

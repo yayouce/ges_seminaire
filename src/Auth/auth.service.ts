@@ -1,14 +1,11 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { CreatePersonneDto } from 'src/personne/dto/create-personne.dto';
+
 
 import { personSigninDto } from 'src/personne/dto/personSignIn';
-import { personne } from 'src/personne/entities/personne.entity';
 import { PersonneService } from 'src/personne/personne.service';
 import * as bcrypt from "bcrypt"
 import { MembreCoEntity } from 'src/membre_co/entities/membre_co.entity';
-import { roleMembre } from 'generique/rolemembre.enum';
-import { log } from 'console';
 
 
 const saltOrRounds = 10;

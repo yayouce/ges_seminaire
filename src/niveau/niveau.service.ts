@@ -1,6 +1,5 @@
 import { Injectable, HttpException, UnauthorizedException } from '@nestjs/common';
 import { CreateNiveauDto } from './dto/create-niveau.dto';
-import { UpdateNiveauDto } from './dto/update-niveau.dto';
 import { Niveau } from './entities/niveau.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';

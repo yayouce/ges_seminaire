@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { NiveauService } from './niveau.service';
 import { CreateNiveauDto } from './dto/create-niveau.dto';
-import { UpdateNiveauDto } from './dto/update-niveau.dto';
 import { JwtAuthGuard } from 'src/Auth/jwt-auth.guard';
 import { User } from 'src/decorator/user.decorator';
 

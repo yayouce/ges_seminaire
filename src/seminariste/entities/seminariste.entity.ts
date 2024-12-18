@@ -1,14 +1,12 @@
 
 import { categorieSem } from "generique/categorieSeminariste.enum";
 import { genreEnum } from "generique/genre.enum";
-import { NiveauEnum } from "generique/niveau.enum";
 import { etatSanteEnum} from "generique/sante.enum";
 import { situation } from "generique/situation.enum";
 import { TimestampEntites } from "generique/timestamp";
 import { dortoirEntity } from "src/dortoirs/entities/dortoir.entity";
 import { MembreCoEntity } from "src/membre_co/entities/membre_co.entity";
 import { Niveau } from "src/niveau/entities/niveau.entity";
-import { personne } from "src/personne/entities/personne.entity";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity("seminariste")
