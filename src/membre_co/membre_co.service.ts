@@ -55,12 +55,12 @@ export class MembreCoService {
       }
       createmembreco.rolePers = commission.libelleComi;
 
-      // if (
-      //   user.rolePers !== createmembreco.rolePers &&
-      //   user.rolePers !== CommissionEnum.ADMINISTRATION
-      // ) {
-      //   throw new UnauthorizedException("You are not authorized for this commission");
-      // }
+      if (
+        user.rolePers !== createmembreco.rolePers &&
+        user.rolePers !== CommissionEnum.ADMINISTRATION
+      ) {
+        throw new UnauthorizedException("You are not authorized for this commission");
+      }
 
       const hashedpassword = await bcrypt.hash(createmembreco.motPass, saltOrRounds);
       const membreCo = this.membreRepository.create({
@@ -121,14 +121,14 @@ export class MembreCoService {
         updateMembreCoDto.rolePers = commission.libelleComi;
       }
 
-      if (
-        user.rolePers !== CommissionEnum.ADMINISTRATION &&
-        user.rolePers !== CommissionEnum.ACCUEIL
-      ) {
-        throw new UnauthorizedException(
-          "You are not authorized to update this member",
-        );
-      }
+      // if (
+      //   user.rolePers !== CommissionEnum.ADMINISTRATION &&
+      //   user.rolePers !== CommissionEnum.ACCUEIL
+      // ) {
+      //   throw new UnauthorizedException(
+      //     "You are not authorized to update this member",
+      //   );
+      // }
 
       const updatedMembre = await this.membreRepository.preload({
         idpers,
