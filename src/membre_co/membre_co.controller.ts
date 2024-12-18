@@ -46,9 +46,9 @@ async getPco(){
   return await this.membreCoService.getPco()
 }
 
-@Get("getPcobyid")
+@Get("getPcobyid/:id")
 async getPcoById(
-  id:string
+  @Param('id') id:string
 ){
   return await this.membreCoService.getPcobyId(id)
 }
