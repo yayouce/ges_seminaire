@@ -46,6 +46,14 @@ async getPco(){
   return await this.membreCoService.getPco()
 }
 
+@Get("getPcobyid")
+async getPcoById(
+  id:string
+){
+  return await this.membreCoService.getPcobyId(id)
+}
+
+
 
 
 @Get("TotalGender")

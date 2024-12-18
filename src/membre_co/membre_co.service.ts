@@ -164,6 +164,16 @@ export class MembreCoService {
     }
   }
 
+
+
+  async getPcobyId(idpers:string) {
+    try {
+      return await this.membreRepository.findBy({ rolePers: 'Pco',idpers });
+    } catch (err) {
+      throw new HttpException('Error fetching PCO members', 708);
+    }
+  }
+
   // Stats: Members by Commission and Gender
   async membreCoByGender(): Promise<Record<string, Record<string, number>>> {
     try {
