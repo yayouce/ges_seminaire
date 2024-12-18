@@ -121,6 +121,10 @@ export class MembreCoService {
         updateMembreCoDto.rolePers = commission.libelleComi;
       }
 
+      if (updateMembreCoDto.motPass) {
+        updateMembreCoDto.motPass = await bcrypt.hash(updateMembreCoDto.motPass, saltOrRounds);
+      }
+
       // if (
       //   user.rolePers !== CommissionEnum.ADMINISTRATION &&
       //   user.rolePers !== CommissionEnum.ACCUEIL
