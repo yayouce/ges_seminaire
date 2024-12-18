@@ -82,12 +82,12 @@ export class MembreCoService {
       if (!membreDelete) {
         throw new NotFoundException('Member not found');
       }
-      if (
-        user?.rolePers !== CommissionEnum.ACCUEIL &&
-        user?.rolePers !== CommissionEnum.ADMINISTRATION
-      ) {
-        throw new UnauthorizedException();
-      }
+      // if (
+      //   user?.rolePers !== CommissionEnum.ACCUEIL &&
+      //   user?.rolePers !== CommissionEnum.ADMINISTRATION
+      // ) {
+      //   throw new UnauthorizedException();
+      // }
       return await this.membreRepository.softDelete(idpers);
     } catch (err) {
       throw new HttpException(`Error deleting member: ${err.message}`, 705);
