@@ -247,14 +247,18 @@ export class MembreCoService {
         non_defini: 0,
       };
 
+     
       result.forEach((row) => {
         const genre = row.genre || 'non_defini';
         if (consolidatedData.hasOwnProperty(genre)) {
           consolidatedData[genre] = Number(row.total);
         }
       });
-
-      return consolidatedData;
+      const totalGeneral = Object.values(consolidatedData).reduce((sum, value) => sum + value, 0);
+      return {
+        ...consolidatedData,
+        total_general: totalGeneral,
+      };
     } catch (err) {
       throw new HttpException('Error fetching total formateur members by gender', 711);
     }
