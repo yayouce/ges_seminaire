@@ -55,12 +55,12 @@ export class MembreCoService {
       }
       createmembreco.rolePers = commission.libelleComi;
 
-      if (
-        user.rolePers !== createmembreco.rolePers &&
-        user.rolePers !== CommissionEnum.ADMINISTRATION
-      ) {
-        throw new UnauthorizedException("You are not authorized for this commission");
-      }
+      // if (
+      //   user.rolePers !== createmembreco.rolePers &&
+      //   user.rolePers !== CommissionEnum.ADMINISTRATION
+      // ) {
+      //   throw new UnauthorizedException("You are not authorized for this commission");
+      // }
 
       const hashedpassword = await bcrypt.hash(createmembreco.motPass, saltOrRounds);
       const membreCo = this.membreRepository.create({
