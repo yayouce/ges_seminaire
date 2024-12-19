@@ -4,10 +4,8 @@ import { UpdateSeminaristeDto } from './dto/update-seminariste.dto';
 import { Repository } from 'typeorm';
 import { SeminaristeEntity } from './entities/seminariste.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { roleMembre } from 'generique/rolemembre.enum';
 import { CommissionEnum } from 'generique/commission.enum';
 import { DortoirsService } from 'src/dortoirs/dortoirs.service';
-import { UpdateCommissionDto } from 'src/commission/dto/update-commission.dto';
 import { NiveauService } from 'src/niveau/niveau.service';
 
 @Injectable()

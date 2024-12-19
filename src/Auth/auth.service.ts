@@ -51,17 +51,6 @@ export class AuthService {
     
   };
   
-  async signInSup(loginsup){
-
-  }
-
-
-//    async signUp(userCreate:CreatePersonneDto){
-
-
-//     const user = await this.personneService.createPers(userCreate);
-//     return user
-//    }
 
 
 

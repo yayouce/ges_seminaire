@@ -51,11 +51,21 @@ export class NiveauService {
   // Find All Niveaux
   async findAllNiveau() {
     try {
-      return await this.niveauRepo.find();
+      const niveaux = await this.niveauRepo.find();
+  
+      // Trier d'abord par "pepiniere", puis par ordre alphabétique des niveaux restants
+      niveaux.sort((a, b) => {
+        if (a.nomNiveau.toLowerCase() === 'pepiniere') return -1;
+        if (b.nomNiveau.toLowerCase() === 'pepiniere') return 1;
+        return a.nomNiveau.localeCompare(b.nomNiveau, undefined, { numeric: true });
+      });
+  
+      return niveaux;
     } catch (err) {
       throw new HttpException('Error fetching all levels', 705);
     }
   }
+  
 
   // Seminaristes by Niveau
   async SeminaristesByNiveau() {

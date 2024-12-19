@@ -76,18 +76,13 @@ export class MembreCoService {
   }
 
   // Delete Member
-  async deleteMembreCo(idpers: string, user) {
+  async deleteMembreCo(idpers: string) {
     try {
       const membreDelete = await this.membreRepository.findOneBy({ idpers });
       if (!membreDelete) {
         throw new NotFoundException('Member not found');
       }
-      // if (
-      //   user?.rolePers !== CommissionEnum.ACCUEIL &&
-      //   user?.rolePers !== CommissionEnum.ADMINISTRATION
-      // ) {
-      //   throw new UnauthorizedException();
-      // }
+    
       return await this.membreRepository.softDelete(idpers);
     } catch (err) {
       throw new HttpException(`Error deleting member: ${err.message}`, 705);
@@ -125,14 +120,7 @@ export class MembreCoService {
         updateMembreCoDto.motPass = await bcrypt.hash(updateMembreCoDto.motPass, saltOrRounds);
       }
 
-      // if (
-      //   user.rolePers !== CommissionEnum.ADMINISTRATION &&
-      //   user.rolePers !== CommissionEnum.ACCUEIL
-      // ) {
-      //   throw new UnauthorizedException(
-      //     "You are not authorized to update this member",
-      //   );
-      // }
+
 
       const updatedMembre = await this.membreRepository.preload({
         idpers,

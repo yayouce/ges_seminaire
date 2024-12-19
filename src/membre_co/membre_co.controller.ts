@@ -100,7 +100,7 @@ async membreCoTotalByGender(){
     @User() user,
     @Param('id') id:string
   ){
-    return await this.membreCoService.deleteMembreCo(id,user)
+    return await this.membreCoService.deleteMembreCo(id)
   }
 
 }
