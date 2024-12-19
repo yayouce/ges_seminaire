@@ -21,7 +21,7 @@ export class NiveauService {
         user?.rolePers !== CommissionEnum.FORMATION &&
         user?.rolePers !== CommissionEnum.ADMINISTRATION
       ) {
-        throw new HttpException('Access denied: Insufficient permissions', 701);
+        throw new HttpException("vous n'etes pas permis de le faire", 800);
       }
 
       const newNiveau = await this.niveauRepo.create({
@@ -31,7 +31,7 @@ export class NiveauService {
       await this.niveauRepo.save(newNiveau);
       return newNiveau;
     } catch (err) {
-      throw new HttpException(`Error creating level: ${err.message}`, 702);
+      throw new err
     }
   }
 
@@ -40,11 +40,11 @@ export class NiveauService {
     try {
       const niveau = await this.niveauRepo.findOneBy({ nomNiveau });
       if (!niveau) {
-        throw new HttpException(`Level with name ${nomNiveau} not found`, 703);
+        throw new HttpException(`le niveau avec le nom ${nomNiveau} est introuvable`, 801);
       }
       return niveau;
     } catch (err) {
-      throw new HttpException(`Error fetching level: ${err.message}`, 704);
+      throw new err
     }
   }
 
@@ -62,7 +62,7 @@ export class NiveauService {
   
       return niveaux;
     } catch (err) {
-      throw new HttpException('Error fetching all levels', 705);
+      throw new err
     }
   }
   
@@ -77,7 +77,7 @@ export class NiveauService {
       }));
       return tab;
     } catch (err) {
-      throw new HttpException('Error fetching seminarists by level', 706);
+      throw new err
     }
   }
 }
