@@ -19,7 +19,7 @@ export class CommissionService {
       });
       return commission;
     } catch (err) {
-      throw new HttpException(`Error finding commission: ${err.message}`, 701);
+      throw new err
     }
   }
 
@@ -27,7 +27,7 @@ export class CommissionService {
     try {
       return await this.commissionRepository.save(createCommission);
     } catch (err) {
-      throw new HttpException("The commission already exists.", 702);
+      throw new err
     }
   }
 
@@ -35,7 +35,7 @@ export class CommissionService {
     try {
       return await this.commissionRepository.findOneBy(libell);
     } catch (err) {
-      throw new HttpException(`Error fetching commission by libelle: ${err.message}`, 703);
+      throw new err
     }
   }
 
@@ -43,7 +43,7 @@ export class CommissionService {
     try {
       return await this.commissionRepository.find();
     } catch (err) {
-      throw new HttpException(`Error fetching all commissions: ${err.message}`, 704);
+      throw new err
     }
   }
 
@@ -63,7 +63,7 @@ export class CommissionService {
       });
       return tab;
     } catch (err) {
-      throw new HttpException(`Error fetching gender statistics: ${err.message}`, 705);
+      throw new err
     }
   }
 
@@ -100,10 +100,7 @@ export class CommissionService {
 
       return result;
     } catch (err) {
-      throw new HttpException(
-        `Error fetching commission materials statistics: ${err.message}`,
-        706,
-      );
+      throw new err
     }
   }
 
@@ -118,7 +115,7 @@ export class CommissionService {
       });
       return tab;
     } catch (err) {
-      throw new HttpException(`Error fetching members by commission: ${err.message}`, 707);
+      throw new err
     }
   }
 }
