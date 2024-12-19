@@ -169,6 +169,16 @@ export class MembreCoService {
     }
   }
 
+
+  async getCobyId(idpers) {
+    try {
+      return await this.membreRepository.findBy({idpers});
+    } catch (err) {
+      throw err
+    }
+  }
+  
+
   // Stats: Members by Commission and Gender
   async membreCoByGender(): Promise<Record<string, Record<string, number>>> {
     try {

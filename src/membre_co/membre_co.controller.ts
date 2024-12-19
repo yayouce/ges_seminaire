@@ -54,6 +54,13 @@ async getPcoById(
 }
 
 
+@Get("getCobyid/:id")
+async getCoById(
+  @Param('id') id:string
+){
+  return await this.membreCoService.getCobyId(id)
+}
+
 
 
 @Get("TotalGender")
