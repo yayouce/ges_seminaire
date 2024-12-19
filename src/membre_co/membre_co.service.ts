@@ -25,7 +25,7 @@ export class MembreCoService {
         where: { phonePers: phone },
       });
     } catch (err) {
-      throw new HttpException(`Error finding member: ${err.message}`, 701);
+      throw new HttpException(`le membre n'existe pas ${err.message}`, 701);
     }
   }
 
@@ -39,7 +39,7 @@ export class MembreCoService {
         .getRawMany();
       return result;
     } catch (err) {
-      throw new HttpException(`Error fetching members by commission: ${err.message}`, 702);
+      throw new HttpException(`erreur  ${err.message}`, 702);
     }
   }
 
@@ -51,7 +51,7 @@ export class MembreCoService {
       }
       const commission = await this.commissionService.findOne(createmembreco.commission);
       if (!commission) {
-        throw new HttpException('Commission not found', 703);
+        throw new HttpException('Commission non trouvé', 703);
       }
       createmembreco.rolePers = commission.libelleComi;
 
@@ -59,7 +59,7 @@ export class MembreCoService {
         user.rolePers !== createmembreco.rolePers &&
         user.rolePers !== CommissionEnum.ADMINISTRATION
       ) {
-        throw new UnauthorizedException("You are not authorized for this commission");
+        throw  new HttpException('pas autorisé à ajouter ce membre dans votre commission', 704);
       }
 
       const hashedpassword = await bcrypt.hash(createmembreco.motPass, saltOrRounds);
@@ -71,7 +71,8 @@ export class MembreCoService {
       });
       return await this.membreRepository.save(membreCo);
     } catch (err) {
-      throw new HttpException(`Error creating member: ${err.message}`, 704);
+      
+      throw err;
     }
   }
 
@@ -80,12 +81,12 @@ export class MembreCoService {
     try {
       const membreDelete = await this.membreRepository.findOneBy({ idpers });
       if (!membreDelete) {
-        throw new NotFoundException('Member not found');
+        throw new HttpException('Member not found',705);
       }
     
       return await this.membreRepository.softDelete(idpers);
     } catch (err) {
-      throw new HttpException(`Error deleting member: ${err.message}`, 705);
+      throw err
     }
   }
 
@@ -93,24 +94,26 @@ export class MembreCoService {
   async updateMembre(idpers: string, updateMembreCoDto: UpdateMembreCoDto, user) {
     try {
       if (user?.roleMembre !== roleMembre.RESP) {
-        throw new UnauthorizedException("You are not a responsible");
+        throw new HttpException("soyez le responsable de la commission",706);
       }
 
       const membre = await this.membreRepository.findOne({
         where: { idpers },
         relations: ['commission'],
       });
-
+    
       if (!membre) {
-        throw new NotFoundException(`Member with ID ${idpers} not found`);
+
+        throw  new HttpException(`utilisateur non trouvé`, 707);
+       
       }
 
       let commission = membre.commission;
       if (updateMembreCoDto.commission) {
         commission = await this.commissionService.findOne(updateMembreCoDto.commission);
         if (!commission) {
-          throw new NotFoundException(
-            `Commission with ID ${updateMembreCoDto.commission} not found`,
+          throw new HttpException(
+            `commission non trouvé`,708
           );
         }
         updateMembreCoDto.rolePers = commission.libelleComi;
@@ -129,13 +132,13 @@ export class MembreCoService {
       });
 
       if (!updatedMembre) {
-        throw new NotFoundException(
-          `Failed to preload data for member with ID ${idpers}`,
+        throw new HttpException(
+          `Failed to preload data for member with ID ${idpers}`,709
         );
       }
       return await this.membreRepository.save(updatedMembre);
     } catch (err) {
-      throw new HttpException(`Error updating member: ${err.message}`, 706);
+      throw err
     }
   }
 
@@ -144,7 +147,7 @@ export class MembreCoService {
     try {
       return await this.membreRepository.find();
     } catch (err) {
-      throw new HttpException('Error fetching members', 707);
+      throw err
     }
   }
 
@@ -152,7 +155,7 @@ export class MembreCoService {
     try {
       return await this.membreRepository.findBy({ rolePers: 'Pco' });
     } catch (err) {
-      throw new HttpException('Error fetching PCO members', 708);
+      throw err
     }
   }
 
@@ -162,7 +165,7 @@ export class MembreCoService {
     try {
       return await this.membreRepository.findBy({ rolePers: 'Pco',idpers });
     } catch (err) {
-      throw new HttpException('Error fetching PCO members', 708);
+      throw err
     }
   }
 
@@ -191,7 +194,7 @@ export class MembreCoService {
       });
       return groupedData;
     } catch (err) {
-      throw new HttpException('Error fetching members by gender', 709);
+      throw err
     }
   }
 
@@ -219,7 +222,7 @@ export class MembreCoService {
 
       return consolidatedData;
     } catch (err) {
-      throw new HttpException('Error fetching total members by gender', 710);
+      throw err
     }
   }
 
@@ -252,7 +255,7 @@ export class MembreCoService {
         total_general: totalGeneral,
       };
     } catch (err) {
-      throw new HttpException('Error fetching total formateur members by gender', 711);
+      throw err
     }
   }
 }
