@@ -88,7 +88,7 @@ async updatesemi(idSemi: string, updateseminaristeDto: UpdateSeminaristeDto, use
       dortoir: founddortoir,
       nomdortoir: founddortoir.nomDortoir,
       membreCo: user,
-      genreSemi,
+      genreSemi:founddortoir.genre,
       ...semi,
     });
 
