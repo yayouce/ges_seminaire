@@ -31,7 +31,6 @@ export class MaterielController {
     return this.materielService.getAll(user)
   }
 
-
   @UseGuards(JwtAuthGuard)
   @Post('add')
   async creationRapport(
@@ -55,6 +54,15 @@ export class MaterielController {
     return this.materielService.updateMateriel(id,materiel,user)
   }
 
+
+
+  @Get('getone/:id')
+  async getById(
+    @Param('id') id:string
+  ) {
+
+    return await this.getById(id)
+  }
 
 
 
