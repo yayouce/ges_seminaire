@@ -17,7 +17,7 @@ export class MaterielService {
     const { membreCo, ...creation } = createMaterielDto;
     try {
       if (user?.roleMembre !== roleMembre.RESP) {
-        throw new UnauthorizedException("You are not authorized to create material.");
+        throw new HttpException("pas autorisé à ajouter materiel",702);
       }
       const newMateriel = this.materielRepo.create({
         ...creation,
@@ -25,7 +25,7 @@ export class MaterielService {
       });
       return await this.materielRepo.save(newMateriel);
     } catch (err) {
-      throw new HttpException(`Error creating material: ${err.message}`, 701);
+      throw err
     }
   }
 
@@ -33,27 +33,27 @@ export class MaterielService {
     const { membreCo, ...creation } = updateMaterielDto;
     try {
       if (user?.roleMembre !== roleMembre.RESP) {
-        throw new UnauthorizedException(
-          "You are not authorized to update this material."
+        throw new HttpException(
+          "You are not authorized to update this material.",703
         );
       }
       const matl = await this.getOneMateriel(idMateriel);
       if (!matl) {
-        throw new NotFoundException(`Material with ID ${idMateriel} not found.`);
+        throw new HttpException(`Material with ID ${idMateriel} not found.`,704);
       }
       const updateMateriel = await this.materielRepo.preload({
         idMateriel,
         ...creation,
       });
       if (!updateMateriel) {
-        throw new NotFoundException(`Failed to load material with ID ${idMateriel}.`);
+        throw new HttpException(`Failed to load material with ID ${idMateriel}.`,705);
       }
       if (user.rolePers !== matl.membreCo.rolePers) {
-        throw new UnauthorizedException("You are not the owner of this material.");
+        throw new HttpException("n'est pas votre material.",800);
       }
       return await this.materielRepo.save(updateMateriel);
     } catch (err) {
-      throw new HttpException(`Error updating material: ${err.message}`, 702);
+      throw err
     }
   }
 
@@ -61,11 +61,11 @@ export class MaterielService {
     try {
       const materiel = await this.materielRepo.findOneBy({ idMateriel });
       if (!materiel) {
-        throw new NotFoundException(`Material with ID ${idMateriel} not found.`);
+        throw new HttpException(`Material with ID ${idMateriel} not found.`,801);
       }
       return materiel;
     } catch (err) {
-      throw new HttpException(`Error fetching material: ${err.message}`, 703);
+      throw err
     }
   }
 
@@ -73,19 +73,19 @@ export class MaterielService {
     try {
       const materielToDelete = await this.materielRepo.findOneBy({ idMateriel });
       if (!materielToDelete) {
-        throw new NotFoundException(`Material with ID ${idMateriel} not found.`);
+        throw new  HttpException(`Material with ID ${idMateriel} not found.`,801);
       }
       if (user?.roleMembre !== roleMembre.RESP) {
-        throw new UnauthorizedException("Only the responsible person can delete this material.");
+        throw new HttpException("Only the responsible person can delete this material.",702);
       }
       if (user?.rolePers !== materielToDelete.membreCo?.rolePers) {
-        throw new UnauthorizedException(
-          "You are not authorized to delete this material because it is not yours."
+        throw new HttpException(
+          "You are not authorized to delete this material because it is not yours.",803
         );
       }
       return await this.materielRepo.softDelete(idMateriel);
     } catch (err) {
-      throw new HttpException(`Error deleting material: ${err.message}`, 704);
+      throw err
     }
   }
 
@@ -103,7 +103,7 @@ export class MaterielService {
         totalDepenses,
       };
     } catch (err) {
-      throw new HttpException(`Error fetching statistics: ${err.message}`, 705);
+      throw err
     }
   }
 }
