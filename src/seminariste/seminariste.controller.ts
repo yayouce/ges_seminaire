@@ -18,11 +18,15 @@ export class SeminaristeController {
     return this.seminaristeService.createNewSemi(createSeminaristeDto,user);
   }
 
-  @Get()
+  @Get("listeSeminariste")
   async findAll() {
     return await this.seminaristeService.findAll();
   }
 
+
+
+
+  
 //--------------------------------stat
 
 @Get("totalByGender")

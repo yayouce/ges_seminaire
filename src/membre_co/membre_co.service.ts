@@ -208,7 +208,7 @@ export class MembreCoService {
     }
   }
 
-  async membreCoTotalByGender() {
+  async   membreCoTotalByGender() {
     try {
       const result = await this.membreRepository
         .createQueryBuilder('membreco')

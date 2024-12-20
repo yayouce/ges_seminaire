@@ -1,15 +1,23 @@
-import { Injectable, HttpException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, HttpException, UnauthorizedException, Inject, forwardRef } from '@nestjs/common';
 import { CreateNiveauDto } from './dto/create-niveau.dto';
 import { Niveau } from './entities/niveau.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CommissionEnum } from 'generique/commission.enum';
+import { SeminaristeEntity } from 'src/seminariste/entities/seminariste.entity';
+
+
 
 @Injectable()
 export class NiveauService {
   constructor(
     @InjectRepository(Niveau)
     private niveauRepo: Repository<Niveau>,
+
+     @InjectRepository(SeminaristeEntity)
+      private seminaristeRepository: Repository<SeminaristeEntity>,
+
+    
   ) {}
 
   // Create Niveau
@@ -51,15 +59,23 @@ export class NiveauService {
   // Find All Niveaux
   async findAllNiveau() {
     try {
-      const niveaux = await this.niveauRepo.find();
+      const seminaristes = await this.seminaristeRepository.find()
+      const niveaux:any = await this.niveauRepo.find();
+      console.log(seminaristes)
   
       // Trier d'abord par "pepiniere", puis par ordre alphabétique des niveaux restants
       niveaux.sort((a, b) => {
         if (a.nomNiveau.toLowerCase() === 'pepiniere') return -1;
         if (b.nomNiveau.toLowerCase() === 'pepiniere') return 1;
         return a.nomNiveau.localeCompare(b.nomNiveau, undefined, { numeric: true });
-      });
-  
+      }).push({
+        idniveau:"rfgh",
+        nomNiveau:"generale",
+        seminariste:[...seminaristes]
+      })
+
+
+      
       return niveaux;
     } catch (err) {
       throw new err
@@ -69,13 +85,15 @@ export class NiveauService {
 
   // Seminaristes by Niveau
   async SeminaristesByNiveau() {
+
+
     try {
       const currentNiveau = await this.niveauRepo.find({ relations: ['seminariste'] });
       const tab = currentNiveau.map((dt: any) => ({
         niveau: dt.nomNiveau,
         seminaristes: dt.seminariste,
       }));
-      return tab;
+      return tab
     } catch (err) {
       throw new err
     }

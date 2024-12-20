@@ -141,7 +141,7 @@ async findAll() {
   try {
     return await this.seminaristeRepository.find();
   } catch (err) {
-    throw new HttpException('Error fetching seminarists', 710);
+    throw new err
   }
 }
 
