@@ -22,6 +22,14 @@ export class MaterielController {
 
 
 
+  @UseGuards(JwtAuthGuard)
+  @Get('getAll')
+  async getAllFor(
+    @User() user,
+  ){
+
+    return this.materielService.getAll(user)
+  }
 
 
   @UseGuards(JwtAuthGuard)

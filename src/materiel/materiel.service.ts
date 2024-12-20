@@ -69,6 +69,21 @@ export class MaterielService {
     }
   }
 
+
+  async getAll(user:any) {
+    try {
+      const materiels = await this.materielRepo.find({
+        where: { membreCo: { idpers: user.idComi } },
+      });
+      return materiels;
+    } catch (err) {
+      throw err
+    }
+  }
+
+
+
+
   async deleteMateriel(idMateriel: string, user: any) {
     try {
       const materielToDelete = await this.materielRepo.findOneBy({ idMateriel });
