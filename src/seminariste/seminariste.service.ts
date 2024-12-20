@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CommissionEnum } from 'generique/commission.enum';
 import { DortoirsService } from 'src/dortoirs/dortoirs.service';
 import { NiveauService } from 'src/niveau/niveau.service';
+import { log } from 'console';
 
 @Injectable()
 export class SeminaristeService {
@@ -67,6 +68,8 @@ async createNewSemi(createSeminaristeDto: CreateSeminaristeDto, user) {
 // Update
 async updatesemi(idSemi: string, updateseminaristeDto: UpdateSeminaristeDto, user) {
   try {
+    console.log("message",idSemi);
+    
     const { dortoir, membreCo, niveau,genreSemi, ...semi } = updateseminaristeDto;
     const founddortoir = await this.dortoirservice.findOneDortoir(dortoir);
     if (!founddortoir) {
