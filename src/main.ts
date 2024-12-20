@@ -11,10 +11,17 @@ async function bootstrap() {
   
 
   // CORS : j'accepte toutes les origines
-  app.enableCors({
+  // app.enableCors({
     
-    origin: '*',
-  });
+  //   origin: '*',
+  // });
+
+  app.enableCors({
+    origin: 'https://ikhwane.revalys.com/', 
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true, // Si des cookies ou identifiants sont nécessaires
+});
+
   
   
   
