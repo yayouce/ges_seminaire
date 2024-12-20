@@ -70,7 +70,7 @@ export class NiveauService {
         return a.nomNiveau.localeCompare(b.nomNiveau, undefined, { numeric: true });
       }).push({
         idniveau:"rfgh",
-        nomNiveau:"generale",
+        nomNiveau:"Tous",
         seminariste:[...seminaristes]
       })
 

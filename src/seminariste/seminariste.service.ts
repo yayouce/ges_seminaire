@@ -67,10 +67,14 @@ async createNewSemi(createSeminaristeDto: CreateSeminaristeDto, user) {
 // Update
 async updatesemi(idSemi: string, updateseminaristeDto: UpdateSeminaristeDto, user) {
   try {
-    const { dortoir, membreCo, niveau, ...semi } = updateseminaristeDto;
+    const { dortoir, membreCo, niveau,genreSemi, ...semi } = updateseminaristeDto;
     const founddortoir = await this.dortoirservice.findOneDortoir(dortoir);
     if (!founddortoir) {
       throw new HttpException('Dormitory not found', 702);
+    }
+    
+    if (genreSemi !== founddortoir.genre) {
+      throw new HttpException("le genre du seminariste n'est pas autorisé pour ce dortoir", 701);
     }
 
     const foundniveau = await this.niveauService.findOneNiveau(niveau);
@@ -84,6 +88,7 @@ async updatesemi(idSemi: string, updateseminaristeDto: UpdateSeminaristeDto, use
       dortoir: founddortoir,
       nomdortoir: founddortoir.nomDortoir,
       membreCo: user,
+      genreSemi,
       ...semi,
     });
 
@@ -97,7 +102,7 @@ async updatesemi(idSemi: string, updateseminaristeDto: UpdateSeminaristeDto, use
     await this.seminaristeRepository.save(updateSemi);
     return updateSemi;
   } catch (err) {
-    throw new HttpException(`Error updating seminarist: ${err.message}`, 707);
+    throw new err
   }
 }
 
@@ -132,7 +137,7 @@ async findOneById(idParam: string) {
     }
     return seminariste;
   } catch (err) {
-    throw new HttpException(`Error fetching seminarist: ${err.message}`, 709);
+    throw new err
   }
 }
 
@@ -195,7 +200,7 @@ async SeminaristeCategByGender(): Promise<Record<string, number>> {
 
     return data;
   } catch (err) {
-    throw new HttpException('Error fetching seminarists by category and gender', 712);
+    throw new err
   }
 }
 
@@ -236,7 +241,7 @@ async SeminaristeByCateg(): Promise<any> {
       return acc;
     }, {});
   } catch (err) {
-    throw new HttpException('Error fetching seminarists by category', 713);
+    throw new err
   }
 }
 }
