@@ -105,7 +105,7 @@ async updatesemi(idSemi: string, updateseminaristeDto: UpdateSeminaristeDto, use
     await this.seminaristeRepository.save(updateSemi);
     return updateSemi;
   } catch (err) {
-    throw new err
+    throw err
   }
 }
 
@@ -140,7 +140,7 @@ async findOneById(idParam: string) {
     }
     return seminariste;
   } catch (err) {
-    throw new err
+    throw err
   }
 }
 
@@ -149,7 +149,7 @@ async findAll() {
   try {
     return await this.seminaristeRepository.find();
   } catch (err) {
-    throw new err
+    throw err
   }
 }
 
@@ -176,7 +176,7 @@ async SeminaristeByGender(): Promise<Record<string, number>> {
 
     return data;
   } catch (err) {
-    throw new HttpException('Error fetching seminarists by gender', 711);
+    throw err
   }
 }
 
@@ -203,7 +203,7 @@ async SeminaristeCategByGender(): Promise<Record<string, number>> {
 
     return data;
   } catch (err) {
-    throw new err
+    throw err
   }
 }
 
@@ -244,7 +244,7 @@ async SeminaristeByCateg(): Promise<any> {
       return acc;
     }, {});
   } catch (err) {
-    throw new err
+    throw err
   }
 }
 }

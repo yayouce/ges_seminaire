@@ -39,7 +39,7 @@ export class NiveauService {
       await this.niveauRepo.save(newNiveau);
       return newNiveau;
     } catch (err) {
-      throw new err
+       throw err
     }
   }
 
@@ -52,7 +52,7 @@ export class NiveauService {
       }
       return niveau;
     } catch (err) {
-      throw new err
+       throw err
     }
   }
 
@@ -78,7 +78,7 @@ export class NiveauService {
       
       return niveaux;
     } catch (err) {
-      throw new err
+       throw err
     }
   }
   
@@ -95,7 +95,7 @@ export class NiveauService {
       }));
       return tab
     } catch (err) {
-      throw new err
+       throw err
     }
   }
 }

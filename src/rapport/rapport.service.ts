@@ -22,6 +22,6 @@ export class RapportService {
       await this.rapportRepo.save(newRapport);
       return newRapport;
     } catch (err) {
-      throw new HttpException(`Error creating report: ${err.message}`, 701);
+      throw err
     }
   }}

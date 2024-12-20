@@ -26,7 +26,7 @@ export class VisiteurService {
       await this.visiteurRepository.save(newVisiteur);
       return newVisiteur;
     } catch (err) {
-      throw new HttpException(`Error creating visitor: ${err.message}`, 702);
+      throw err
     }
   }
 
@@ -34,7 +34,7 @@ export class VisiteurService {
     try {
       return await this.visiteurRepository.find();
     } catch (err) {
-      throw new HttpException('Error fetching visitors', 703);
+      throw err
     }
   }
 
@@ -46,7 +46,7 @@ export class VisiteurService {
         .withDeleted()
         .getMany();
     } catch (err) {
-      throw new HttpException('Error fetching soft deleted visitors', 704);
+      throw err
     }
   }
 
@@ -69,7 +69,7 @@ export class VisiteurService {
       await this.visiteurRepository.save(updateVisiteur);
       return updateVisiteur;
     } catch (err) {
-      throw new HttpException(`Error updating visitor: ${err.message}`, 706);
+      throw err
     }
   }
 
@@ -81,7 +81,7 @@ export class VisiteurService {
       }
       return visiteur;
     } catch (err) {
-      throw new HttpException(err.message, 707);
+      throw err
     }
   }
 
@@ -103,7 +103,7 @@ export class VisiteurService {
         softDeletedVisites: Number(row.softDeletedVisites),
       }));
     } catch (err) {
-      throw new HttpException('Error fetching daily visit stats', 708);
+      throw err
     }
   }
 
@@ -145,7 +145,7 @@ export class VisiteurService {
         genreVisiteur: genreData,
       };
     } catch (err) {
-      throw new HttpException(`Error fetching visits by genre: ${err.message}`, 709);
+      throw err
     }
   }
 
@@ -183,7 +183,7 @@ export class VisiteurService {
         genreVisiteur: genreData,
       };
     } catch (err) {
-      throw new HttpException(`Error fetching total visits by genre: ${err.message}`, 710);
+      throw err
     }
   }
 
@@ -199,7 +199,7 @@ export class VisiteurService {
       await this.visiteurRepository.softDelete(idVisiteur);
       return { message: 'Visitor soft deleted successfully' };
     } catch (err) {
-      throw new HttpException(`Error soft deleting visitor: ${err.message}`, 711);
+      throw err
     }
   }
 
@@ -215,7 +215,7 @@ export class VisiteurService {
       await this.visiteurRepository.delete(idVisiteur);
       return { message: 'Visitor deleted successfully' };
     } catch (err) {
-      throw new HttpException(`Error deleting visitor: ${err.message}`, 712);
+      throw err
     }
   }
 }

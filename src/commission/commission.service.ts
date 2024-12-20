@@ -19,7 +19,7 @@ export class CommissionService {
       });
       return commission;
     } catch (err) {
-      throw new err
+       throw err
     }
   }
 
@@ -27,7 +27,7 @@ export class CommissionService {
     try {
       return await this.commissionRepository.save(createCommission);
     } catch (err) {
-      throw new err
+       throw err
     }
   }
 
@@ -35,7 +35,7 @@ export class CommissionService {
     try {
       return await this.commissionRepository.findOneBy(libell);
     } catch (err) {
-      throw new err
+       throw err
     }
   }
 
@@ -43,7 +43,7 @@ export class CommissionService {
     try {
       return await this.commissionRepository.find();
     } catch (err) {
-      throw new err
+       throw err
     }
   }
 
@@ -63,7 +63,7 @@ export class CommissionService {
       });
       return tab;
     } catch (err) {
-      throw new err
+       throw err
     }
   }
 
@@ -100,7 +100,7 @@ export class CommissionService {
 
       return result;
     } catch (err) {
-      throw new err
+       throw err
     }
   }
 
@@ -115,7 +115,7 @@ export class CommissionService {
       });
       return tab;
     } catch (err) {
-      throw new err
+       throw err
     }
   }
 }

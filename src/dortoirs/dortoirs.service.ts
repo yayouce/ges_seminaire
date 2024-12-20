@@ -24,7 +24,7 @@ export class DortoirsService {
       });
       return await this.dortoirRepository.save(newDortoir);
     } catch (err) {
-      throw new HttpException(`Error creating dormitory: ${err.message}`, 701);
+      throw err
     }
   }
 
@@ -36,7 +36,7 @@ export class DortoirsService {
       }
       return dortoir;
     } catch (err) {
-      throw new HttpException(`Error fetching dormitory: ${err.message}`, 702);
+      throw err
     }
   }
 
@@ -44,7 +44,7 @@ export class DortoirsService {
     try {
       return await this.dortoirRepository.find();
     } catch (err) {
-      throw new HttpException(`Error fetching dormitory list: ${err.message}`, 703);
+      throw err
     }
   }
 
@@ -70,7 +70,7 @@ export class DortoirsService {
 
       return consolidatedData;
     } catch (err) {
-      throw new HttpException(`Error fetching dormitory by type: ${err.message}`, 704);
+      throw err
     }
   }
 
@@ -97,7 +97,7 @@ export class DortoirsService {
 
       return consolidatedData;
     } catch (err) {
-      throw new HttpException(`Error fetching dormitory by genre: ${err.message}`, 705);
+      throw err
     }
   }
 
@@ -105,7 +105,7 @@ export class DortoirsService {
     try {
       return await this.dortoirRepository.find();
     } catch (err) {
-      throw new HttpException(`Error fetching all dormitories: ${err.message}`, 706);
+      throw err
     }
   }
 }

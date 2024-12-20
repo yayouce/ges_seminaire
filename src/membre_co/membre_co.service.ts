@@ -25,7 +25,7 @@ export class MembreCoService {
         where: { phonePers: phone },
       });
     } catch (err) {
-      throw new HttpException(`le membre n'existe pas ${err.message}`, 701);
+      throw err
     }
   }
 
@@ -39,7 +39,7 @@ export class MembreCoService {
         .getRawMany();
       return result;
     } catch (err) {
-      throw new HttpException(`erreur  ${err.message}`, 702);
+      throw err
     }
   }
 
