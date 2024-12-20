@@ -61,7 +61,7 @@ export class MaterielController {
     @Param('id') id:string
   ) {
 
-    return await this.getById(id)
+    return await this.materielService.getById(id)
   }
 
 

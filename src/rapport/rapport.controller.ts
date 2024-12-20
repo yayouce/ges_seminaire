@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Get, Param } from '@nestjs/common';
 import { RapportService } from './rapport.service';
 import { CreateRapportDto } from './dto/create-rapport.dto';
 import { JwtAuthGuard } from 'src/Auth/jwt-auth.guard';
@@ -19,5 +19,30 @@ export class RapportController {
 
     return this.rapportService.creationRapport(rapport,user)
   }
+
+@UseGuards(JwtAuthGuard)
+  @Get('getAll')
+  async getAllFor(
+    @User() user,
+  ){
+
+    return this.rapportService.getAll(user)
+  }
+
+
+   @Get('getoneRapport/:id')
+    async getById(
+      @Param('id') id:string
+    ) {
+  
+      return await this.rapportService.getById(id)
+    }
+
+
+
+  
+
+
+
  
 }

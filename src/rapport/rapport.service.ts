@@ -24,4 +24,36 @@ export class RapportService {
     } catch (err) {
       throw err
     }
-  }}
+  }
+
+
+  async getAll(user:any) {
+    try {
+      const rapports = await this.rapportRepo.find({
+        where: { membreCo: { idpers: user.idComi } },
+      });
+      return rapports;
+    } catch (err) {
+      throw err
+    }
+  }
+
+
+
+  async getById(idRapport:any) {
+    try {
+      const rapport = await this.rapportRepo.findOne({
+        where: { idRapport },
+      });
+      return rapport;
+    } catch (err) {
+      throw err
+    }
+  }
+
+
+
+}
+
+
+  
