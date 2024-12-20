@@ -105,11 +105,11 @@ export class MaterielService {
       if (user?.roleMembre !== roleMembre.RESP) {
         throw new HttpException("Only the responsible person can delete this material.",702);
       }
-      if (user?.rolePers !== materielToDelete.membreCo?.rolePers) {
-        throw new HttpException(
-          "You are not authorized to delete this material because it is not yours.",803
-        );
-      }
+      // if (user?.rolePers !== materielToDelete.membreCo?.rolePers) {
+      //   throw new HttpException(
+      //     "You are not authorized to delete this material because it is not yours.",803
+      //   );
+      // }
       return await this.materielRepo.softDelete(idMateriel);
     } catch (err) {
       throw err
