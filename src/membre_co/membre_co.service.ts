@@ -58,6 +58,7 @@ export class MembreCoService {
       if (
         user.rolePers !== createmembreco.rolePers &&
         user.rolePers !== CommissionEnum.ADMINISTRATION
+        && user.rolePers !== CommissionEnum.ACCUEIL
       ) {
         throw  new HttpException('pas autorisé à ajouter ce membre dans votre commission', 704);
       }
