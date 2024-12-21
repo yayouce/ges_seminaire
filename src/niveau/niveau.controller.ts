@@ -31,5 +31,13 @@ return await this.niveauService.findAllNiveau()
   async SeminaristesByNiveau(){
     return await this.niveauService.SeminaristesByNiveau()
   }
+
+  @Delete('delete/:id')
+  async niveau(
+    @Param('id') id:string
+  ){
+    return await this.niveauService.deleteOne(id)
+  }
+
   
 }

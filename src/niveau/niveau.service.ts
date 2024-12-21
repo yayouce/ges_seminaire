@@ -98,4 +98,18 @@ export class NiveauService {
        throw err
     }
   }
+
+
+  async deleteOne(idniveau: string) {
+    try {
+      const niveau = await this.niveauRepo.findOneBy({ idniveau });
+      if (!niveau) {
+        throw new HttpException('niveau not found',705);
+      }
+    
+      return await this.niveauRepo.delete(idniveau);
+    } catch (err) {
+      throw err
+    }
+  }
 }
