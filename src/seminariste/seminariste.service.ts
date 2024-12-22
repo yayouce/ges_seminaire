@@ -30,6 +30,11 @@ async createNewSemi(createSeminaristeDto: CreateSeminaristeDto, user) {
       throw new HttpException('Dormitory not found', 702);
     }
 
+    const foundniveau = await this.niveauService.findOneNiveau(niveau);
+    if (!foundniveau) {
+      throw new HttpException('Level not found', 705);
+    }
+
     if (genreSemi !== founddortoir.genre) {
       throw new HttpException("The seminarist's gender does not match the dormitory", 703);
     }
@@ -54,6 +59,7 @@ async createNewSemi(createSeminaristeDto: CreateSeminaristeDto, user) {
       categorie: createSeminaristeDto.categorie,
       nomdortoir: founddortoir.nomDortoir,
       membreCo: user,
+      nomNiveau:foundniveau.nomNiveau,
       dortoir: founddortoir,
       genreSemi,
     });
@@ -90,6 +96,7 @@ async updatesemi(idSemi: string, updateseminaristeDto: UpdateSeminaristeDto, use
       dortoir: founddortoir,
       nomdortoir: founddortoir.nomDortoir,
       membreCo: user,
+      nomNiveau:foundniveau.nomNiveau,
       genreSemi:founddortoir.genre,
       ...semi,
     });
