@@ -97,9 +97,9 @@ async updatesemi(idSemi: string, updateseminaristeDto: UpdateSeminaristeDto, use
     if (!updateSemi) {
       throw new HttpException(`Seminarist with ID ${idSemi} not found`, 706);
     }
-    if (user?.rolePers !== CommissionEnum.ACCUEIL && user?.rolePers !== CommissionEnum.FORMATION && user?.rolePers !== CommissionEnum.ADMINISTRATION ) {
-      throw new HttpException('Access denied: Insufficient permissions', 701);
-    }
+    // if (user?.rolePers !== CommissionEnum.ACCUEIL && user?.rolePers !== CommissionEnum.FORMATION && user?.rolePers !== CommissionEnum.ADMINISTRATION ) {
+    //   throw new HttpException('Access denied: Insufficient permissions', 701);
+    // }
 
 
     if (age <= 6) {
