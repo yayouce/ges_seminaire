@@ -1,11 +1,11 @@
 import { TimestampEntites } from "generique/timestamp";
 import { MembreCoEntity } from "src/membre_co/entities/membre_co.entity";
-import { Column, Entity, ManyToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity("rapport")
 export class Rapport extends TimestampEntites {
 
-    @PrimaryColumn('uuid')
+    @PrimaryGeneratedColumn('uuid')
     idRapport:string
 
     @Column()

@@ -123,6 +123,8 @@ export class MaterielService {
       });
       const loues = materiels.filter((m) => m.statut === 'Loue').length;
       const achetes = materiels.filter((m) => m.statut === 'achete').length;
+      const totalmateriel = materiels.filter((m) => m.statut ).length;
+      
       const totalDepenses = materiels.reduce((sum, m) => sum + Number(m.cout || 0), 0);
       return {
         loues,

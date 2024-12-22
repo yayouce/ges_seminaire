@@ -1,3 +1,4 @@
+import { NiveauEnum } from "generique/niveau.enum";
 import { MembreCoEntity } from "src/membre_co/entities/membre_co.entity";
 import { SeminaristeEntity } from "src/seminariste/entities/seminariste.entity";
 import { Column, Entity, ManyToOne, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
@@ -9,7 +10,8 @@ export class Niveau {
     idniveau:string;
 
     @Column({
-        unique:true
+        unique:true,
+        default:NiveauEnum.NIVEAU6
     })
     nomNiveau:string;
 
