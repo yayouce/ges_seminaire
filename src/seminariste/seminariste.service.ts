@@ -104,23 +104,23 @@ async updatesemi(idSemi: string, updateseminaristeDto: UpdateSeminaristeDto, use
     if (!updateSemi) {
       throw new HttpException(`Seminarist with ID ${idSemi} not found`, 706);
     }
-    // if (user?.rolePers !== CommissionEnum.ACCUEIL && user?.rolePers !== CommissionEnum.FORMATION && user?.rolePers !== CommissionEnum.ADMINISTRATION ) {
-    //   throw new HttpException('Access denied: Insufficient permissions', 701);
-    // }
-
-
-    if (age <= 6) {
-      updateseminaristeDto.categorie = 'Pepinieres';
-    } else if (age > 6 && age <= 10) {
-      updateseminaristeDto.categorie = 'Enfants';
-    } else {
-      updateseminaristeDto.categorie = 'Jeunes_et_adultes';
+    if (user?.rolePers !== CommissionEnum.ACCUEIL && user?.rolePers !== CommissionEnum.FORMATION && user?.rolePers !== CommissionEnum.ADMINISTRATION ) {
+      throw new HttpException('Access denied: Insufficient permissions', 701);
     }
 
 
+  //   if (age <= 6) {
+  //     updateseminaristeDto.categorie = 'Pepinieres';
+  //   } else if (age > 6 && age <= 10) {
+  //     updateseminaristeDto.categorie = 'Enfants';
+  //   } else {
+  //     updateseminaristeDto.categorie = 'Jeunes_et_adultes';
+  //   }
 
 
-  Object.assign(updateSemi, updateseminaristeDto);
+
+
+  // Object.assign(updateSemi, updateseminaristeDto);
 
     await this.seminaristeRepository.save(updateSemi);
     return updateSemi;

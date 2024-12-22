@@ -17,7 +17,6 @@ export class CreateRapportDto {
     suggestions:string
     @IsString()
     infoSuplementaire:string
-
     @IsString()
     membreCo:string
 }
