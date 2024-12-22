@@ -52,7 +52,7 @@ export class MaterielService {
       // Sauvegarde des modifications
       return await this.materielRepo.save(materiel);
     } catch (err) {
-      throw new HttpException(`Erreur lors de la mise à jour du materiel: ${err.message}`, 706);
+      throw err
     }
   }
 

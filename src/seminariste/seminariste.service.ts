@@ -124,7 +124,7 @@ async updatesemi(idSemi: string, updateSeminaristeDto: UpdateSeminaristeDto, use
     await this.seminaristeRepository.save(seminariste);
     return seminariste;
   } catch (err) {
-    throw new HttpException(`Error updating seminarist: ${err.message}`, 706);
+    throw err;
   }
 }
 
