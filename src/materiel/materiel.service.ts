@@ -29,31 +29,30 @@ export class MaterielService {
     }
   }
 
-  async updateMateriel(idMateriel: string, updateMaterielDto: UpdateMaterielDto, user: any) {
-    const { membreCo, ...creation } = updateMaterielDto;
+  async updateMateriel(idMateriel: string, updateMaterielDto: UpdateMaterielDto, user) {
+    const { membreCo, ...updatedData } = updateMaterielDto;
     try {
+      // Vérification des permissions de l'utilisateur
       if (user?.roleMembre !== roleMembre.RESP) {
-        throw new HttpException(
-          "You are not authorized to update this material.",703
-        );
+        throw new HttpException("pas autorisé à modifier le materiel", 702);
       }
-      const matl = await this.getOneMateriel(idMateriel);
-      if (!matl) {
-        throw new HttpException(`Material with ID ${idMateriel} not found.`,704);
+
+      // Recherche du matériel existant
+      const materiel = await this.materielRepo.findOne({ where: { idMateriel } });
+      if (!materiel) {
+        throw new HttpException("Materiel non trouvé", 705);
       }
-      const updateMateriel = await this.materielRepo.preload({
-        idMateriel,
-        ...creation,
+
+      // Mise à jour des données du matériel
+      Object.assign(materiel, {
+        ...updatedData,
+        membreCo: user,
       });
-      if (!updateMateriel) {
-        throw new HttpException(`Failed to load material with ID ${idMateriel}.`,705);
-      }
-      if (user.rolePers !== matl.membreCo.rolePers) {
-        throw new HttpException("n'est pas votre material.",800);
-      }
-      return await this.materielRepo.save(updateMateriel);
+
+      // Sauvegarde des modifications
+      return await this.materielRepo.save(materiel);
     } catch (err) {
-      throw err
+      throw new HttpException(`Erreur lors de la mise à jour du materiel: ${err.message}`, 706);
     }
   }
 

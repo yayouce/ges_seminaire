@@ -74,19 +74,15 @@ async createNewSemi(createSeminaristeDto: CreateSeminaristeDto, user) {
 async updatesemi(idSemi: string, updateSeminaristeDto: UpdateSeminaristeDto, user) {
   try {
     const { dortoir, genreSemi, age, etatSante, ...updatedData } = updateSeminaristeDto;
-    
-    // Vérification des permissions de l'utilisateur
+  
     if (user?.rolePers !== CommissionEnum.ACCUEIL) {
       throw new HttpException('Access denied: Insufficient permissions', 701);
     }
-
-    // Recherche du séminariste existant
     const seminariste = await this.seminaristeRepository.findOne({ where: { idSemi } });
     if (!seminariste) {
       throw new HttpException('Seminarist not found', 705);
     }
 
-    // Si un dortoir est fourni, vérifier s'il existe et correspond au genre
     let founddortoir;
     if (dortoir) {
       founddortoir = await this.dortoirservice.findOneDortoir(dortoir);
@@ -98,7 +94,6 @@ async updatesemi(idSemi: string, updateSeminaristeDto: UpdateSeminaristeDto, use
       }
     }
 
-    // Mise à jour de la catégorie en fonction de l'âge
     if (age !== undefined) {
       if (age <= 6) {
         updatedData.categorie = 'Pepinieres';
@@ -109,14 +104,12 @@ async updatesemi(idSemi: string, updateSeminaristeDto: UpdateSeminaristeDto, use
       }
     }
 
-    // Mise à jour de l'état de santé
     if (etatSante !== undefined) {
       if (etatSante !== 'Malade' && etatSante !== 'Autres') {
         updatedData.problemeSante = 'Ras';
       }
     }
 
-    // Application des modifications
     Object.assign(seminariste, {
       ...updatedData,
       age: age ?? seminariste.age,
