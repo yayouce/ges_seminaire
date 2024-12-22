@@ -165,14 +165,8 @@ async findOneById(idParam: string) {
 }
 
 // Find All
-async findAll(): Promise<any[]> {
-  const seminaristes = await this.seminaristeRepository
-    .createQueryBuilder('seminariste')
-    .leftJoinAndSelect('seminariste.niveau', 'niveau')
-    .select([
-      'niveau.nomNiveau', 
-    ])
-    .getMany();
+async findAll() {
+  const seminaristes = await this.seminaristeRepository.find()
 
   return seminaristes;
 }
