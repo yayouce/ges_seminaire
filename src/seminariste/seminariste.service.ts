@@ -71,61 +71,67 @@ async createNewSemi(createSeminaristeDto: CreateSeminaristeDto, user) {
 }
 
 // Update
-async updatesemi(idSemi: string, updateseminaristeDto: UpdateSeminaristeDto, user) {
+async updatesemi(idSemi: string, updateSeminaristeDto: UpdateSeminaristeDto, user) {
   try {
-    console.log("message",idSemi);
+    const { dortoir, genreSemi, age, etatSante, ...updatedData } = updateSeminaristeDto;
     
-    const { dortoir, membreCo, niveau,genreSemi,age, ...semi } = updateseminaristeDto;
-    const founddortoir = await this.dortoirservice.findOneDortoir(dortoir);
-    if (!founddortoir) {
-      throw new HttpException('Dormitory not found', 702);
-    }
-    
-    if (genreSemi !== founddortoir.genre) {
-      throw new HttpException("le genre du seminariste n'est pas autorisé pour ce dortoir", 701);
-    }
-
-    const foundniveau = await this.niveauService.findOneNiveau(niveau);
-    if (!foundniveau) {
-      throw new HttpException('Level not found', 705);
-    }
-
-    const updateSemi = await this.seminaristeRepository.preload({
-      idSemi,
-      niveau: foundniveau,
-      dortoir: founddortoir,
-      nomdortoir: founddortoir.nomDortoir,
-      membreCo: user,
-      // nomNiveau:foundniveau.nomNiveau,
-      genreSemi:founddortoir.genre,
-      ...semi,
-    });
-
-    if (!updateSemi) {
-      throw new HttpException(`Seminarist with ID ${idSemi} not found`, 706);
-    }
-    if (user?.rolePers !== CommissionEnum.ACCUEIL && user?.rolePers !== CommissionEnum.FORMATION && user?.rolePers !== CommissionEnum.ADMINISTRATION ) {
+    // Vérification des permissions de l'utilisateur
+    if (user?.rolePers !== CommissionEnum.ACCUEIL) {
       throw new HttpException('Access denied: Insufficient permissions', 701);
     }
 
+    // Recherche du séminariste existant
+    const seminariste = await this.seminaristeRepository.findOne({ where: { idSemi } });
+    if (!seminariste) {
+      throw new HttpException('Seminarist not found', 705);
+    }
 
-  //   if (age <= 6) {
-  //     updateseminaristeDto.categorie = 'Pepinieres';
-  //   } else if (age > 6 && age <= 10) {
-  //     updateseminaristeDto.categorie = 'Enfants';
-  //   } else {
-  //     updateseminaristeDto.categorie = 'Jeunes_et_adultes';
-  //   }
+    // Si un dortoir est fourni, vérifier s'il existe et correspond au genre
+    let founddortoir;
+    if (dortoir) {
+      founddortoir = await this.dortoirservice.findOneDortoir(dortoir);
+      if (!founddortoir) {
+        throw new HttpException('Dormitory not found', 702);
+      }
+      if (genreSemi && genreSemi !== founddortoir.genre) {
+        throw new HttpException("The seminarist's gender does not match the dormitory", 703);
+      }
+    }
 
+    // Mise à jour de la catégorie en fonction de l'âge
+    if (age !== undefined) {
+      if (age <= 6) {
+        updatedData.categorie = 'Pepinieres';
+      } else if (age > 6 && age <= 10) {
+        updatedData.categorie = 'Enfants';
+      } else {
+        updatedData.categorie = 'Jeunes_et_adultes';
+      }
+    }
 
+    // Mise à jour de l'état de santé
+    if (etatSante !== undefined) {
+      if (etatSante !== 'Malade' && etatSante !== 'Autres') {
+        updatedData.problemeSante = 'Ras';
+      }
+    }
 
+    // Application des modifications
+    Object.assign(seminariste, {
+      ...updatedData,
+      age: age ?? seminariste.age,
+      etatSante: etatSante ?? seminariste.etatSante,
+      problemeSante: updatedData.problemeSante ?? seminariste.problemeSante,
+      categorie: updatedData.categorie ?? seminariste.categorie,
+      nomdortoir: founddortoir ? founddortoir.nomDortoir : seminariste.nomdortoir,
+      dortoir: founddortoir || seminariste.dortoir,
+      genreSemi: genreSemi ?? seminariste.genreSemi,
+    });
 
-  // Object.assign(updateSemi, updateseminaristeDto);
-
-    await this.seminaristeRepository.save(updateSemi);
-    return updateSemi;
+    await this.seminaristeRepository.save(seminariste);
+    return seminariste;
   } catch (err) {
-    throw err
+    throw new HttpException(`Error updating seminarist: ${err.message}`, 706);
   }
 }
 
