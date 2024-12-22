@@ -158,13 +158,18 @@ async findOneById(idParam: string) {
 }
 
 // Find All
-async findAll() {
-  try {
-    return await this.seminaristeRepository.find();
-  } catch (err) {
-    throw err
-  }
+async findAll(): Promise<any[]> {
+  const seminaristes = await this.seminaristeRepository
+    .createQueryBuilder('seminariste')
+    .leftJoinAndSelect('seminariste.niveau', 'niveau')
+    .select([
+      'niveau.nomNiveau', 
+    ])
+    .getMany();
+
+  return seminaristes;
 }
+
 
 // Seminarists by Gender
 async SeminaristeByGender(): Promise<Record<string, number>> {
