@@ -75,7 +75,7 @@ async updatesemi(idSemi: string, updateSeminaristeDto: UpdateSeminaristeDto, use
   try {
     const { dortoir, genreSemi, age, etatSante, ...updatedData } = updateSeminaristeDto;
   
-    if (user?.rolePers !== CommissionEnum.ACCUEIL) {
+    if (user?.rolePers !== CommissionEnum.ACCUEIL && user?.rolePers !== CommissionEnum.ADMINISTRATION && user?.rolePers !== CommissionEnum.FORMATION) {
       throw new HttpException('Access denied: Insufficient permissions', 701);
     }
     const seminariste = await this.seminaristeRepository.findOne({ where: { idSemi } });
