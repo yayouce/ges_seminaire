@@ -43,5 +43,9 @@ export class UpdateSeminaristeDto extends PartialType(CreateSeminaristeDto) {
     @IsOptional()
     @IsString()
     problemeSante:string
+    @IsOptional()
+    @IsString()
+    nomNiveau:string
+
         
     }
