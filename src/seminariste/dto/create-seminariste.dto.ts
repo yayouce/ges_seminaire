@@ -31,7 +31,7 @@ export class CreateSeminaristeDto {
     @IsString()
     @IsOptional()
     problemeSante:string
-    @IsOptional()
-    @IsString()
-    nomNiveau:string
+    // @IsOptional()
+    // @IsString()
+    // nomNiveau:string
 }
