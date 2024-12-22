@@ -59,7 +59,7 @@ async createNewSemi(createSeminaristeDto: CreateSeminaristeDto, user) {
       categorie: createSeminaristeDto.categorie,
       nomdortoir: founddortoir.nomDortoir,
       membreCo: user,
-      nomNiveau:foundniveau.nomNiveau,
+      // nomNiveau:foundniveau.nomNiveau,
       dortoir: founddortoir,
       genreSemi,
     });
@@ -96,7 +96,7 @@ async updatesemi(idSemi: string, updateseminaristeDto: UpdateSeminaristeDto, use
       dortoir: founddortoir,
       nomdortoir: founddortoir.nomDortoir,
       membreCo: user,
-      nomNiveau:foundniveau.nomNiveau,
+      // nomNiveau:foundniveau.nomNiveau,
       genreSemi:founddortoir.genre,
       ...semi,
     });

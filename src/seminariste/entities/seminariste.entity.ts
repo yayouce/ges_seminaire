@@ -53,8 +53,8 @@ export class SeminaristeEntity extends TimestampEntites{
     @ManyToOne(()=>MembreCoEntity,(membreco)=>membreco.seminariste,{eager:true})
     membreCo:MembreCoEntity
 
-    @Column()
-    nomNiveau:string
+    // @Column()
+    // nomNiveau:string
     @Column({
         type:"enum",
         enum:etatSanteEnum,
