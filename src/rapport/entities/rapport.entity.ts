@@ -7,10 +7,8 @@ export class Rapport extends TimestampEntites {
 
     @PrimaryGeneratedColumn('uuid')
     idRapport:string
-
     @Column()
     libelleRapport:string
-
     @Column()
     tacheRealisees:string
     @Column()
@@ -25,6 +23,7 @@ export class Rapport extends TimestampEntites {
     suggestions:string
     @Column()
     infoSuplementaire:string
+
 
     @ManyToOne(()=>MembreCoEntity,(membreco)=>membreco.rapport,{eager:true})
     membreCo:MembreCoEntity
