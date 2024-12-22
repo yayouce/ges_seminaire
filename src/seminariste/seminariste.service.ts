@@ -135,7 +135,7 @@ async deleteSeminariste(idSemi: string, user) {
     if (!seminaristeDelete) {
       throw new HttpException('Seminarist not found', 706);
     }
-    if (user?.rolePers !== CommissionEnum.ACCUEIL) {
+    if (user?.rolePers !== CommissionEnum.ACCUEIL && user?.rolePers !== CommissionEnum.ADMINISTRATION && user?.rolePers !== CommissionEnum.FORMATION) {
       throw new HttpException('Access denied: Insufficient permissions', 701);
     }
     await this.seminaristeRepository.softDelete(idSemi);
