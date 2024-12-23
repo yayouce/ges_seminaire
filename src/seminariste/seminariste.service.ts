@@ -30,10 +30,10 @@ async createNewSemi(createSeminaristeDto: CreateSeminaristeDto, user) {
       throw new HttpException('Dormitory not found', 702);
     }
 
-    const foundniveau = await this.niveauService.findOneNiveau(niveau);
-    if (!foundniveau) {
-      throw new HttpException('Level not found', 705);
-    }
+    // const foundniveau = await this.niveauService.findOneNiveau(niveau);
+    // if (!foundniveau) {
+    //   throw new HttpException('Level not found', 705);
+    // }
 
     if (genreSemi !== founddortoir.genre) {
       throw new HttpException("The seminarist's gender does not match the dormitory", 703);
@@ -59,7 +59,6 @@ async createNewSemi(createSeminaristeDto: CreateSeminaristeDto, user) {
       categorie: createSeminaristeDto.categorie,
       nomdortoir: founddortoir.nomDortoir,
       membreCo: user,
-      // nomNiveau:foundniveau.nomNiveau,
       dortoir: founddortoir,
       genreSemi,
     });
@@ -73,7 +72,7 @@ async createNewSemi(createSeminaristeDto: CreateSeminaristeDto, user) {
 // Update
 async updatesemi(idSemi: string, updateSeminaristeDto: UpdateSeminaristeDto, user) {
   try {
-    const { dortoir, genreSemi, age, etatSante, ...updatedData } = updateSeminaristeDto;
+    const { dortoir, genreSemi, age, etatSante,nomNiveau, ...updatedData } = updateSeminaristeDto;
   
     if (user?.rolePers !== CommissionEnum.ACCUEIL && user?.rolePers !== CommissionEnum.ADMINISTRATION && user?.rolePers !== CommissionEnum.FORMATION) {
       throw new HttpException('Access denied: Insufficient permissions', 701);
@@ -92,6 +91,11 @@ async updatesemi(idSemi: string, updateSeminaristeDto: UpdateSeminaristeDto, use
       if (genreSemi && genreSemi !== founddortoir.genre) {
         throw new HttpException("The seminarist's gender does not match the dormitory", 703);
       }
+    }
+
+    const foundniveau = await this.niveauService.findOneNiveau(nomNiveau);
+    if (!foundniveau) {
+      throw new HttpException('niveau not found', 705);
     }
 
     if (age !== undefined) {
@@ -119,6 +123,8 @@ async updatesemi(idSemi: string, updateSeminaristeDto: UpdateSeminaristeDto, use
       nomdortoir: founddortoir ? founddortoir.nomDortoir : seminariste.nomdortoir,
       dortoir: founddortoir || seminariste.dortoir,
       genreSemi: genreSemi ?? seminariste.genreSemi,
+      niveau:foundniveau || seminariste.niveau,
+      nomNiveau:foundniveau.nomNiveau
     });
 
     await this.seminaristeRepository.save(seminariste);
