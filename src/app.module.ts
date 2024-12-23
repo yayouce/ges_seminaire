@@ -32,7 +32,7 @@ dotenv.config()
       password:process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       entities: ["dist/**/*.entity{.ts,.js}"],
-      synchronize: true,
+      synchronize: false,
     }),
     DortoirsModule, CommissionModule, SeminaristeModule, VisiteurModule, MembreCoModule, SuperadminModule, PersonneModule,AuthModule, RapportModule, NiveauModule, MaterielModule, CaisseModule],
   controllers: [AppController],
