@@ -8,8 +8,7 @@ export class CommissionEntity extends TimestampEntites {
   
     @PrimaryGeneratedColumn("uuid")
     idComi :string;
-    
-  
+
     @OneToMany(()=>MembreCoEntity,(membre)=>membre.commission,{eager:true})
     membres:MembreCoEntity[]
     @Column({unique:true})

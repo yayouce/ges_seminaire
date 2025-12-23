@@ -19,8 +19,6 @@ export class SeminaristeEntity extends TimestampEntites{
     prenomSemi:string;
     @Column()
     age:number;
-
-
     @Column({
         type:"enum",
         enum:categorieSem,
@@ -63,7 +61,6 @@ export class SeminaristeEntity extends TimestampEntites{
     etatSante:string
     @Column()
     problemeSante:string
-
 
     @ManyToOne(()=>Niveau,(niveau)=>niveau.seminariste)
     niveau:dortoirEntity

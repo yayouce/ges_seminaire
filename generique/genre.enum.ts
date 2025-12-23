@@ -1,6 +1,6 @@
 export enum genreEnum{
     FRERE="frere",
     SOEUR="soeur",
-    PEPINIERE="pepiniere",
+    // PEPINIERE="pepiniere",
     NON_DEFINI="non_defini"
 }

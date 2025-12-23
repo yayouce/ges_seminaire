@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerDocumentOptions, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { GlobalExceptionFilter } from './Exceptions/all-exceptions.filter';
+import { ValidationPipe } from '@nestjs/common/pipes/validation.pipe';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -12,9 +13,16 @@ async function bootstrap() {
 
   // CORS : j'accepte toutes les origines
   app.enableCors({
-    
     origin: '*',
   });
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true, //je ne prends que mes données attendu
+      forbidNonWhitelisted: true, // j'envoie une erreur
+    }),
+  );
 
 //   app.enableCors({
 //     origin: 'https://ikhwane.revalys.com/', 
@@ -37,7 +45,7 @@ const config = new DocumentBuilder()  // DocumentBuilder() pour creer un doc con
                   .addBearerAuth() //pour spécifier l'utilisation de l'authentification dans le swagger
                   .addBasicAuth()
                   .setTitle('my cv swagger')
-                  .setDescription('ceci est l\'Api mis en place par monsieur diarra')
+                  .setDescription('ceci est l\'Api de gestion de seminaire')
                   .setVersion('1.0')
                   .build()
                   
@@ -50,10 +58,8 @@ SwaggerModule.setup('swager/api', app, document,{
   });  //ajouter une option pour pouvoir avoir le swager en format json
 
  // await app.listen(configService.get('HTTP_PORT'));
-  await app.listen(configService.get('HTTP_PORT'), '0.0.0.0');
+  await app.listen(configService.get('HTTP_PORT')||3005, '0.0.0.0');
 
-
-  
   
 }
 
