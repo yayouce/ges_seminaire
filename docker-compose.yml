@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ges_seminaire_app:latest
+    ports:
+      - "3005:3005"
+    environment:
+      - NODE_ENV=production
+      - HTTP_PORT=3005
+      # Database is external — set these to your DB server values
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - JWTSECRET=${JWTSECRET}
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    # If you want to provide a .env file, docker-compose will automatically pick it up
