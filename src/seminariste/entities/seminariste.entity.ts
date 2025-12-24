@@ -11,9 +11,9 @@ import { Column, Entity, ManyToOne, PrimaryColumn } from "typeorm";
 
 @Entity("seminariste")
 export class SeminaristeEntity extends TimestampEntites{
-    @PrimaryColumn()
-    matricule:string
     @Column({unique: true})
+    matricule:string
+    @PrimaryColumn()
     idSemi:string
     @Column()
     nomSemi:string;
