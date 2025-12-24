@@ -1,4 +1,4 @@
-import { IsDate, IsNumber, IsString } from "class-validator";
+import { IsDate, IsNumber, IsOptional, IsString } from "class-validator";
 
 export class CreateMaterielDto {
     @IsString()
@@ -17,6 +17,7 @@ export class CreateMaterielDto {
     @IsNumber()
     cout:Number
 
+    @IsOptional()
     @IsString()
     membreCo:string
 }

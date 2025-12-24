@@ -11,7 +11,7 @@ export class Niveau {
 
     @Column({
         unique:true,
-        default:NiveauEnum.NIVEAU6
+        default:NiveauEnum.NON_SPECIFIE
     })
     nomNiveau:string;
 

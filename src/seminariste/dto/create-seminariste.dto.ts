@@ -79,6 +79,7 @@ export class CreateSeminaristeDto {
       description: 'ID du membre de commission',
       example: 'uuid-membre',
     })
+    @IsOptional()
     @IsString()
     membreCo:string;
 
