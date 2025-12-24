@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { dortoirEntity } from './entities/dortoir.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CommissionEnum } from 'generique/commission.enum';
+import { MembreCoEntity } from 'src/membre_co/entities/membre_co.entity';
 
 @Injectable()
 export class DortoirsService {
@@ -12,12 +13,13 @@ export class DortoirsService {
     private dortoirRepository: Repository<dortoirEntity>,
   ) {}
 
-  async createDortoir(createDortoirDto: CreateDortoirDto, user) {
+  async createDortoir(createDortoirDto: CreateDortoirDto, user: any) {
     const { membreCo, ...creation } = createDortoirDto;
     try {
       if (user?.rolePers !== CommissionEnum.ACCUEIL) {
         throw new UnauthorizedException("You are not authorized to create a dormitory.");
       }
+      console.log(user)
       const newDortoir = this.dortoirRepository.create({
         ...creation,
         membreCo: user,

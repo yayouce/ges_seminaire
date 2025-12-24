@@ -12,7 +12,7 @@ export class CreateDortoirDto {
     @IsString()
     typedortoir:string 
 
-    // @IsString()
-    // membreCo:string
+    @IsString()
+    membreCo:string
 }
 
