@@ -7,13 +7,13 @@ import { TimestampEntites } from "generique/timestamp";
 import { dortoirEntity } from "src/dortoirs/entities/dortoir.entity";
 import { MembreCoEntity } from "src/membre_co/entities/membre_co.entity";
 import { Niveau } from "src/niveau/entities/niveau.entity";
-import { Column, Entity, ManyToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity("seminariste")
 export class SeminaristeEntity extends TimestampEntites{
     @Column({unique: true})
     matricule:string
-    @PrimaryColumn()
+    @PrimaryGeneratedColumn()
     idSemi:string
     @Column()
     nomSemi:string;
