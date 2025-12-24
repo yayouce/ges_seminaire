@@ -24,13 +24,13 @@ export class CreateSeminaristeDto {
     @IsString()
     prenomSemi:string;
 
-    @ApiProperty({
-      description: 'Catégorie du séminariste (définie par le front-end)',
-      example: 'Jeunes_et_adultes',
-      enum: ['Pepinieres', 'Enfants', 'Jeunes_et_adultes', 'Non_specifie']
-    })
-    @IsString()
-    categorie:string;
+    // @ApiProperty({
+    //   description: 'Catégorie du séminariste (définie par le front-end)',
+    //   example: 'Jeunes_et_adultes',
+    //   enum: ['Pepinieres', 'Enfants', 'Jeunes_et_adultes', 'Non_specifie']
+    // })
+    // @IsString()
+    // categorie:string;
 
     @ApiProperty({
       description: 'Genre du séminariste',
