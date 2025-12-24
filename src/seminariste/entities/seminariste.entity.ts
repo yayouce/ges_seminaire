@@ -7,11 +7,13 @@ import { TimestampEntites } from "generique/timestamp";
 import { dortoirEntity } from "src/dortoirs/entities/dortoir.entity";
 import { MembreCoEntity } from "src/membre_co/entities/membre_co.entity";
 import { Niveau } from "src/niveau/entities/niveau.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryColumn } from "typeorm";
 
 @Entity("seminariste")
 export class SeminaristeEntity extends TimestampEntites{
-    @PrimaryGeneratedColumn('uuid')
+    @PrimaryColumn()
+    matricule:string
+    @Column({unique: true})
     idSemi:string
     @Column()
     nomSemi:string;
@@ -28,7 +30,7 @@ export class SeminaristeEntity extends TimestampEntites{
     @Column({
         type:"enum",
         enum:genreEnum,
-        default:genreEnum.NON_DEFINI
+        // default:genreEnum.NON_DEFINI
     })
     genreSemi:string;
     @Column() 

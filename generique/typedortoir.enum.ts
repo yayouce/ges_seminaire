@@ -1,5 +1,5 @@
 export enum typeDortoir{
     CO="co",
-    SEMIONARISTE="seminariste",
+    SEMINARISTE="seminariste",
     NON_DEFINI="non_defini"
 }

@@ -1,14 +1,17 @@
+import { TimestampEntites } from "generique/timestamp";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 
 @Entity('superadmin')
-export class Superadmin {
+export class Superadmin extends TimestampEntites {
 
+    @PrimaryGeneratedColumn('uuid')
+    idSupAdmin: string;
 
-@PrimaryGeneratedColumn('uuid')
-    idSupAdmin:string;
     @Column()
-    loginSupAdmin:string;
+    loginSupAdmin: string;
+
     @Column()
-    motPassSupAdmin:string
+    motPassSupAdmin: string;
+
 }

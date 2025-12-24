@@ -17,12 +17,45 @@ constructor(
   private niveauService: NiveauService
 ) {}
 
+// Fonction pour formater le matricule au format IKH-XXXX
+private formatMatricule(matriculeInput: string): string {
+  // Extraire uniquement les chiffres du matricule
+  const numericPart = matriculeInput.replace(/\D/g, '');
+  // Formater avec padding de 4 chiffres
+  const paddedNumber = numericPart.padStart(4, '0');
+  return `IKH-${paddedNumber}`;
+}
+
 // Creation
 async createNewSemi(createSeminaristeDto: CreateSeminaristeDto, user) {
   try {
-    const { dortoir, genreSemi, membreCo, age, etatSante, niveau, ...seminaristedata } = createSeminaristeDto;
-    if (user?.rolePers !== CommissionEnum.ACCUEIL) {
+    const { dortoir, genreSemi, membreCo, age, etatSante, niveau, matricule, ...seminaristedata } = createSeminaristeDto;
+    // Autoriser les superadmins à créer des séminaristes
+    if (!user?.isSuperAdmin && user?.rolePers !== CommissionEnum.ACCUEIL) {
       throw new HttpException('Access denied: Insufficient permissions', 701);
+    }
+
+    // Formater le matricule au format IKH-XXXX
+    const formattedMatricule = this.formatMatricule(matricule);
+
+    // Vérifier si le matricule existe déjà
+    const existingByMatricule = await this.seminaristeRepository.findOne({
+      where: { matricule: formattedMatricule }
+    });
+    if (existingByMatricule) {
+      throw new HttpException('Un séminariste avec ce matricule existe déjà', 709);
+    }
+
+    // Vérifier la duplication par nom, prénom et téléphone
+    const existingByIdentity = await this.seminaristeRepository.findOne({
+      where: {
+        nomSemi: createSeminaristeDto.nomSemi,
+        prenomSemi: createSeminaristeDto.prenomSemi,
+        phoneSemi: createSeminaristeDto.phoneSemi
+      }
+    });
+    if (existingByIdentity) {
+      throw new HttpException('Cette personne est déjà enregistrée comme séminariste', 710);
     }
 
     const founddortoir = await this.dortoirservice.findOneDortoir(dortoir);
@@ -39,13 +72,7 @@ async createNewSemi(createSeminaristeDto: CreateSeminaristeDto, user) {
       throw new HttpException("The seminarist's gender does not match the dormitory", 703);
     }
 
-    if (age <= 6) {
-      createSeminaristeDto.categorie = 'Pepinieres';
-    } else if (age > 6 && age <= 10) {
-      createSeminaristeDto.categorie = 'Enfants';
-    } else {
-      createSeminaristeDto.categorie = 'Jeunes_et_adultes';
-    }
+    // La catégorie est maintenant gérée par le front-end, pas de calcul automatique basé sur l'âge
 
     if (etatSante !== 'Malade' && etatSante !== 'Autres') {
       createSeminaristeDto.problemeSante = 'Ras';
@@ -53,6 +80,7 @@ async createNewSemi(createSeminaristeDto: CreateSeminaristeDto, user) {
 
     const newSeminariste = await this.seminaristeRepository.create({
       ...seminaristedata,
+      matricule: formattedMatricule,
       age: createSeminaristeDto.age,
       etatSante: createSeminaristeDto.etatSante,
       problemeSante: createSeminaristeDto.problemeSante,
@@ -73,8 +101,9 @@ async createNewSemi(createSeminaristeDto: CreateSeminaristeDto, user) {
 async updatesemi(idSemi: string, updateSeminaristeDto: UpdateSeminaristeDto, user) {
   try {
     const { dortoir, genreSemi, age, etatSante,nomNiveau, ...updatedData } = updateSeminaristeDto;
-  
-    if (user?.rolePers !== CommissionEnum.ACCUEIL && user?.rolePers !== CommissionEnum.ADMINISTRATION && user?.rolePers !== CommissionEnum.FORMATION) {
+
+    // Autoriser les superadmins à modifier des séminaristes
+    if (!user?.isSuperAdmin && user?.rolePers !== CommissionEnum.ACCUEIL && user?.rolePers !== CommissionEnum.ADMINISTRATION && user?.rolePers !== CommissionEnum.FORMATION) {
       throw new HttpException('Access denied: Insufficient permissions', 701);
     }
     const seminariste = await this.seminaristeRepository.findOne({ where: { idSemi } });
@@ -98,15 +127,7 @@ async updatesemi(idSemi: string, updateSeminaristeDto: UpdateSeminaristeDto, use
       throw new HttpException('niveau not found', 705);
     }
 
-    if (age !== undefined) {
-      if (age <= 6) {
-        updatedData.categorie = 'Pepinieres';
-      } else if (age > 6 && age <= 10) {
-        updatedData.categorie = 'Enfants';
-      } else {
-        updatedData.categorie = 'Jeunes_et_adultes';
-      }
-    }
+    // La catégorie est maintenant gérée par le front-end, pas de calcul automatique basé sur l'âge
 
     if (etatSante !== undefined) {
       if (etatSante !== 'Malade' && etatSante !== 'Autres') {
@@ -141,7 +162,8 @@ async deleteSeminariste(idSemi: string, user) {
     if (!seminaristeDelete) {
       throw new HttpException('Seminarist not found', 706);
     }
-    if (user?.rolePers !== CommissionEnum.ACCUEIL && user?.rolePers !== CommissionEnum.ADMINISTRATION && user?.rolePers !== CommissionEnum.FORMATION) {
+    // Autoriser les superadmins à supprimer des séminaristes
+    if (!user?.isSuperAdmin && user?.rolePers !== CommissionEnum.ACCUEIL && user?.rolePers !== CommissionEnum.ADMINISTRATION && user?.rolePers !== CommissionEnum.FORMATION) {
       throw new HttpException('Access denied: Insufficient permissions', 701);
     }
     await this.seminaristeRepository.softDelete(idSemi);
@@ -190,7 +212,7 @@ async SeminaristeByGender(): Promise<Record<string, number>> {
     const data: Record<string, number> = { frere: 0, soeur: 0, non_defini: 0, Total: 0 };
 
     result.forEach((row) => {
-      const genre = row.genre?.toLowerCase() || 'non_defini';
+      const genre = row.genre?.toLowerCase()
       const total = Number(row.total);
       if (data.hasOwnProperty(genre)) {
         data[genre] += total;

@@ -8,12 +8,13 @@ import { PersonneModule } from 'src/personne/personne.module';
 import { JwtCustomModule } from './jwt.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MembreCoEntity } from 'src/membre_co/entities/membre_co.entity';
+import { Superadmin } from 'src/superadmin/entities/superadmin.entity';
 
 @Module({
   imports: [PersonneModule,
     PassportModule,
     JwtCustomModule,
-    TypeOrmModule.forFeature([MembreCoEntity])
+    TypeOrmModule.forFeature([MembreCoEntity, Superadmin])
   ],
  
   providers: [

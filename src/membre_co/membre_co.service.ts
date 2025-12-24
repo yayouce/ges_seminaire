@@ -44,40 +44,95 @@ export class MembreCoService {
   }
 
   // Create Member
-  async createMembreCo(createmembreco: CreateMembreCoDto, user) {
-    try {
-      if (user?.roleMembre !== roleMembre.RESP) {
-        throw new UnauthorizedException();
-      }
-      const commission = await this.commissionService.findOne(createmembreco.commission);
-      if (!commission) {
-        throw new HttpException('Commission non trouvé', 703);
-      }
-      createmembreco.rolePers = commission.libelleComi;
+  // async createMembreCo(createmembreco: CreateMembreCoDto, user) {
+  //   try {
+  //     if (user?.roleMembre !== roleMembre.RESP && user?.role !== "SUPERADMIN"
+  //     ) {
+  //       throw new UnauthorizedException();
+  //     }
+  //     const commission = await this.commissionService.findOne(createmembreco.commission);
+  //     if (!commission) {
+  //       throw new HttpException('Commission non trouvé', 703);
+  //     }
+  //     createmembreco.rolePers = commission.libelleComi;
 
-      if (
-        user.rolePers !== createmembreco.rolePers &&
-        user.rolePers !== CommissionEnum.ADMINISTRATION
-        && user.rolePers !== CommissionEnum.ACCUEIL
-      ) {
-        throw  new HttpException('pas autorisé à ajouter ce membre dans votre commission', 704);
-      }
+  //     if (
+  //       user.rolePers !== createmembreco.rolePers &&
+  //       user.rolePers !== CommissionEnum.ADMINISTRATION
+  //       && user.rolePers !== CommissionEnum.ACCUEIL
+  //     ) {
+  //       throw  new HttpException('pas autorisé à ajouter ce membre dans votre commission', 704);
+  //     }
 
-      const hashedpassword = await bcrypt.hash(createmembreco.motPass, saltOrRounds);
-      const membreCo = this.membreRepository.create({
-        ...createmembreco,
-        rolePers: commission.libelleComi,
-        motPass: hashedpassword,
-        commission,
-      });
-      return await this.membreRepository.save(membreCo);
-    } catch (err) {
+  //     const hashedpassword = await bcrypt.hash(createmembreco.motPass, saltOrRounds);
+  //     const membreCo = this.membreRepository.create({
+  //       ...createmembreco,
+  //       rolePers: commission.libelleComi,
+  //       motPass: hashedpassword,
+  //       commission,
+  //     });
+  //     return await this.membreRepository.save(membreCo);
+  //   } catch (err) {
       
-      throw err;
-    }
-  }
+  //     throw err;
+  //   }
+  // }
 
   // Delete Member
+  
+  
+async createMembreCo(createmembreco: CreateMembreCoDto, user) {
+  try {
+    // 1. Identification du rôle à partir du token (payload)
+    const isSuperAdmin = user?.isSuperAdmin === true; // On vérifie le booléen du JWT
+    const isResponsable = user?.roleMembre === roleMembre.RESP;
+
+    // Autoriser si c'est un Superadmin OU un Responsable
+    if (!isSuperAdmin && !isResponsable) {
+      throw new UnauthorizedException("Vous n'avez pas les droits requis");
+    }
+
+    // 2. Vérification de la commission cible
+    const commission = await this.commissionService.findOne(createmembreco.commission);
+    if (!commission) {
+      throw new HttpException('Commission non trouvée', 703);
+    }
+
+    // 3. Logique de restriction par commission
+    // Si l'utilisateur n'est PAS Superadmin, on vérifie s'il a le droit d'ajouter dans CETTE commission
+    if (!isSuperAdmin) {
+      const isAllowed = 
+        user.rolePers === commission.libelleComi || // Même commission
+        user.rolePers === CommissionEnum.ADMINISTRATION || // Est de l'administration
+        user.rolePers === CommissionEnum.ACCUEIL; // Est de l'accueil
+
+      if (!isAllowed) {
+        throw new HttpException('Pas autorisé à ajouter un membre dans cette commission', 704);
+      }
+    }
+
+    // 4. Création du membre
+    const hashedpassword = await bcrypt.hash(createmembreco.motPass, saltOrRounds);
+    
+    const membreCo = this.membreRepository.create({
+      ...createmembreco,
+      rolePers: commission.libelleComi, // On assigne le libellé de la commission comme rôle perso
+      motPass: hashedpassword,
+      commission,
+    });
+
+    return await this.membreRepository.save(membreCo);
+    
+  } catch (err) {
+    // Si c'est déjà une HttpException (401, 703, 704), on la renvoie telle quelle
+    if (err instanceof HttpException) {
+      throw err;
+    }
+    // Sinon, erreur interne
+    throw new HttpException("Erreur lors de la création du membre", 500);
+  }
+}
+  
   async deleteMembreCo(idpers: string) {
     try {
       const membreDelete = await this.membreRepository.findOneBy({ idpers });

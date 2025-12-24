@@ -8,5 +8,6 @@ import { Superadmin } from './entities/superadmin.entity';
   imports:[TypeOrmModule.forFeature([Superadmin])],
   controllers: [SuperadminController],
   providers: [SuperadminService],
+  exports:[SuperadminService],
 })
 export class SuperadminModule {}
