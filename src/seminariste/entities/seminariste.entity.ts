@@ -53,7 +53,7 @@ export class SeminaristeEntity extends TimestampEntites{
     @ManyToOne(()=>MembreCoEntity,(membreco)=>membreco.seminariste,{eager:true})
     membreCo:MembreCoEntity
 
-    @Column()
+    @Column({ nullable: true })
     nomNiveau:string
     @Column({
         type:"enum",
@@ -64,6 +64,6 @@ export class SeminaristeEntity extends TimestampEntites{
     @Column()
     problemeSante:string
 
-    @ManyToOne(()=>Niveau,(niveau)=>niveau.seminariste)
-    niveau:dortoirEntity
+    @ManyToOne(()=>Niveau,(niveau)=>niveau.seminariste, { nullable: true })
+    niveau:Niveau
 }

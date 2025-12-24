@@ -46,12 +46,13 @@ async createNewSemi(createSeminaristeDto: CreateSeminaristeDto, user) {
       throw new HttpException('Un séminariste avec ce matricule existe déjà', 709);
     }
 
-    // Vérifier la duplication par nom, prénom et téléphone
+    // Vérifier la duplication par nom, prénom  téléphone et matricule
     const existingByIdentity = await this.seminaristeRepository.findOne({
       where: {
         nomSemi: createSeminaristeDto.nomSemi,
         prenomSemi: createSeminaristeDto.prenomSemi,
-        phoneSemi: createSeminaristeDto.phoneSemi
+        phoneSemi: createSeminaristeDto.phoneSemi,
+        matricule: createSeminaristeDto.matricule
       }
     });
     if (existingByIdentity) {
@@ -63,11 +64,11 @@ async createNewSemi(createSeminaristeDto: CreateSeminaristeDto, user) {
       throw new HttpException('Dormitory not found', 702);
     }
 
-    // const foundniveau = await this.niveauService.findOneNiveau(niveau);
-    // if (!foundniveau) {
-    //   throw new HttpException('Level not found', 705);
-    // }
-
+    let foundniveau = null;
+    // If frontend provides `nomNiveau`, resolve it to a Niveau entity; otherwise leave null
+    if (createSeminaristeDto.nomNiveau) {
+      foundniveau = await this.niveauService.findOneNiveau(createSeminaristeDto.nomNiveau).catch(() => null);
+    }
     if (genreSemi !== founddortoir.genre) {
       throw new HttpException("The seminarist's gender does not match the dormitory", 703);
     }
@@ -93,6 +94,9 @@ async createNewSemi(createSeminaristeDto: CreateSeminaristeDto, user) {
       membreCo: user,
       dortoir: founddortoir,
       genreSemi,
+      // set relation and readable name if we resolved a niveau; allow null when none provided
+      niveau: foundniveau || null,
+      nomNiveau: foundniveau ? foundniveau.nomNiveau : (createSeminaristeDto.nomNiveau ?? null),
     });
     await this.seminaristeRepository.save(newSeminariste);
     return newSeminariste;

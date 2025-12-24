@@ -87,7 +87,7 @@ export class CreateSeminaristeDto {
       description: 'Niveau du séminariste',
       example: 'uuid-niveau',
     })
-
+    
     @IsOptional()
     @IsString()
     niveau:string;
@@ -107,4 +107,12 @@ export class CreateSeminaristeDto {
     @IsString()
     @IsOptional()
     problemeSante:string;
+
+    @ApiPropertyOptional({
+      description: 'Nom du niveau',
+      example: 'Niveau 1',
+    })
+    @IsOptional()
+    @IsString()
+    nomNiveau:string;
 }
