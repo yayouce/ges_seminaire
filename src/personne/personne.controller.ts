@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PersonneService } from './personne.service';
 import { MembreCoService } from 'src/membre_co/membre_co.service';
 import { SeminaristeService } from 'src/seminariste/seminariste.service';
@@ -51,6 +51,20 @@ export class PersonneController {
     throw new NotFoundException('Utilisateur non trouvé');
   }
 
+  @Post('badge')
+  async badgesByIds(@Body('ids') ids: string[]) {
+    if (!Array.isArray(ids)) throw new BadRequestException('Expected body { ids: string[] }');
+    const results = await Promise.all(ids.map(async (id) => {
+      try {
+        const data = await this.badgeById(id);
+        return { id, data };
+      } catch (err) {
+        return { id, error: 'Utilisateur non trouvé' };
+      }
+    }));
+    return results;
+  }
+
   // Diplome: returns nom, prenom and quality (seminariste or membreco)
   @Get('diplome/:id')
   async diplomeById(@Param('id') id: string) {
@@ -88,6 +102,20 @@ export class PersonneController {
     }
 
     throw new NotFoundException('Utilisateur non trouvé');
+  }
+
+  @Post('diplome')
+  async diplomesByIds(@Body('ids') ids: string[]) {
+    if (!Array.isArray(ids)) throw new BadRequestException('Expected body { ids: string[] }');
+    const results = await Promise.all(ids.map(async (id) => {
+      try {
+        const data = await this.diplomeById(id);
+        return { id, data };
+      } catch (err) {
+        return { id, error: 'Utilisateur non trouvé' };
+      }
+    }));
+    return results;
   }
 
 }

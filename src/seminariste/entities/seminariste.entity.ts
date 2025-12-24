@@ -13,7 +13,7 @@ import { Column, Entity, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from
 export class SeminaristeEntity extends TimestampEntites{
     @Column({unique: true})
     matricule:string
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn('uuid')
     idSemi:string
     @Column()
     nomSemi:string;
