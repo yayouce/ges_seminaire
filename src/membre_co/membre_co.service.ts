@@ -113,7 +113,11 @@ async createMembreCo(createmembreco: CreateMembreCoDto, user) {
 
     // 4. Création du membre
     const hashedpassword = await bcrypt.hash(createmembreco.motPass, saltOrRounds);
-    
+
+    // Normalize names to uppercase before saving
+    if (createmembreco.nomPers) createmembreco.nomPers = createmembreco.nomPers.toUpperCase();
+    if (createmembreco.pernomPers) createmembreco.pernomPers = createmembreco.pernomPers.toUpperCase();
+
     const membreCo = this.membreRepository.create({
       ...createmembreco,
       rolePers: commission.libelleComi, // On assigne le libellé de la commission comme rôle perso
@@ -231,6 +235,15 @@ async createMembreCo(createmembreco: CreateMembreCoDto, user) {
       return await this.membreRepository.findBy({idpers});
     } catch (err) {
       throw err
+    }
+  }
+
+  // Find single MembreCo by idpers
+  async findOneById(idpers: string) {
+    try {
+      return await this.membreRepository.findOne({ where: { idpers }, relations: ['commission'] });
+    } catch (err) {
+      throw err;
     }
   }
   

@@ -7,6 +7,7 @@ import { PassportModule } from '@nestjs/passport';
 import { MembreCoEntity } from 'src/membre_co/entities/membre_co.entity';
 import { MembreCoModule } from 'src/membre_co/membre_co.module';
 import { JwtCustomModule } from 'src/Auth/jwt.module';
+import { SeminaristeModule } from 'src/seminariste/seminariste.module';
 
 @Module({
 
@@ -14,6 +15,7 @@ import { JwtCustomModule } from 'src/Auth/jwt.module';
   imports:[
 MembreCoModule,
 JwtCustomModule,
+  SeminaristeModule,
     TypeOrmModule.forFeature([ personne,MembreCoEntity  ]),
     PassportModule.register({
       defaultStrategy: 'jwt'

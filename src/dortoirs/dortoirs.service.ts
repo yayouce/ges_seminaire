@@ -84,7 +84,7 @@ export class DortoirsService {
         .getRawMany();
 
       const consolidatedData: Record<string, number> = {
-        // pepiniere: 0,
+        pepiniere: 0,
         frere: 0,
         soeur: 0,
         non_defini: 0,

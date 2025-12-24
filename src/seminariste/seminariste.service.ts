@@ -78,6 +78,10 @@ async createNewSemi(createSeminaristeDto: CreateSeminaristeDto, user) {
       createSeminaristeDto.problemeSante = 'Ras';
     }
 
+    // Normalize names to uppercase before saving
+    if (seminaristedata.nomSemi) seminaristedata.nomSemi = seminaristedata.nomSemi.toUpperCase();
+    if (seminaristedata.prenomSemi) seminaristedata.prenomSemi = seminaristedata.prenomSemi.toUpperCase();
+
     const newSeminariste = await this.seminaristeRepository.create({
       ...seminaristedata,
       matricule: formattedMatricule,
@@ -134,6 +138,10 @@ async updatesemi(idSemi: string, updateSeminaristeDto: UpdateSeminaristeDto, use
         updatedData.problemeSante = 'Ras';
       }
     }
+
+    // Normalize update names to uppercase if provided
+    if (updatedData.nomSemi) updatedData.nomSemi = updatedData.nomSemi.toUpperCase();
+    if (updatedData.prenomSemi) updatedData.prenomSemi = updatedData.prenomSemi.toUpperCase();
 
     Object.assign(seminariste, {
       ...updatedData,

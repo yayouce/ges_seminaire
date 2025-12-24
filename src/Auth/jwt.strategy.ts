@@ -13,9 +13,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     @InjectRepository(MembreCoEntity)
     private membreCoRepository:Repository<MembreCoEntity>
-    ,
-    @InjectRepository(Superadmin)
-    private superAdminRepo: Repository<Superadmin>
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -26,34 +23,18 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(payload:payloadInterface) {
 
-    // If token belongs to a superadmin, validate against superadmin repo
-    if (payload?.isSuperAdmin) {
-      const id = (payload as any).idSupAdmin || payload.loginSupAdmin;
-      const superadmin = await this.superAdminRepo.findOne({
-        where: id && id.length === 36 ? { idSupAdmin: id } : { loginSupAdmin: payload.loginSupAdmin },
-      });
+   const user= await this.membreCoRepository.findOne({where:{phonePers:payload.phonePers}})
 
-      if (!superadmin) throw new UnauthorizedException();
+   if(user){
+    const {motPass,...result}=user
+    delete user.motPass
 
-      return {
-        idSupAdmin: superadmin.idSupAdmin,
-        loginSupAdmin: superadmin.loginSupAdmin,
-        isSuperAdmin: true,
-        role: 'SUPERADMIN',
-      };
-    }
+    return result
+   }
 
-    // Otherwise, try to resolve a MembreCo by phone
-    if (payload?.phonePers) {
-      const user = await this.membreCoRepository.findOne({ where: { phonePers: payload.phonePers } });
-      if (!user) throw new UnauthorizedException();
-      // remove sensitive info
-      // @ts-ignore
-      delete user.motPass;
-      return user;
-    }
-
-    throw new UnauthorizedException();
+   else{
+    throw new UnauthorizedException()
+   }
 
 
 

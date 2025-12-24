@@ -46,8 +46,12 @@ export class PersonneService {
 
 
   async createPers(persdata:CreatePersonneDto):Promise<personne>{
+    // Normalize names to uppercase before saving
+    if ((persdata as any).nomPers) (persdata as any).nomPers = (persdata as any).nomPers.toUpperCase();
+    if ((persdata as any).pernomPers) (persdata as any).pernomPers = (persdata as any).pernomPers.toUpperCase();
+
     const pers= this.personneRepository.create(persdata)
-   return pers
+   return await this.personneRepository.save(pers)
 
 }
 
