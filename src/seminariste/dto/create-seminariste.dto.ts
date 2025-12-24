@@ -69,6 +69,14 @@ export class CreateSeminaristeDto {
     numUrgence:string;
 
     @ApiProperty({
+      description: 'Situation du séminariste (présence sur le camp)',
+      example: 'Sur le camp',
+      enum: ['Hors du camp', 'Sur le camp', 'Non_specifie']
+    })
+    @IsString()
+    situation:string
+
+    @ApiProperty({
       description: 'ID du dortoir',
       example: 'uuid-dortoir',
     })

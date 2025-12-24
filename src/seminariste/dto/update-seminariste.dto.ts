@@ -17,6 +17,9 @@ export class UpdateSeminaristeDto extends PartialType(CreateSeminaristeDto) {
     @IsString()
     phoneSemi:string
     @IsOptional()
+    @IsString()
+    situation:string
+    @IsOptional()
     @IsNumber()
     age:number
     @IsOptional()
