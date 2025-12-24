@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, isString, IsString } from "class-validator";
+import { IsNotEmpty, IsNumber, isString, IsString, IsOptional } from "class-validator";
 
 export class CreateDortoirDto {
 
@@ -12,7 +12,8 @@ export class CreateDortoirDto {
     @IsString()
     typedortoir:string 
 
+    @IsOptional()
     @IsString()
-    membreCo:string
+    membreCo?:string
 }
 
