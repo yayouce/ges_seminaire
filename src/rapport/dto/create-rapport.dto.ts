@@ -1,4 +1,4 @@
-import { IsString } from "class-validator";
+import { IsOptional, IsString } from "class-validator";
 
 export class CreateRapportDto {
     @IsString()
@@ -17,6 +17,8 @@ export class CreateRapportDto {
     suggestions:string
     @IsString()
     infoSuplementaire:string
+
+    @IsOptional()
     @IsString()
     membreCo:string
 }
