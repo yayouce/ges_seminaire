@@ -18,22 +18,56 @@ constructor(
   private niveauService: NiveauService
 ) {}
 
-// Fonction pour formater le matricule au format IKH-XXXX
-private formatMatricule(matriculeInput: string): string {
-  // Extraire uniquement les chiffres du matricule
-  const numericPart = matriculeInput.replace(/\D/g, '');
-  // Formater avec padding de 4 chiffres
+// Fonction pour formater le matricule au format IKH-CODE-0000
+private formatMatricule(matriculeInput: string, genre?: string): string {
+  if (!matriculeInput) return '';
+  const raw = matriculeInput.toString().trim().toUpperCase();
+
+  // If already in form IKH-CODE-NUM or IKH-CODENUM, normalize it
+  const ikhMatch = raw.match(/^IKH-?([A-Z]{1,2})-?(\d+)$/i);
+  if (ikhMatch) {
+    const code = ikhMatch[1].toUpperCase();
+    const num = ikhMatch[2];
+    const padded = num.padStart(4, '0');
+    return `IKH-${code}-${padded}`;
+  }
+
+  // If contains letters+digits like PS10 or PS-10
+  const lettersNum = raw.match(/^([A-Z]{1,2})-?(\d+)$/i);
+  if (lettersNum) {
+    const code = lettersNum[1].toUpperCase();
+    const padded = lettersNum[2].padStart(4, '0');
+    return `IKH-${code}-${padded}`;
+  }
+
+  // Fallback: treat as numeric and derive code from genre (F/S)
+  const numericPart = raw.replace(/\D/g, '');
   const paddedNumber = numericPart.padStart(4, '0');
-  return `IKH-${paddedNumber}`;
+  let code = 'X';
+  if (genre) {
+    const g = genre.toString().toLowerCase();
+    if (g === 'frere') code = 'F';
+    else if (g === 'soeur') code = 'S';
+  }
+  return `IKH-${code}-${paddedNumber}`;
 }
 
 // Détermine la catégorie à partir de l'âge
-private computeCategory(age: number): string {
+private computeCategory(age: number, matricule?: string): string {
+  // Pepinieres only when matricule explicitly contains PS or PF
+  if (matricule) {
+    const m = matricule.toString().toUpperCase();
+    if (m.includes('-PS-') || m.includes('-PF-') || m.includes('PS-') || m.includes('PF-')) {
+      return categorieSem.PEPINIERES;
+    }
+  }
+
+  // Otherwise determine by age ranges:
+  // Enfants: 0-14, Jeunes_et_Adultes: 15+
   if (age === undefined || age === null || isNaN(Number(age))) return categorieSem.NON_SPECIFIE;
   const a = Number(age);
-  if (a >= 0 && a <= 6) return categorieSem.PEPINIERES;
-  if (a >= 7 && a <= 12) return categorieSem.ENFANTS;
-  if (a >= 13) return categorieSem.JEUNES_ADULTES;
+  if (a >= 0 && a <= 14) return categorieSem.ENFANTS;
+  if (a >= 15) return categorieSem.JEUNES_ADULTES;
   return categorieSem.NON_SPECIFIE;
 }
 
@@ -46,8 +80,8 @@ async createNewSemi(createSeminaristeDto: CreateSeminaristeDto, user) {
       throw new HttpException('Access denied: Insufficient permissions', 701);
     }
 
-    // Formater le matricule au format IKH-XXXX
-    const formattedMatricule = this.formatMatricule(matricule);
+    // Formater le matricule au format IKH-CODE-0000 (code basé sur le genre si input numérique)
+    const formattedMatricule = this.formatMatricule(matricule, genreSemi);
 
     // Vérifier si le matricule existe déjà
     const existingByMatricule = await this.seminaristeRepository.findOne({
@@ -63,7 +97,7 @@ async createNewSemi(createSeminaristeDto: CreateSeminaristeDto, user) {
         nomSemi: createSeminaristeDto.nomSemi,
         prenomSemi: createSeminaristeDto.prenomSemi,
         phoneSemi: createSeminaristeDto.phoneSemi,
-        matricule: createSeminaristeDto.matricule
+        matricule: formattedMatricule
       }
     });
     if (existingByIdentity) {
@@ -100,8 +134,8 @@ async createNewSemi(createSeminaristeDto: CreateSeminaristeDto, user) {
       age: createSeminaristeDto.age,
       etatSante: createSeminaristeDto.etatSante,
       problemeSante: createSeminaristeDto.problemeSante,
-      // catégorie déterminée automatiquement à partir de l'âge
-      categorie: this.computeCategory(createSeminaristeDto.age),
+      // catégorie déterminée automatiquement à partir du matricule (PS/PF) ou de l'âge
+      categorie: this.computeCategory(createSeminaristeDto.age, formattedMatricule),
       nomdortoir: founddortoir.nomDortoir,
       membreCo: user,
       dortoir: founddortoir,
@@ -164,8 +198,8 @@ async updatesemi(idSemi: string, updateSeminaristeDto: UpdateSeminaristeDto, use
       age: age ?? seminariste.age,
       etatSante: etatSante ?? seminariste.etatSante,
       problemeSante: updatedData.problemeSante ?? seminariste.problemeSante,
-      // si l'âge est fourni dans la mise à jour, recalculer la catégorie
-      categorie: age !== undefined && age !== null ? this.computeCategory(age) : (updatedData.categorie ?? seminariste.categorie),
+      // si l'âge est fourni dans la mise à jour, recalculer la catégorie (tient compte du matricule existant)
+      categorie: age !== undefined && age !== null ? this.computeCategory(age, updatedData.matricule ?? seminariste.matricule) : (updatedData.categorie ?? seminariste.categorie),
       nomdortoir: founddortoir ? founddortoir.nomDortoir : seminariste.nomdortoir,
       dortoir: founddortoir || seminariste.dortoir,
       genreSemi: genreSemi ?? seminariste.genreSemi,
