@@ -23,6 +23,7 @@ export class UpdateVisiteurDto extends PartialType(CreateVisiteurDto) {
         @IsOptional()
         @IsString()
         sousComite:string
+        
         @IsOptional()
         @IsString()
         membreCo:string
