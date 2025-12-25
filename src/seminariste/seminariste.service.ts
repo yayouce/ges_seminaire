@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { SeminaristeEntity } from './entities/seminariste.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CommissionEnum } from 'generique/commission.enum';
+import { categorieSem } from 'generique/categorieSeminariste.enum';
 import { DortoirsService } from 'src/dortoirs/dortoirs.service';
 import { NiveauService } from 'src/niveau/niveau.service';
 
@@ -24,6 +25,16 @@ private formatMatricule(matriculeInput: string): string {
   // Formater avec padding de 4 chiffres
   const paddedNumber = numericPart.padStart(4, '0');
   return `IKH-${paddedNumber}`;
+}
+
+// Détermine la catégorie à partir de l'âge
+private computeCategory(age: number): string {
+  if (age === undefined || age === null || isNaN(Number(age))) return categorieSem.NON_SPECIFIE;
+  const a = Number(age);
+  if (a >= 0 && a <= 6) return categorieSem.PEPINIERES;
+  if (a >= 7 && a <= 12) return categorieSem.ENFANTS;
+  if (a >= 13) return categorieSem.JEUNES_ADULTES;
+  return categorieSem.NON_SPECIFIE;
 }
 
 // Creation
@@ -89,7 +100,8 @@ async createNewSemi(createSeminaristeDto: CreateSeminaristeDto, user) {
       age: createSeminaristeDto.age,
       etatSante: createSeminaristeDto.etatSante,
       problemeSante: createSeminaristeDto.problemeSante,
-      categorie: createSeminaristeDto.categorie ?? seminaristedata.categorie,
+      // catégorie déterminée automatiquement à partir de l'âge
+      categorie: this.computeCategory(createSeminaristeDto.age),
       nomdortoir: founddortoir.nomDortoir,
       membreCo: user,
       dortoir: founddortoir,
@@ -152,7 +164,8 @@ async updatesemi(idSemi: string, updateSeminaristeDto: UpdateSeminaristeDto, use
       age: age ?? seminariste.age,
       etatSante: etatSante ?? seminariste.etatSante,
       problemeSante: updatedData.problemeSante ?? seminariste.problemeSante,
-      categorie: updatedData.categorie ?? seminariste.categorie,
+      // si l'âge est fourni dans la mise à jour, recalculer la catégorie
+      categorie: age !== undefined && age !== null ? this.computeCategory(age) : (updatedData.categorie ?? seminariste.categorie),
       nomdortoir: founddortoir ? founddortoir.nomDortoir : seminariste.nomdortoir,
       dortoir: founddortoir || seminariste.dortoir,
       genreSemi: genreSemi ?? seminariste.genreSemi,
