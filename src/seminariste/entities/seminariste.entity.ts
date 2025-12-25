@@ -21,12 +21,12 @@ export class SeminaristeEntity extends TimestampEntites{
     prenomSemi:string;
     @Column()
     age:number;
-    // @Column({
-    //     type:"enum",
-    //     enum:categorieSem,
-    //     default:categorieSem.NON_SPECIFIE
-    // })
-    // categorie:string;
+    @Column({
+        type:"enum",
+        enum:categorieSem,
+        default:categorieSem.NON_SPECIFIE
+    })
+    categorie:string;
     @Column({
         type:"enum",
         enum:genreEnum,
